@@ -20,7 +20,7 @@ export function DisksTab({ name }: AppPanelProps) {
   const reserved = q.data?.reservedDiskSpace;
 
   return (
-    <section className="flex flex-col gap-4 p-4" aria-labelledby="disks-title">
+    <section className="flex flex-col gap-4" aria-labelledby="disks-title">
       <header className="flex flex-col gap-2">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 id="disks-title" className="text-lg font-semibold">

@@ -49,7 +49,7 @@ export function DbSection({
         <p className="text-xs leading-6 text-muted">{t("setupFlow.choices.dbOthers", { engines: sug.others.map(engineName).join("، ") })}</p>
       ) : null}
       {draft.includeDb ? (
-        <div className="flex flex-col gap-4 rounded-xl border border-border p-4">
+        <div className="flex flex-col gap-4 rounded-md border border-border p-4">
           <Field label={t("setupFlow.choices.dbEngine")}>
             {({ id }) => (
               <Select

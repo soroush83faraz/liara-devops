@@ -1,64 +1,101 @@
 @import "tailwindcss";
 
 /*
- * Design tokens. Every foreground/background pair used by components is >= 4.5:1
+ * «اتاق سیگنال» design tokens (docs/design-direction.md).
+ * Every foreground/background pair used by components is >= 4.5:1
  * (checked by tests/unit/ui/contrast.test.ts, which parses this file).
  * Keep token declarations one-per-line: the test relies on that.
+ * The first root block is the light theme; the dark media block below overrides it.
  */
 :root {
   color-scheme: light dark;
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #f5f3ee;
+  --foreground: #14171c;
   --surface: #ffffff;
-  --surface-muted: #f1f5f9;
-  --muted: #475569;
-  --border: #e2e8f0;
-  --border-strong: #64748b;
-  --accent: #0b5c7a;
+  --surface-muted: #ece9e1;
+  --muted: #555b66;
+  --border: #ddd8cc;
+  --border-strong: #6b665a;
+  --accent: #08735a;
   --accent-foreground: #ffffff;
-  --accent-soft: #e0f2f8;
-  --accent-ink: #073f55;
-  --ok: #137a38;
-  --ok-soft: #dcfce7;
-  --ok-ink: #14532d;
-  --warn: #a84b08;
-  --warn-soft: #fef3c7;
-  --warn-ink: #78350f;
-  --danger: #b91c1c;
+  --accent-soft: #e1f4ec;
+  --accent-ink: #075a45;
+  --ok: #157238;
+  --ok-soft: #e4f3e7;
+  --ok-ink: #0f5129;
+  --warn: #934705;
+  --warn-soft: #fbefd8;
+  --warn-ink: #6e3504;
+  --danger: #b42318;
   --danger-foreground: #ffffff;
-  --danger-soft: #fee2e2;
-  --danger-ink: #7f1d1d;
-  --code-bg: #f1f5f9;
-  --code-fg: #0f172a;
-  --overlay: rgb(15 23 42 / 0.45);
+  --danger-soft: #fbe6e3;
+  --danger-ink: #7a1710;
+  --code-bg: #efece5;
+  --code-fg: #14171c;
+  --grid-dot: #d3cdbf;
+  --overlay: rgb(20 23 28 / 0.38);
+  --shadow-pop: 0 1px 2px rgb(20 23 28 / 0.06), 0 8px 24px -6px rgb(20 23 28 / 0.12), 0 24px 48px -16px rgb(20 23 28 / 0.1);
+  --shadow-soft: 0 1px 2px rgb(20 23 28 / 0.05), 0 4px 12px -4px rgb(20 23 28 / 0.08);
+  --glow-accent: 0 0 0 1px color-mix(in oklab, var(--accent) 40%, transparent), 0 8px 32px color-mix(in oklab, var(--accent) 12%, transparent);
+  --glass: rgb(255 255 255 / 0.72);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  /*
+   * Categorical chart palette (marks only, never text). Fixed slot order validated for CVD separation on the
+   * surface of each theme (dataviz validate_palette.js); slots 3/4/5 sit under 3:1 in light, so every chart
+   * ships a legend and a table view. A 9th series folds into --series-other.
+   */
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-5: #e87ba4;
+  --series-6: #008300;
+  --series-7: #6250d6;
+  --series-8: #e34948;
+  --series-other: #9a958a;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0b1220;
-    --foreground: #e2e8f0;
-    --surface: #111a2c;
-    --surface-muted: #16213a;
-    --muted: #94a3b8;
-    --border: #243049;
-    --border-strong: #5b6b88;
-    --accent: #5cc4de;
-    --accent-foreground: #04222d;
-    --accent-soft: #0e2a36;
-    --accent-ink: #9bdcee;
+    --background: #07090d;
+    --foreground: #e8edf4;
+    --surface: #0d1117;
+    --surface-muted: #131922;
+    --muted: #97a3b5;
+    --border: #1f2733;
+    --border-strong: #56657c;
+    --accent: #3ee0b0;
+    --accent-foreground: #04140e;
+    --accent-soft: #0b2a22;
+    --accent-ink: #8ff2d3;
     --ok: #4ade80;
-    --ok-soft: #0f2a1c;
-    --ok-ink: #86efac;
-    --warn: #fbbf24;
-    --warn-soft: #2e2108;
-    --warn-ink: #fcd34d;
-    --danger: #f87171;
-    --danger-foreground: #2a0a0a;
-    --danger-soft: #321416;
-    --danger-ink: #fca5a5;
-    --code-bg: #0f1829;
-    --code-fg: #e2e8f0;
-    --overlay: rgb(2 6 15 / 0.65);
+    --ok-soft: #0b2416;
+    --ok-ink: #9cefb9;
+    --warn: #f5b942;
+    --warn-soft: #2a1e07;
+    --warn-ink: #fbd88c;
+    --danger: #ff6b6b;
+    --danger-foreground: #2a0606;
+    --danger-soft: #2d1012;
+    --danger-ink: #ffb4b4;
+    --code-bg: #0a0d12;
+    --code-fg: #e8edf4;
+    --grid-dot: #1d2531;
+    --overlay: rgb(2 4 8 / 0.62);
+    --shadow-pop: 0 1px 0 rgb(255 255 255 / 0.03) inset, 0 12px 32px -8px rgb(0 0 0 / 0.6), 0 32px 64px -24px rgb(0 0 0 / 0.55);
+    --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.4), 0 6px 16px -6px rgb(0 0 0 / 0.5);
+    --glass: rgb(13 17 23 / 0.72);
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --series-4: #c98500;
+    --series-5: #d55181;
+    --series-6: #008300;
+    --series-7: #9085e9;
+    --series-8: #e66767;
+    --series-other: #5d6878;
   }
 }
 
@@ -87,13 +124,39 @@
   --color-code-bg: var(--code-bg);
   --color-code-fg: var(--code-fg);
   --color-overlay: var(--overlay);
+  --color-grid-dot: var(--grid-dot);
+  --color-glass: var(--glass);
   --font-sans: "Vazirmatn", ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
-  --animate-hl-fade: hl-fade 140ms ease-out;
-  --animate-hl-pop: hl-pop 160ms ease-out;
-  --animate-hl-sheet-bottom: hl-sheet-bottom 200ms ease-out;
-  --animate-hl-sheet-start: hl-sheet-start 200ms ease-out;
-  --animate-hl-sheet-end: hl-sheet-end 200ms ease-out;
+  /*
+   * Radii: the root block overrides Tailwind's --radius-sm/md/lg, so rounded-sm = 8px (controls),
+   * rounded-md = 12px (menus, cards), rounded-lg = 18px (dialogs, sheets, hero surfaces).
+   * Shadows are used as arbitrary values: shadow-[var(--shadow-pop)], shadow-[var(--glow-accent)].
+   */
+  /* Type scale (Vazirmatn): 12 / 13 / 15 / 17 / 21 / 28. */
+  --text-xs: 12px;
+  --text-xs--line-height: 1.55;
+  --text-sm: 13px;
+  --text-sm--line-height: 1.55;
+  --text-base: 15px;
+  --text-base--line-height: 1.55;
+  --text-lg: 17px;
+  --text-lg--line-height: 1.45;
+  --text-xl: 21px;
+  --text-xl--line-height: 1.35;
+  --text-2xl: 28px;
+  --text-2xl--line-height: 1.35;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-hl-fade: hl-fade 160ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-hl-pop: hl-pop 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-hl-rise: hl-rise 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-hl-sheet-bottom: hl-sheet-bottom 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-hl-sheet-start: hl-sheet-start 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-hl-sheet-end: hl-sheet-end 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-hl-ping: hl-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+  --animate-hl-shake: hl-shake 360ms cubic-bezier(0.36, 0.07, 0.19, 0.97);
+  --animate-hl-sweep: hl-sweep 1.3s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  --animate-hl-dash: hl-dash 1.2s linear infinite;
 }
 
 @keyframes hl-fade {
@@ -108,7 +171,19 @@
 @keyframes hl-pop {
   from {
     opacity: 0;
-    transform: translateY(6px) scale(0.98);
+    transform: translateY(4px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Route content entrance: starts mostly visible so navigation never feels blocked. */
+@keyframes hl-rise {
+  from {
+    opacity: 0.35;
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -118,7 +193,7 @@
 
 @keyframes hl-sheet-bottom {
   from {
-    transform: translateY(24px);
+    transform: translateY(32px);
     opacity: 0;
   }
   to {
@@ -130,7 +205,7 @@
 /* "start" is the reading-start side: right in RTL, left in LTR. */
 @keyframes hl-sheet-start {
   from {
-    transform: translateX(24px);
+    transform: translateX(32px);
     opacity: 0;
   }
   to {
@@ -141,7 +216,7 @@
 
 @keyframes hl-sheet-end {
   from {
-    transform: translateX(-24px);
+    transform: translateX(-32px);
     opacity: 0;
   }
   to {
@@ -150,12 +225,94 @@
   }
 }
 
+/* Status ring that expands and fades from a dot (see <Pulse>). */
+@keyframes hl-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  70%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+@keyframes hl-shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}
+
+@keyframes hl-shake {
+  10%,
+  90% {
+    transform: translateX(-1px);
+  }
+  20%,
+  80% {
+    transform: translateX(2px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-4px);
+  }
+  40%,
+  60% {
+    transform: translateX(4px);
+  }
+}
+
+/* Indeterminate progress sweep across a loading button. */
+@keyframes hl-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(200%);
+  }
+}
+
+/* Flow along a dashed SVG path (stroke-dasharray must be set on the path). */
+@keyframes hl-dash {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    line-height: 1.35;
+    text-wrap: balance;
+  }
+
+  kbd,
+  time,
+  data,
+  output,
+  td,
+  th,
+  [data-numeric] {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
   font-size: 15px;
-  line-height: 1.9;
+  line-height: 1.55;
+  font-variant-numeric: tabular-nums;
+  caret-color: var(--accent);
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Visible focus for everything that does not draw its own ring. */
@@ -167,6 +324,113 @@ body {
 ::selection {
   background: var(--accent);
   color: var(--accent-foreground);
+}
+
+/* Thin themed scrollbars (the browser default belongs to no design system). */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+/* Shimmering placeholder (see <Skeleton>). */
+.hl-skeleton {
+  background-color: var(--surface-muted);
+  background-image: linear-gradient(
+    100deg,
+    transparent 30%,
+    color-mix(in oklab, var(--foreground) 7%, transparent) 50%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  animation: hl-shimmer 1.6s ease-in-out infinite;
+}
+
+/* Dotted instrument grid used behind the canvas and the connect page. */
+.bg-dot-grid {
+  background-image: radial-gradient(var(--grid-dot) 1px, transparent 1.2px);
+  background-size: 20px 20px;
+}
+
+/*
+ * A health signal travelling along an SVG link: put it on a duplicate of the link path with pathLength="100".
+ * The dash crosses the path in the first 55% of the cycle, then rests out of sight.
+ */
+.hl-signal {
+  stroke-dasharray: 7 200;
+  stroke-dashoffset: 7;
+  animation: hl-signal 3.2s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+}
+
+@keyframes hl-signal {
+  0% {
+    stroke-dashoffset: 7;
+  }
+  55%,
+  100% {
+    stroke-dashoffset: -100;
+  }
+}
+
+/* One-shot entrance (fade + 8 px rise); stagger with an inline animation-delay. Works on HTML and SVG groups. */
+.hl-enter {
+  animation: hl-enter 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes hl-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* An SVG path that draws itself in (needs pathLength="100"). */
+.hl-draw {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: hl-draw-in 800ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes hl-draw-in {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Expanding ring for an SVG status dot (the SVG twin of <Pulse>). */
+.hl-ping-svg {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hl-ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* <details> that animates its height where the browser supports ::details-content (instant elsewhere). */
+.hl-disclosure {
+  interpolate-size: allow-keywords;
+}
+
+.hl-disclosure::details-content {
+  height: 0;
+  opacity: 0;
+  overflow: clip;
+  transition:
+    height 280ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 200ms ease-out,
+    content-visibility 280ms allow-discrete;
+}
+
+.hl-disclosure[open]::details-content {
+  height: auto;
+  opacity: 1;
+}
+
+/* Canvas cards: the keyboard focus ring follows the card's rounded corners. */
+.react-flow__node-service:focus-visible {
+  outline-offset: 3px;
+  border-radius: var(--radius-md);
 }
 
 /* A tab strip stays pinned to the top of whatever scrolls under it (service panel body, bottom sheet). */
@@ -193,5 +457,22 @@ html:has([data-app-shell]) body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .hl-skeleton {
+    animation: none;
+    background-image: none;
+  }
+
+  /* Staggered entrances arrive at once (no inline delay holding content invisible). */
+  .hl-enter {
+    animation-delay: 0s !important;
+  }
+
+  /* No travelling signal and no ping rings: the illustration stays a still map. */
+  .hl-signal,
+  .hl-ping-svg {
+    animation: none;
+    opacity: 0;
   }
 }

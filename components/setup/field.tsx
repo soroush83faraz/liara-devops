@@ -42,7 +42,7 @@ export function Field({
 export function Section({ title, children, className }: { title: ReactNode; children: ReactNode; className?: string }) {
   return (
     <section className={cn("flex flex-col gap-3", className)}>
-      <h3 className="text-base font-semibold leading-8">{title}</h3>
+      <h3 className="text-base font-bold">{title}</h3>
       {children}
     </section>
   );

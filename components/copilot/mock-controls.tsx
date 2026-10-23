@@ -24,7 +24,7 @@ export function MockControls() {
   const p = devMock;
   const options = (Object.keys(p.scenarios) as Array<keyof typeof p.scenarios>).map((value) => ({ value, label: p.scenarios[value] }));
   return (
-    <div role="note" className="flex flex-col gap-2 rounded-lg border border-dashed border-warn/60 bg-warn-soft p-3 text-warn-ink">
+    <div role="note" className="flex flex-col gap-2 rounded-sm border border-dashed border-warn/60 bg-warn-soft p-3 text-warn-ink">
       <div className="flex flex-wrap items-center gap-2">
         <Badge tone="warn" className="gap-1.5">
           <FlaskConical aria-hidden className="size-3.5" />

@@ -26,7 +26,7 @@ export function EvidenceDrawer({ observation, onClose }: { observation: Observat
         >
           <div className="flex flex-col gap-4 p-5">
             {observation.flagged ? (
-              <div className="rounded-lg border border-danger/40 bg-danger-soft p-3 text-danger-ink">
+              <div className="rounded-sm border border-danger/40 bg-danger-soft p-3 text-danger-ink">
                 <FlaggedBadge withHint />
               </div>
             ) : null}

@@ -324,8 +324,8 @@ test.describe("accessibility", () => {
     const page = await context.newPage();
     await page.goto("/");
     await expect(page.getByRole("button", { name: "باز کردن جزئیات broken-shop" })).toBeVisible();
-    // The inline nav is hidden below md; the menu button replaces it.
-    await expect(page.getByRole("link", { name: "رخدادها" })).toBeHidden();
+    // The desktop rail is hidden below lg; the bottom tab bar and the menu button replace it.
+    await expect(page.getByTestId("shell-rail")).toBeHidden();
     await page.getByRole("button", { name: "منوی صفحه‌ها" }).click();
     for (const name of ["بوم پروژه", "رخدادها", "فعالیت‌ها", "راه‌اندازی"]) {
       const item = page.getByRole("menuitem", { name });

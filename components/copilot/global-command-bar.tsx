@@ -1,8 +1,10 @@
 "use client";
 
-import { Bot, Command, Database, Search, Server } from "lucide-react";
+import { Command, Search, Sparkles } from "lucide-react";
+import { motion } from "motion/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useId, useMemo, useState } from "react";
+import { serviceIcon } from "@/components/canvas/service-icon";
 import { useShellStore } from "@/components/shell/shell-store";
 import { emptyAwareDir } from "@/components/ui/dir";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -15,6 +17,7 @@ import { buildCommandItems, isCommandShortcut, type CommandItem } from "@/lib/co
 import { shouldSubmitOnEnter } from "@/lib/copilot/keys";
 import { useCopilotStore } from "@/lib/copilot/store";
 import { fill } from "@/lib/copilot/text";
+import { spring } from "@/lib/ui/motion";
 import { cn } from "@/lib/utils";
 
 const l = fa.copilotUi.command;
@@ -46,7 +49,7 @@ export function GlobalCommandBar({ className }: { className?: string }) {
         aria-label={l.trigger}
         aria-keyshortcuts="Control+K Meta+K"
         className={cn(
-          "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg border border-border bg-surface px-3 text-sm text-muted",
+          "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-sm border border-border bg-surface px-3 text-sm text-muted",
           "hover:bg-surface-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:min-h-10",
           className,
         )}
@@ -72,11 +75,17 @@ function Palette({ onClose }: { onClose: () => void }) {
   const pathname = usePathname();
   const { data, isPending, isError } = useOverview();
   const [query, setQuery] = useState("");
-  const [active, setActive] = useState(0);
+  // null: the default for this query. Picking a service: the first one. A question: a service it names, or the
+  // service whose panel is open; otherwise nothing (-1), so Enter never sends the question to an unrelated service.
+  const [active, setActive] = useState<number | null>(null);
   const listId = useId();
+  const openService = useShellStore((s) => (s.servicePanel.open ? s.servicePanel.service : undefined));
 
   const items = useMemo(() => buildCommandItems(data?.services ?? [], query), [data, query]);
-  const index = Math.min(active, Math.max(0, items.length - 1));
+  const platformOf = useMemo(() => new Map((data?.services ?? []).map((s) => [s.id, s.platformOrEngine])), [data]);
+  const asking = items[0]?.mode === "ask";
+  const fallback = asking ? items.findIndex((it) => it.related || it.service.id === openService) : 0;
+  const index = Math.min(active ?? fallback, items.length - 1);
 
   const choose = useCallback(
     (item: CommandItem) => {
@@ -94,85 +103,113 @@ function Palette({ onClose }: { onClose: () => void }) {
 
   return (
     <DialogContent title={l.title} description={l.description} hideTitle size="md">
-      <div className="flex flex-col gap-3">
-        <Input
-          autoFocus
-          role="combobox"
-          aria-expanded
-          aria-controls={listId}
-          aria-activedescendant={items.length > 0 ? `${listId}-${index}` : undefined}
-          aria-label={l.inputLabel}
-          placeholder={l.placeholder}
-          dir={emptyAwareDir(query)}
-          autoComplete="off"
-          spellCheck={false}
-          value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setActive(0);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "ArrowDown") {
-              e.preventDefault();
-              setActive((i) => Math.min(items.length - 1, i + 1));
-            } else if (e.key === "ArrowUp") {
-              e.preventDefault();
-              setActive((i) => Math.max(0, i - 1));
-            } else if (shouldSubmitOnEnter({ key: e.key, shiftKey: e.shiftKey, isComposing: e.nativeEvent.isComposing, keyCode: e.keyCode })) {
-              e.preventDefault();
-              if (items[index]) choose(items[index]);
-            }
-          }}
-        />
-        {isPending ? (
-          <div aria-busy className="flex flex-col gap-2">
-            <p className="text-sm text-muted">{l.loading}</p>
-            <Skeleton className="h-11 w-full" />
-            <Skeleton className="h-11 w-full" />
-          </div>
-        ) : isError ? (
-          <p role="alert" className="text-sm text-danger">
-            {l.failed}
-          </p>
-        ) : items.length === 0 ? (
-          <p role="status" className="py-4 text-center text-sm text-muted">
-            {l.empty}
-          </p>
-        ) : (
-          <ul id={listId} role="listbox" aria-label={l.services} className="flex max-h-72 flex-col gap-1 overflow-y-auto">
-            {items.map((item, i) => {
-              const Icon = item.service.kind === "db" ? Database : Server;
-              return (
-                <li
-                  key={item.service.id}
-                  id={`${listId}-${i}`}
-                  role="option"
-                  aria-selected={i === index}
-                  onMouseMove={() => setActive(i)}
-                  onClick={() => choose(item)}
-                  className={cn(
-                    "flex min-h-11 cursor-pointer items-center gap-3 rounded-lg px-3 py-2",
-                    i === index ? "bg-accent-soft text-accent-ink" : "hover:bg-surface-muted",
-                  )}
-                >
-                  <Icon aria-hidden className="size-4 shrink-0" />
-                  <span className="min-w-0 flex-1">
-                    <bdi dir="ltr" className="font-mono text-sm font-medium">
-                      {item.service.name}
-                    </bdi>
-                    <span className="ms-2 text-xs text-muted">{item.service.kind === "db" ? l.typeDb : l.typeApp}</span>
-                    <span className="block text-xs">
-                      {item.mode === "ask" ? fill(l.askAbout, { name: item.service.name }) : fill(l.openCopilot, { name: item.service.name })}
-                    </span>
-                  </span>
-                  <Bot aria-hidden className="size-4 shrink-0 text-muted" />
-                </li>
-              );
-            })}
-          </ul>
-        )}
-        <p className="text-xs text-muted">{l.hintKeys}</p>
-      </div>
+      <motion.div initial={{ opacity: 0, y: -6, scale: 0.985 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={spring.pop} className="flex flex-col">
+        <div className="relative rounded-md border border-border-strong/50 bg-surface transition-[border-color,box-shadow] focus-within:border-accent focus-within:shadow-[0_0_0_3px_color-mix(in_oklab,var(--accent)_16%,transparent)]">
+          <Search aria-hidden className="pointer-events-none absolute start-4 top-1/2 size-4 -translate-y-1/2 text-muted" />
+          <Input
+            autoFocus
+            role="combobox"
+            aria-expanded
+            aria-controls={listId}
+            aria-activedescendant={index >= 0 ? `${listId}-${index}` : undefined}
+            aria-label={l.inputLabel}
+            placeholder={l.placeholder}
+            dir={emptyAwareDir(query)}
+            autoComplete="off"
+            spellCheck={false}
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setActive(null);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "ArrowDown") {
+                e.preventDefault();
+                setActive(Math.min(items.length - 1, index + 1));
+              } else if (e.key === "ArrowUp") {
+                e.preventDefault();
+                setActive(Math.max(0, index - 1));
+              } else if (shouldSubmitOnEnter({ key: e.key, shiftKey: e.shiftKey, isComposing: e.nativeEvent.isComposing, keyCode: e.keyCode })) {
+                e.preventDefault();
+                if (items[index]) choose(items[index]);
+              }
+            }}
+            className="min-h-12 rounded-md border-0 bg-transparent px-11 text-base shadow-none focus-visible:outline-none! focus-visible:ring-0"
+          />
+        </div>
+        <div className="pt-2">
+          {isPending ? (
+            <div aria-busy className="flex flex-col gap-2 p-1">
+              <p className="px-2 text-sm text-muted">{l.loading}</p>
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-12 w-full" />
+            </div>
+          ) : isError ? (
+            <p role="alert" className="p-3 text-sm text-danger">
+              {l.failed}
+            </p>
+          ) : items.length === 0 ? (
+            <p role="status" className="py-8 text-center text-sm text-muted">
+              {l.empty}
+            </p>
+          ) : (
+            <>
+              {asking ? <p className="px-1 pb-1.5 text-xs text-muted">{l.askPick}</p> : null}
+              <ul id={listId} role="listbox" aria-label={l.services} className="flex max-h-80 flex-col gap-0.5 overflow-y-auto">
+                {items.map((item, i) => {
+                  const Icon = serviceIcon(item.service.kind, platformOf.get(item.service.id) ?? "");
+                  const selected = i === index;
+                  return (
+                    <li
+                      key={item.service.id}
+                      id={`${listId}-${i}`}
+                      role="option"
+                      aria-selected={selected}
+                      onMouseMove={() => setActive(i)}
+                      onClick={() => choose(item)}
+                      className="relative flex min-h-12 cursor-pointer items-center gap-3 rounded-sm px-3 py-2"
+                    >
+                      {selected ? (
+                        <motion.span
+                          layoutId="command-active"
+                          transition={spring.pop}
+                          aria-hidden
+                          className="absolute inset-0 rounded-sm border border-accent/30 bg-accent-soft"
+                        />
+                      ) : null}
+                      <span
+                        aria-hidden
+                        className={cn(
+                          "relative flex size-8 shrink-0 items-center justify-center rounded-sm border",
+                          selected ? "border-accent/40 bg-surface text-accent-ink" : "border-border bg-surface-muted text-muted",
+                        )}
+                      >
+                        <Icon className="size-4" />
+                      </span>
+                      <span className={cn("relative min-w-0 flex-1", selected && "text-accent-ink")}>
+                        <bdi dir="ltr" className="font-mono text-sm font-semibold">
+                          {item.service.name}
+                        </bdi>
+                        <span className={cn("ms-2 text-xs", selected ? "text-accent-ink/80" : "text-muted")}>{item.service.kind === "db" ? l.typeDb : l.typeApp}</span>
+                        <span className={cn("block truncate text-xs", selected ? "text-accent-ink/90" : "text-muted")}>
+                          {item.mode === "ask" ? fill(l.askAbout, { name: item.service.name }) : fill(l.openCopilot, { name: item.service.name })}
+                        </span>
+                      </span>
+                      <span aria-hidden className={cn("relative flex items-center gap-1 transition-opacity", selected ? "opacity-100" : "opacity-0")}>
+                        <Kbd>↵</Kbd>
+                      </span>
+                      <Sparkles aria-hidden className={cn("relative size-4 shrink-0", selected ? "text-accent-ink" : "text-muted")} />
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
+        </div>
+        <p className="mt-2 border-t border-border pt-3 text-xs text-muted">
+          {l.hintKeys}
+        </p>
+      </motion.div>
     </DialogContent>
   );
 }

@@ -76,7 +76,7 @@ export function RevealDialog({ appName, envKey, onClose }: { appName: string; en
             <div className="flex flex-col gap-2">
               <pre
                 dir="ltr"
-                className="max-h-48 overflow-auto whitespace-pre-wrap break-all rounded-lg bg-code-bg p-3 text-start font-mono text-[13px] text-code-fg"
+                className="max-h-48 overflow-auto whitespace-pre-wrap break-all rounded-sm bg-code-bg p-3 text-start font-mono text-[13px] text-code-fg"
               >
                 {value === "" ? t("appConfig.vars.emptyValue") : value}
               </pre>

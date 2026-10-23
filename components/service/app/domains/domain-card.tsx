@@ -33,7 +33,7 @@ export function DomainCard({ appName, domain }: { appName: string; domain: Domai
   const doctorId = `doctor-${domain.id || domain.name}`;
 
   return (
-    <li className="rounded-xl border border-border bg-surface">
+    <li className="rounded-md border border-border bg-surface">
       <div className="flex flex-col gap-3 p-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <bdi dir="ltr" className="break-all font-mono text-[15px] font-semibold">

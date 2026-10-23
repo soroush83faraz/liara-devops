@@ -54,7 +54,7 @@ export function DialogContent({
 }: DialogContentProps) {
   const returnFocus = useReturnFocus(onOpenAutoFocus, onCloseAutoFocus);
   const titleNode = (
-    <DialogPrimitive.Title className="text-lg font-semibold leading-8">{title}</DialogPrimitive.Title>
+    <DialogPrimitive.Title className="text-lg font-bold leading-snug">{title}</DialogPrimitive.Title>
   );
   return (
     <DialogPrimitive.Portal>
@@ -63,9 +63,9 @@ export function DialogContent({
         dir={DIR}
         {...(description ? {} : { "aria-describedby": undefined })}
         className={cn(
-          "fixed z-50 flex max-h-[90dvh] w-full flex-col border border-border bg-surface text-foreground shadow-lg",
-          "inset-x-0 bottom-0 rounded-t-2xl animate-hl-sheet-bottom",
-          "sm:inset-x-auto sm:start-1/2 sm:bottom-auto sm:top-1/2 sm:w-[calc(100%-2rem)] sm:-translate-y-1/2 sm:rounded-2xl sm:animate-hl-pop",
+          "fixed z-50 flex max-h-[90dvh] w-full flex-col border border-border bg-surface text-foreground shadow-[var(--shadow-pop)] outline-none",
+          "inset-x-0 bottom-0 rounded-t-lg animate-hl-sheet-bottom",
+          "sm:inset-x-auto sm:start-1/2 sm:bottom-auto sm:top-1/2 sm:w-[calc(100%-2rem)] sm:-translate-y-1/2 sm:rounded-lg sm:animate-hl-pop",
           "sm:ltr:-translate-x-1/2 sm:rtl:translate-x-1/2",
           sizes[size],
           className,
@@ -73,11 +73,11 @@ export function DialogContent({
         {...props}
         {...returnFocus}
       >
-        <header className="flex items-start justify-between gap-4 px-5 pt-4">
+        <header className="flex items-start justify-between gap-4 px-5 pt-5">
           <div className="min-w-0">
             {hideTitle ? <VisuallyHidden.Root>{titleNode}</VisuallyHidden.Root> : titleNode}
             {description ? (
-              <DialogPrimitive.Description className="mt-1 text-sm leading-7 text-muted">
+              <DialogPrimitive.Description className="mt-1 text-sm leading-6 text-muted">
                 {description}
               </DialogPrimitive.Description>
             ) : null}
@@ -85,7 +85,7 @@ export function DialogContent({
           {hideClose ? null : (
             <DialogPrimitive.Close
               aria-label={t("common.close")}
-              className="-me-2 -mt-1 inline-flex size-11 shrink-0 items-center justify-center rounded-lg text-muted hover:bg-surface-muted hover:text-foreground md:size-9"
+              className="-me-2 -mt-1.5 inline-flex size-11 shrink-0 items-center justify-center rounded-sm text-muted transition-colors hover:bg-surface-muted hover:text-foreground active:scale-95 md:size-9"
             >
               <X aria-hidden className="size-5" />
             </DialogPrimitive.Close>
@@ -93,7 +93,7 @@ export function DialogContent({
         </header>
         <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">{children}</div>
         {footer ? (
-          <footer className="flex flex-col-reverse gap-2 border-t border-border px-5 py-3 sm:flex-row sm:justify-end">
+          <footer className="flex flex-col-reverse gap-2 border-t border-border bg-surface-muted/40 px-5 py-3 sm:flex-row sm:justify-end sm:rounded-b-lg">
             {footer}
           </footer>
         ) : null}

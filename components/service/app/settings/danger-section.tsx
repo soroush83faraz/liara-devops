@@ -42,7 +42,7 @@ export function DangerSection({ appName }: { appName: string }) {
             useShellStore.getState().closeService();
           }}
         >
-          <p role="alert" className="flex items-start gap-2 rounded-lg border border-danger/60 bg-danger-soft p-3 text-sm font-medium leading-7 text-danger-ink">
+          <p role="alert" className="flex items-start gap-2 rounded-sm border border-danger/60 bg-danger-soft p-3 text-sm font-medium leading-7 text-danger-ink">
             <TriangleAlert aria-hidden className="mt-1 size-4 shrink-0" />
             {t("appConfig.settings.danger.warning")}
           </p>

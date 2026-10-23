@@ -17,7 +17,7 @@ export function DomainsTab({ name }: AppPanelProps) {
   const domains = q.data?.domains;
 
   return (
-    <section className="flex flex-col gap-4 p-4" aria-labelledby="domains-title">
+    <section className="flex flex-col gap-4" aria-labelledby="domains-title">
       <header className="flex flex-wrap items-center justify-between gap-2">
         <h2 id="domains-title" className="text-lg font-semibold">
           {t("appConfig.domains.title")}

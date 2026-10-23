@@ -40,7 +40,7 @@ export function AnalysisStep({
   const wired = new Set(draft.includeDb ? Object.values(draft.dbEnvKeys) : []);
   return (
     <div className="flex flex-col gap-6">
-      <h2 className="text-lg font-semibold leading-9">{t("setupFlow.analysis.title")}</h2>
+      <h2 className="text-lg font-bold">{t("setupFlow.analysis.title")}</h2>
       <AnalysisSummary analysis={analysis} />
       {result.catalogError ? <ErrorBanner tone="warn" message={errorText(result.catalogError)} onRetry={onRetryCatalog} retrying={busy} /> : null}
       <ChoicesForm

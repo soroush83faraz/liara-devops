@@ -2,16 +2,16 @@
 // relative to their frame, so saved positions are relative too.
 import type { OverviewNetwork, OverviewService } from "./types";
 
-export const NODE_WIDTH = 264;
+export const NODE_WIDTH = 232;
 /**
- * FIXED card footprint (the card renders at exactly this height): header, a status row that may wrap to two lines,
- * three detail rows and a RESERVED alert row, so an alert CTA appearing never grows the card into its neighbour.
+ * FIXED card footprint (the card renders at exactly this height): icon + name + type/plan line, then one status row.
+ * The alert CTA is a fixed-size button in the header row, so an alert appearing never grows the card into its neighbour.
  */
-export const NODE_HEIGHT = 260;
+export const NODE_HEIGHT = 96;
 /** Minimum free space between two cards (also where edges and their labels run). */
-export const NODE_GAP = 44;
+export const NODE_GAP = 48;
 export const FRAME_PAD = 28;
-export const FRAME_HEADER = 52;
+export const FRAME_HEADER = 40;
 export const FRAME_GAP = 56;
 export const MAX_ROW_WIDTH = 1500;
 export const NO_NETWORK_FRAME = "net:__none__";

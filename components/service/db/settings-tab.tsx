@@ -44,7 +44,7 @@ function Block({ title, description, icon, children }: { title: string; descript
 
 function Warning({ children }: { children: ReactNode }) {
   return (
-    <p className="flex items-start gap-2 rounded-lg bg-warn-soft p-3 text-sm leading-7 text-warn-ink">
+    <p className="flex items-start gap-2 rounded-sm bg-warn-soft p-3 text-sm leading-7 text-warn-ink">
       <TriangleAlert aria-hidden className="mt-1 size-4 shrink-0" />
       <span>{children}</span>
     </p>
@@ -120,7 +120,7 @@ function planLabel(p: PlanOptionDto): string {
 function CostSummary({ plan, current }: { plan: PlanOptionDto; current: PlanOptionDto | undefined }) {
   const delta = plan.deltaPerMonth;
   return (
-    <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 rounded-lg bg-surface-muted p-3 text-sm">
+    <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 rounded-sm bg-surface-muted p-3 text-sm">
       {current ? (
         <>
           <dt className="text-muted">{t("dbPanel.settings.costCurrent")}</dt>
@@ -259,7 +259,7 @@ function DangerZone({ host }: { host: string }) {
   }
 
   return (
-    <section aria-label={t("dbPanel.settings.dangerTitle")} className="flex flex-col gap-3 rounded-xl border border-danger/50 p-5">
+    <section aria-label={t("dbPanel.settings.dangerTitle")} className="flex flex-col gap-3 rounded-md border border-danger/50 p-5">
       <h3 className="flex items-center gap-2 text-base font-semibold leading-8 text-danger">
         <ShieldAlert aria-hidden className="size-4" />
         {t("dbPanel.settings.dangerTitle")}

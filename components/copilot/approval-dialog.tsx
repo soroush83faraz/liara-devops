@@ -1,9 +1,9 @@
 "use client";
 
-import { CircleAlert, CircleCheck, Eye, EyeOff, Info, Lock, TriangleAlert } from "lucide-react";
+import { CircleAlert, CircleCheck, CircleX, Clock, Coins, Eye, EyeOff, Info, Lock, TriangleAlert } from "lucide-react";
+import { motion } from "motion/react";
 import Link from "next/link";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { IconButton } from "@/components/ui/icon-button";
@@ -36,7 +36,10 @@ import { DiffView } from "./diff-view";
 import { SafeMarkdown } from "./safe-markdown";
 import { TechnicalRequestView } from "./technical-request-view";
 import { Template } from "./template";
+import { TierBadge } from "./tier-badge";
 import { useNow } from "./use-now";
+import { spring } from "@/lib/ui/motion";
+import { cn } from "@/lib/utils";
 
 const l = fa.copilotUi.approval;
 const p = fa.copilotUi.proposal;
@@ -155,7 +158,7 @@ function PhaseNotice({ state, onReevaluate }: { state: ApprovalState; onReevalua
         ? "border-warn/40 bg-warn-soft text-warn-ink"
         : "border-border bg-surface-muted text-foreground";
   return (
-    <div role="alert" className={`flex items-start gap-2 rounded-lg border p-3 text-sm leading-7 ${toneCls}`}>
+    <div role="alert" className={`flex items-start gap-2 rounded-md border p-3 text-sm leading-7 animate-hl-pop ${toneCls}`}>
       <Icon aria-hidden className="mt-1 size-4 shrink-0" />
       <div className="flex flex-col gap-1">
         <p>{entry.text}</p>
@@ -258,6 +261,7 @@ function ApprovalBody({ proposal, threadKey, onOpenChange, onSubmitted, onReeval
   const showForm = interactive || busy;
   const submitted = state.phase === "submitted";
   const terminalNotice = !showForm && !submitted;
+  const danger = req.tier === 3 || req.humanOnly;
 
   return (
     <DialogContent
@@ -284,7 +288,7 @@ function ApprovalBody({ proposal, threadKey, onOpenChange, onSubmitted, onReeval
               {l.cancel}
             </Button>
             <Button
-              variant="primary"
+              variant={danger ? "danger" : "primary"}
               disabled={!confirmEnabled}
               loading={busy}
               loadingText={l.working}
@@ -298,13 +302,23 @@ function ApprovalBody({ proposal, threadKey, onOpenChange, onSubmitted, onReeval
     >
       <div className="flex flex-col gap-4">
         {submitted ? (
-          <div role="status" className="flex items-start gap-2 rounded-lg border border-ok/40 bg-ok-soft p-3 text-ok-ink">
-            <CircleCheck aria-hidden className="mt-1 size-5 shrink-0" />
+          <motion.div
+            role="status"
+            initial={{ opacity: 0, y: 8, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={spring.pop}
+            className="flex items-start gap-3 rounded-md border border-ok/40 bg-ok-soft p-3.5 text-ok-ink"
+          >
+            <span aria-hidden className="relative mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-ok/15 text-ok">
+              <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth={2.6} strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12.5l4.2 4.2L19 7" pathLength={100} className="hl-draw" />
+              </svg>
+            </span>
             <div className="flex flex-col gap-1 text-sm leading-7">
               <p className="font-semibold">{l.done}</p>
               <p>{l.doneBody}</p>
             </div>
-          </div>
+          </motion.div>
         ) : null}
 
         <PhaseNotice
@@ -317,38 +331,44 @@ function ApprovalBody({ proposal, threadKey, onOpenChange, onSubmitted, onReeval
 
         {!submitted ? (
           <>
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge tone={req.tier === 1 ? "accent" : "warn"}>
-                {req.tier === 1 ? p.tier.one : req.tier === 2 ? p.tier.two : p.tier.three}
-              </Badge>
+            <div
+              className={cn(
+                "relative flex flex-col gap-2 overflow-hidden rounded-md border p-3.5",
+                danger ? "border-danger/45 bg-danger-soft/40" : req.tier === 2 ? "border-warn/40 bg-warn-soft/30" : "border-border bg-surface-muted/50",
+              )}
+            >
+              <span aria-hidden className={cn("absolute inset-x-0 top-0 h-px", danger ? "bg-danger" : req.tier === 2 ? "bg-warn" : "bg-accent")} />
+              <div className="flex flex-wrap items-center gap-2">
+                <TierBadge tier={req.tier} />
+                {interactive ? (
+                  <span className="ms-auto inline-flex items-center gap-1.5 text-xs text-muted">
+                    <Clock aria-hidden className="size-3.5" />
+                    <Template template={p.expiresIn} params={{ time: formatCountdown(remaining) }} />
+                  </span>
+                ) : null}
+              </div>
+              <p className="text-[17px] font-bold leading-8">{actionLabel(proposal.type)}</p>
               <span className="text-sm text-muted">
                 <Template template={l.targetLine} params={{ target: proposal.target.name }} />
               </span>
-              {interactive ? (
-                <span className="ms-auto text-xs text-muted">
-                  <Template template={p.expiresIn} params={{ time: formatCountdown(remaining) }} />
-                </span>
-              ) : null}
             </div>
 
-            <Row label={p.why}>
-              <SafeMarkdown text={proposal.rationaleFa} />
-            </Row>
-            <Row label={p.effect}>
-              <SafeMarkdown text={proposal.effectFa} />
-            </Row>
-            {proposal.risksFa.length > 0 ? (
-              <Row label={p.risks}>
-                <ul className="ms-5 list-disc">
-                  {proposal.risksFa.map((r, i) => (
-                    <li key={i}>{stripUnsafeChars(r)}</li>
-                  ))}
-                </ul>
-              </Row>
+            {req.billed ? (
+              <div className="flex items-start gap-2.5 rounded-md border border-warn/40 bg-warn-soft p-3.5 text-sm leading-7 text-warn-ink">
+                <Coins aria-hidden className="mt-1 size-4 shrink-0" />
+                <div className="flex flex-col gap-0.5">
+                  {proposal.costEstimate ? (
+                    <p className="text-[15px] font-bold">
+                      {fill(l.costLine, {
+                        hourly: faPrice(proposal.costEstimate.perHourToman),
+                        monthly: faPrice(proposal.costEstimate.perMonthToman),
+                      })}
+                    </p>
+                  ) : null}
+                  <p>{l.costBilledNote}</p>
+                </div>
+              </div>
             ) : null}
-            <Row label={p.reversible}>
-              {proposal.reversible === "yes" ? p.reversibleYes : proposal.reversible === "partly" ? p.reversiblePartly : p.reversibleNo}
-            </Row>
 
             <section aria-labelledby="ap-changes" className="flex flex-col gap-2">
               <h4 id="ap-changes" className="text-xs font-semibold text-muted">
@@ -361,32 +381,42 @@ function ApprovalBody({ proposal, threadKey, onOpenChange, onSubmitted, onReeval
               </p>
             </section>
 
-            {req.billed ? (
-              <div className="flex flex-col gap-1 rounded-lg border border-warn/40 bg-warn-soft p-3 text-sm leading-7 text-warn-ink">
-                {proposal.costEstimate ? (
-                  <p className="font-semibold">
-                    {fill(l.costLine, {
-                      hourly: faPrice(proposal.costEstimate.perHourToman),
-                      monthly: faPrice(proposal.costEstimate.perMonthToman),
-                    })}
-                  </p>
-                ) : null}
-                <p>{l.costBilledNote}</p>
-              </div>
-            ) : (
-              <p className="text-xs text-muted">{p.noCost}</p>
-            )}
-
-            <Row label={p.verificationPlan}>
-              <ul className="ms-5 list-disc">
-                {proposal.verificationPlan.map((v, i) => (
-                  <li key={i}>{stripUnsafeChars(v)}</li>
-                ))}
-              </ul>
-            </Row>
+            <div className="flex flex-col gap-3 border-t border-border pt-4">
+              <Row label={p.why}>
+                <SafeMarkdown text={proposal.rationaleFa} />
+              </Row>
+              <Row label={p.effect}>
+                <SafeMarkdown text={proposal.effectFa} />
+              </Row>
+              {proposal.risksFa.length > 0 ? (
+                <Row label={p.risks}>
+                  <ul className="flex flex-col gap-1">
+                    {proposal.risksFa.map((r, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <TriangleAlert aria-hidden className="mt-2 size-3.5 shrink-0 text-warn" />
+                        {stripUnsafeChars(r)}
+                      </li>
+                    ))}
+                  </ul>
+                </Row>
+              ) : null}
+              <Row label={p.reversible}>
+                <span className={cn(proposal.reversible === "no" && "font-semibold text-danger")}>
+                  {proposal.reversible === "yes" ? p.reversibleYes : proposal.reversible === "partly" ? p.reversiblePartly : p.reversibleNo}
+                </span>
+              </Row>
+              {!req.billed ? <p className="text-xs text-muted">{p.noCost}</p> : null}
+              <Row label={p.verificationPlan}>
+                <ul className="ms-5 list-disc marker:text-muted">
+                  {proposal.verificationPlan.map((v, i) => (
+                    <li key={i}>{stripUnsafeChars(v)}</li>
+                  ))}
+                </ul>
+              </Row>
+            </div>
 
             {showForm && req.userKeys.length > 0 ? (
-              <section className="flex flex-col gap-3 rounded-lg border border-border p-3" aria-labelledby="ap-values">
+              <section className="flex flex-col gap-3 rounded-md border border-border p-3.5" aria-labelledby="ap-values">
                 <div>
                   <h4 id="ap-values" className="text-sm font-semibold">
                     {l.userValueTitle}
@@ -406,7 +436,7 @@ function ApprovalBody({ proposal, threadKey, onOpenChange, onSubmitted, onReeval
             ) : null}
 
             {showForm && req.typedName ? (
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-1.5" data-typed-state={state.typedName.length === 0 ? "empty" : nameOk ? "match" : "mismatch"}>
                 <label htmlFor={nameId} className="text-sm leading-7">
                   {fill(l.typeName, { kind: proposal.target.kind === "db" ? fa.service.database : fa.service.app })}{" "}
                   <bdi dir="ltr" className="rounded bg-code-bg px-1.5 py-0.5 font-mono text-[0.9em] font-semibold">
@@ -431,9 +461,18 @@ function ApprovalBody({ proposal, threadKey, onOpenChange, onSubmitted, onReeval
                       void submit();
                     }
                   }}
-                  className="text-start font-mono"
+                  className={cn("text-start font-mono transition-[border-color,box-shadow]", nameOk && "border-ok shadow-[0_0_0_3px_color-mix(in_oklab,var(--ok)_18%,transparent)]")}
                 />
-                <p id={`${nameId}-status`} role="status" aria-live="polite" className="min-h-6 text-xs leading-6 text-muted">
+                <p
+                  id={`${nameId}-status`}
+                  role="status"
+                  aria-live="polite"
+                  className={cn(
+                    "flex min-h-6 items-center gap-1.5 text-xs font-medium leading-6",
+                    state.typedName.length === 0 ? "text-muted" : nameOk ? "text-ok" : "text-danger",
+                  )}
+                >
+                  {state.typedName.length === 0 ? null : nameOk ? <CircleCheck aria-hidden className="size-3.5" /> : <CircleX aria-hidden className="size-3.5" />}
                   {state.typedName.length === 0 ? "" : nameOk ? l.typeNameMatch : l.typeNameMismatch}
                 </p>
               </div>

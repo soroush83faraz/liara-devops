@@ -16,11 +16,11 @@ export function Stat({
 }) {
   return (
     <div className={cn("flex flex-col gap-0.5", className)}>
-      <dt className="flex items-center gap-1.5 text-sm text-muted">
+      <dt className="flex items-center gap-1.5 text-sm leading-6 text-muted">
         {icon ? <span aria-hidden className="text-muted [&>svg]:size-4">{icon}</span> : null}
         {label}
       </dt>
-      <dd className="text-xl font-semibold leading-9 tabular-nums">{value}</dd>
+      <dd className="text-xl font-bold leading-tight tabular-nums">{value}</dd>
       {hint ? <dd className="text-xs leading-6 text-muted">{hint}</dd> : null}
     </div>
   );

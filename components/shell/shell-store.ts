@@ -10,7 +10,7 @@ export interface ServicePanelState {
 
 export const PANEL_MIN_WIDTH = 360;
 export const PANEL_MAX_WIDTH = 760;
-export const PANEL_DEFAULT_WIDTH = 520;
+export const PANEL_DEFAULT_WIDTH = 560;
 
 interface ShellStore {
   servicePanel: ServicePanelState;

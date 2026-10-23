@@ -96,10 +96,10 @@ export function DomainDoctor({
         aria-live="polite"
         className={
           verdict === "confirmed"
-            ? "rounded-lg bg-ok-soft p-3 text-sm leading-7 text-ok-ink"
+            ? "rounded-sm bg-ok-soft p-3 text-sm leading-7 text-ok-ink"
             : verdict === "pending"
-              ? "rounded-lg bg-warn-soft p-3 text-sm leading-7 text-warn-ink"
-              : "rounded-lg bg-surface-muted p-3 text-sm leading-7 text-muted"
+              ? "rounded-sm bg-warn-soft p-3 text-sm leading-7 text-warn-ink"
+              : "rounded-sm bg-surface-muted p-3 text-sm leading-7 text-muted"
         }
       >
         {t(`appConfig.domains.doctor.verdict.${verdict}`)}
@@ -123,7 +123,7 @@ export function DomainDoctor({
 function RecordItem({ record, domainName, state }: { record: DnsRecordDto; domainName: string; state: RecordState }) {
   const { tone, Icon } = STATE_VIEW[state];
   return (
-    <li className="rounded-lg border border-border p-3">
+    <li className="rounded-sm border border-border p-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm font-semibold">{t(RECORD_TITLE[record.kind])}</p>
         <Badge tone={tone}>
@@ -167,7 +167,7 @@ function RecordItem({ record, domainName, state }: { record: DnsRecordDto; domai
 function Guidance({ ir, apex, wildcard }: { ir: boolean; apex: boolean; wildcard: boolean }) {
   return (
     <div className="flex flex-col gap-2 text-sm leading-7">
-      <details className="rounded-lg border border-border p-3" open>
+      <details className="rounded-sm border border-border p-3" open>
         <summary className="cursor-pointer font-medium">{t("appConfig.domains.guide.generalTitle")}</summary>
         <ol className="mt-2 list-decimal ps-5 text-muted">
           <li>{t("appConfig.domains.guide.general1")}</li>
@@ -177,7 +177,7 @@ function Guidance({ ir, apex, wildcard }: { ir: boolean; apex: boolean; wildcard
         </ol>
       </details>
       {ir ? (
-        <details className="rounded-lg border border-border p-3" open>
+        <details className="rounded-sm border border-border p-3" open>
           <summary className="cursor-pointer font-medium">{t("appConfig.domains.guide.irTitle")}</summary>
           <ol className="mt-2 list-decimal ps-5 text-muted">
             <li>{t("appConfig.domains.guide.ir1")}</li>
@@ -187,8 +187,8 @@ function Guidance({ ir, apex, wildcard }: { ir: boolean; apex: boolean; wildcard
           </ol>
         </details>
       ) : null}
-      {apex ? <p className="rounded-lg bg-warn-soft p-3 text-warn-ink">{t("appConfig.domains.guide.apex")}</p> : null}
-      {wildcard ? <p className="rounded-lg bg-warn-soft p-3 text-warn-ink">{t("appConfig.domains.guide.wildcard")}</p> : null}
+      {apex ? <p className="rounded-sm bg-warn-soft p-3 text-warn-ink">{t("appConfig.domains.guide.apex")}</p> : null}
+      {wildcard ? <p className="rounded-sm bg-warn-soft p-3 text-warn-ink">{t("appConfig.domains.guide.wildcard")}</p> : null}
       <p className="text-xs leading-6 text-muted">{t("appConfig.domains.guide.limits")}</p>
     </div>
   );

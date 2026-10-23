@@ -44,14 +44,14 @@ function BackupRow({ host, name, size, lastModified }: { host: string; name: str
         </span>
       </div>
       {link ? (
-        <div role="status" className="flex flex-col gap-2 rounded-lg border border-border bg-surface-muted p-3">
+        <div role="status" className="flex flex-col gap-2 rounded-sm border border-border bg-surface-muted p-3">
           <p className="text-sm font-medium">{t("dbPanel.backups.linkReady")}</p>
           <div className="flex flex-wrap items-center gap-2">
             <a
               href={link}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border-strong/50 bg-surface px-3 text-sm font-medium hover:bg-surface-muted md:min-h-9"
+              className="inline-flex min-h-11 items-center gap-2 rounded-sm border border-border-strong/50 bg-surface px-3 text-sm font-medium hover:bg-surface-muted md:min-h-9"
             >
               <ExternalLink aria-hidden className="size-4" />
               {t("dbPanel.backups.open")}
@@ -126,7 +126,7 @@ export function DbBackupsTab({ name }: DbPanelProps) {
               href="https://console.liara.ir"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border-strong/50 bg-surface px-3 text-sm font-medium hover:bg-surface-muted md:min-h-9"
+              className="inline-flex min-h-11 items-center gap-2 rounded-sm border border-border-strong/50 bg-surface px-3 text-sm font-medium hover:bg-surface-muted md:min-h-9"
             >
               <ExternalLink aria-hidden className="size-4" />
               {t("dbPanel.backups.openConsole")}

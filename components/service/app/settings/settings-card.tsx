@@ -19,7 +19,7 @@ export function SettingsCard({
     <section
       aria-labelledby={`${id}-title`}
       className={cn(
-        "flex flex-col gap-3 rounded-xl border bg-surface p-4",
+        "flex flex-col gap-3 rounded-md border bg-surface p-4",
         tone === "danger" ? "border-danger/50" : "border-border",
       )}
     >

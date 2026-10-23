@@ -44,7 +44,7 @@ export function EnvChecklist({
           const help = envHelpText(r.helpKey);
           const ph = r.placeholder ?? t("setupFlow.env.valuePlaceholder");
           return (
-            <li key={r.name} className={cn("flex flex-col gap-2 rounded-xl border border-border p-3", !active && "opacity-70")}>
+            <li key={r.name} className={cn("flex flex-col gap-2 rounded-md border border-border p-3", !active && "opacity-70")}>
               <div className="flex flex-wrap items-center gap-2">
                 <label className="flex min-h-11 items-center gap-2">
                   <input
@@ -72,7 +72,7 @@ export function EnvChecklist({
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-start">
                   <select
                     aria-label={t("setupFlow.env.source")}
-                    className="min-h-11 rounded-lg border border-border-strong bg-surface px-3 text-sm md:min-h-10"
+                    className="min-h-11 rounded-sm border border-border-strong bg-surface px-3 text-sm md:min-h-10"
                     value={r.valueSource}
                     onChange={(e) => patch(i, { valueSource: e.target.value === "generated" ? "generated" : "user" })}
                   >

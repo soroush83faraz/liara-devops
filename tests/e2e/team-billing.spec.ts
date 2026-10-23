@@ -31,7 +31,8 @@ test.describe("team mode balance", () => {
     await expect(page.getByText(/۱۲۳٬۴۵۷/)).toHaveCount(0);
 
     await page.getByRole("button", { name: "منوی حساب" }).click();
-    await expect(page.getByText(FAKE_TEAM_NAME)).toBeVisible();
+    // The team also shows in the top bar and the rail; this checks the menu itself names it.
+    await expect(page.getByRole("menu").getByText(FAKE_TEAM_NAME)).toBeVisible();
   });
 
   test("a team id without a team object in the response: the chip says the balance could not be read, never the personal one", async ({ page }) => {

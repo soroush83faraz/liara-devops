@@ -102,7 +102,7 @@ export function EvidenceItem({
         onClick={() => onOpen?.(o)}
         aria-label={fill(l.open, { id: o.id })}
         className={cn(
-          "flex min-h-11 w-full items-start justify-between gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-start",
+          "flex min-h-11 w-full items-start justify-between gap-2 rounded-sm border border-border bg-surface px-3 py-2 text-start",
           "hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
         )}
       >
@@ -118,7 +118,7 @@ export function EvidenceItem({
   }
 
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-border bg-surface p-3">
+    <div className="flex flex-col gap-2 rounded-sm border border-border bg-surface p-3">
       {header}
       <LtrBlock text={stripUnsafeChars(o.text)} copy maxHeightClass="max-h-40" label={fill(l.itemLabel, { id: o.id })} />
     </div>

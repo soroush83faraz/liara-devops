@@ -64,7 +64,7 @@ export function QueryError({ error, onRetry, retrying }: { error: unknown; onRet
 /** LTR monospace block for connection strings and the like (wraps, selectable). */
 export function CodeLine({ children, label }: { children: string; label: string }) {
   return (
-    <bdi dir="ltr" aria-label={label} className="block max-w-full select-all break-all rounded-lg bg-code-bg px-3 py-2 text-start font-mono text-[13px] leading-6">
+    <bdi dir="ltr" aria-label={label} className="block max-w-full select-all break-all rounded-sm bg-code-bg px-3 py-2 text-start font-mono text-[13px] leading-6">
       {children}
     </bdi>
   );

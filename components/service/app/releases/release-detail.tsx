@@ -25,7 +25,7 @@ function useRelease(id: string) {
 
 function FailReason({ text }: { text?: string }) {
   return (
-    <div role="alert" className="flex gap-3 rounded-xl border border-danger/40 bg-danger-soft p-4 text-danger-ink">
+    <div role="alert" className="flex gap-3 rounded-md border border-danger/40 bg-danger-soft p-4 text-danger-ink">
       <CircleX aria-hidden className="mt-1 size-5 shrink-0" />
       <div className="min-w-0">
         <p className="font-semibold leading-8">{r.failReason}</p>

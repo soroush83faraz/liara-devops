@@ -28,7 +28,7 @@ export function LtrBlock({
         tabIndex={0}
         aria-label={label}
         className={cn(
-          "overflow-auto whitespace-pre-wrap break-all rounded-lg border border-border bg-code-bg p-3 text-start font-mono text-[13px] leading-6 text-code-fg",
+          "overflow-auto whitespace-pre-wrap break-all rounded-sm border border-border bg-code-bg p-3 text-start font-mono text-[13px] leading-6 text-code-fg",
           "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
           maxHeightClass,
           copy && "pe-12",

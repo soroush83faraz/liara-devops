@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, CircleCheck, CircleX, Clock, LoaderCircle, Lock, TriangleAlert, type LucideIcon } from "lucide-react";
+import { Check, CircleCheck, CircleX, Clock, Coins, LoaderCircle, Lock, TriangleAlert, Undo2, WandSparkles, type LucideIcon } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,9 @@ import { SafeMarkdown } from "./safe-markdown";
 import { Template } from "./template";
 import { useNow } from "./use-now";
 import { useProposalFollow } from "./use-proposal-follow";
+import { TierBadge } from "./tier-badge";
 import { VerificationBody, VerificationPending } from "./verification-card";
+import { cn } from "@/lib/utils";
 
 const l = fa.copilotUi.proposal;
 
@@ -53,6 +55,24 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
     <div className="flex flex-col gap-0.5">
       <h5 className="text-xs font-semibold text-muted">{label}</h5>
       <div className="text-[15px] leading-8">{children}</div>
+    </div>
+  );
+}
+
+/** Small fact tile (reversibility, cost): label over value, icon carries the kind. */
+function Fact({ icon: Icon, label, children, tone }: { icon: LucideIcon; label: string; children: React.ReactNode; tone?: "warn" | "danger" }) {
+  return (
+    <div
+      className={cn(
+        "flex items-start gap-2.5 rounded-sm border p-2.5",
+        tone === "danger" ? "border-danger/35 bg-danger-soft/50" : tone === "warn" ? "border-warn/35 bg-warn-soft/50" : "border-border bg-surface-muted/50",
+      )}
+    >
+      <Icon aria-hidden className={cn("mt-1 size-4 shrink-0", tone === "danger" ? "text-danger" : tone === "warn" ? "text-warn" : "text-muted")} />
+      <div className="flex min-w-0 flex-col">
+        <h5 className="text-xs font-semibold text-muted">{label}</h5>
+        <div className="text-sm font-medium leading-7">{children}</div>
+      </div>
     </div>
   );
 }
@@ -111,22 +131,43 @@ export function ProposalCard({
   }
 
   return (
-    <Card aria-label={l.title} data-status={status}>
+    <Card
+      aria-label={l.title}
+      data-status={status}
+      className={cn(
+        "relative overflow-hidden",
+        req.tier === 3 || req.humanOnly ? "border-danger/45" : req.tier === 2 ? "border-warn/40" : waiting ? "border-accent/40" : undefined,
+      )}
+    >
+      <span
+        aria-hidden
+        className={cn(
+          "absolute inset-x-0 top-0 h-px",
+          req.tier === 3 || req.humanOnly ? "bg-danger" : req.tier === 2 ? "bg-warn" : waiting ? "bg-accent" : "bg-transparent",
+        )}
+      />
       <CardContent className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2">
-          <h3 className="text-base font-semibold leading-8">{l.title}</h3>
+          <span aria-hidden className="flex size-7 items-center justify-center rounded-sm bg-accent-soft text-accent-ink">
+            <WandSparkles className="size-4" />
+          </span>
+          <h3 className="text-base font-bold leading-8">{l.title}</h3>
           <StatusBadge status={status} />
           <MockDataBadge />
-          <Badge tone={req.tier === 1 ? "accent" : "warn"}>{req.tier === 1 ? l.tier.one : req.tier === 2 ? l.tier.two : l.tier.three}</Badge>
+          <span className="ms-auto">
+            <TierBadge tier={req.tier} />
+          </span>
         </div>
 
-        <p className="text-[15px] font-semibold leading-8">
-          {actionLabel(proposal.type)} <span className="font-normal text-muted">·</span>{" "}
-          <Template template={fa.copilotUi.approval.targetLine} params={{ target: proposal.target.name }} />
-        </p>
+        <div className="flex flex-col gap-0.5 rounded-sm border border-border bg-surface-muted/50 px-3 py-2.5">
+          <p className="text-[17px] font-bold leading-8">{actionLabel(proposal.type)}</p>
+          <p className="text-sm text-muted">
+            <Template template={fa.copilotUi.approval.targetLine} params={{ target: proposal.target.name }} />
+          </p>
+        </div>
 
         {req.humanOnly ? (
-          <div role="alert" className="flex items-start gap-2 rounded-lg border border-danger/40 bg-danger-soft p-3 text-sm leading-7 text-danger-ink">
+          <div role="alert" className="flex items-start gap-2 rounded-sm border border-danger/40 bg-danger-soft p-3 text-sm leading-7 text-danger-ink">
             <Lock aria-hidden className="mt-1 size-4 shrink-0" />
             <div>
               <p className="font-semibold">{l.humanOnlyTitle}</p>
@@ -175,18 +216,18 @@ export function ProposalCard({
             </ul>
           </Field>
         ) : null}
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field label={l.reversible}>
+        <div className="grid gap-2 sm:grid-cols-2">
+          <Fact icon={Undo2} label={l.reversible} tone={proposal.reversible === "no" ? "danger" : proposal.reversible === "partly" ? "warn" : undefined}>
             {proposal.reversible === "yes" ? l.reversibleYes : proposal.reversible === "partly" ? l.reversiblePartly : l.reversibleNo}
-          </Field>
-          <Field label={l.cost}>
+          </Fact>
+          <Fact icon={Coins} label={l.cost} tone={proposal.costEstimate ? "warn" : undefined}>
             {proposal.costEstimate
               ? fill(fa.copilotUi.approval.costLine, {
                   hourly: faPrice(proposal.costEstimate.perHourToman),
                   monthly: faPrice(proposal.costEstimate.perMonthToman),
                 })
               : l.noCost}
-          </Field>
+          </Fact>
         </div>
         <Field label={l.verificationPlan}>
           <ul className="ms-5 list-disc">
@@ -203,7 +244,8 @@ export function ProposalCard({
                 {l.expired}
               </p>
             ) : (
-              <p className="text-xs text-muted">
+              <p className="inline-flex items-center gap-1.5 text-xs text-muted">
+                <Clock aria-hidden className="size-3.5" />
                 <Template template={l.expiresIn} params={{ time: formatCountdown(remaining) }} />
               </p>
             )}
@@ -216,7 +258,9 @@ export function ProposalCard({
               {expiredLocally ? (
                 <Button onClick={onReevaluate}>{fa.copilotUi.approval.reevaluate}</Button>
               ) : (
-                <Button onClick={() => setDialogOpen(true)}>{l.review}</Button>
+                <Button onClick={() => setDialogOpen(true)} variant={req.tier === 3 ? "danger" : "primary"}>
+                  {l.review}
+                </Button>
               )}
               <Button variant="secondary" onClick={() => void reject()} loading={rejecting} loadingText={l.rejecting}>
                 {l.reject}

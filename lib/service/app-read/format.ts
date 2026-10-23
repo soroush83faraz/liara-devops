@@ -21,8 +21,3 @@ export function formatMemoryBytes(bytes: number): string {
   return `${faNumber(bytes / BYTES_PER_MIB, { maximumFractionDigits: 0 })} ${fa.appOps.metrics.memUnit}`;
 }
 
-/** Latin-digit number for chart axes/tooltips (LTR contexts). */
-export function plainNumber(n: number, digits = 2): string {
-  if (!Number.isFinite(n)) return "—";
-  return new Intl.NumberFormat("en-US", { maximumFractionDigits: digits }).format(n);
-}

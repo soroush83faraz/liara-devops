@@ -1,10 +1,12 @@
 "use client";
 
-import { FileArchive, Upload, X } from "lucide-react";
+import { ArrowDownToLine, FileArchive, Upload, X } from "lucide-react";
+import { motion } from "motion/react";
 import { useRef, useState } from "react";
 import { Button, IconButton } from "@/components/ui";
 import { formatBytes } from "@/lib/create/format";
 import { fileProblem, type SourceFile } from "@/lib/create/wizards";
+import { spring } from "@/lib/ui/motion";
 import { cn } from "@/lib/utils";
 import { tk } from "./parts";
 
@@ -25,18 +27,29 @@ export function Dropzone({ file, onChange, disabled }: { file?: SourceFile; onCh
           e.preventDefault();
           if (!disabled) setOver(true);
         }}
-        onDragLeave={() => setOver(false)}
+        onDragLeave={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setOver(false);
+        }}
         onDrop={(e) => {
           e.preventDefault();
           setOver(false);
           if (!disabled) take(e.dataTransfer.files?.[0]);
         }}
+        data-over={over || undefined}
         className={cn(
-          "flex flex-col items-center gap-2 rounded-xl border-2 border-dashed p-6 text-center transition-colors",
-          over ? "border-accent bg-accent-soft" : "border-border-strong bg-surface-muted",
+          "flex flex-col items-center gap-2 rounded-md border border-dashed p-6 text-center transition-[border-color,background-color,box-shadow] duration-200",
+          over ? "border-accent bg-accent-soft/70 shadow-[var(--glow-accent)]" : "border-border-strong/50 bg-surface-muted/50 hover:border-border-strong/80",
         )}
       >
-        <Upload aria-hidden className="size-6 text-muted" />
+        <span
+          aria-hidden
+          className={cn(
+            "flex size-11 items-center justify-center rounded-sm border bg-surface transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
+            over ? "-translate-y-1 scale-110 border-accent text-accent" : "border-border text-muted",
+          )}
+        >
+          {over ? <ArrowDownToLine className="size-5" /> : <Upload className="size-5" />}
+        </span>
         <p className="text-sm font-medium">{tk("deploy.dropTitle")}</p>
         <p className="text-xs text-muted">
           {tk("deploy.dropOr")} · {tk("deploy.dropLimit")}
@@ -59,14 +72,22 @@ export function Dropzone({ file, onChange, disabled }: { file?: SourceFile; onCh
         </Button>
       </div>
       {file ? (
-        <div className="flex items-center gap-3 rounded-lg border border-border bg-surface p-2 ps-3">
-          <FileArchive aria-hidden className="size-5 shrink-0 text-muted" />
+        <motion.div
+          key={file.name}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={spring.pop}
+          className={cn("flex items-center gap-3 rounded-sm border bg-surface p-2 ps-3", problem ? "border-danger/50" : "border-accent/40")}
+        >
+          <span aria-hidden className={cn("flex size-8 shrink-0 items-center justify-center rounded-sm", problem ? "bg-danger-soft text-danger-ink" : "bg-accent-soft text-accent-ink")}>
+            <FileArchive className="size-4" />
+          </span>
           <div className="min-w-0 flex-1">
             <bdi dir="ltr" className="block truncate font-mono text-sm">{file.name}</bdi>
             <span className="text-xs text-muted">{formatBytes(file.size)}</span>
           </div>
           <IconButton label={tk("deploy.removeFile")} icon={<X aria-hidden className="size-4" />} onClick={() => onChange(undefined)} disabled={disabled} />
-        </div>
+        </motion.div>
       ) : null}
       {problem ? (
         <p role="alert" className="text-sm leading-6 text-danger">

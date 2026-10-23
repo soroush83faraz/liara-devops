@@ -95,7 +95,7 @@ export function LogViewer({
         if (autoScroll && !nearBottom) onAutoScrollChange?.(false);
       }}
       className={cn(
-        "@container h-[55vh] min-h-64 overflow-auto rounded-lg border border-border bg-code-bg p-3 text-start font-mono text-[13px] leading-6 text-code-fg",
+        "@container h-[55vh] min-h-64 overflow-auto rounded-md border border-border bg-code-bg p-3 text-start font-mono text-[13px] leading-6 text-code-fg",
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
         className,
       )}

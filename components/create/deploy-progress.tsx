@@ -1,7 +1,8 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { CircleCheck, CircleX, ExternalLink } from "lucide-react";
+import { CircleCheck, CircleX, ExternalLink, SquareTerminal } from "lucide-react";
+import { motion } from "motion/react";
 import { useEffect } from "react";
 import { Button, ErrorBanner } from "@/components/ui";
 import { BuildLogPanel } from "@/components/service/app/releases/build-log-panel";
@@ -11,6 +12,8 @@ import { fetchJson } from "@/lib/service/app-read/client";
 import { isTerminalState } from "@/lib/service/app-read/release-utils";
 import type { ReleaseDto } from "@/lib/service/app-read/types";
 import { useShellStore } from "@/components/shell/shell-store";
+import { Pulse, spring } from "@/lib/ui/motion";
+import { cn } from "@/lib/utils";
 import { tk } from "./parts";
 
 /** Live build log (SSE, reused from the Releases tab) + polled state, fail reason and the app link once done. */
@@ -48,7 +51,15 @@ export function DeployProgress({ appName, releaseId, onFinish, onRetry }: { appN
       {q.isError && !release ? <ErrorBanner tone="warn" message={tk("deploy.stateLoadFailed")} /> : null}
       <div role="status" aria-live="polite">
         {done ? (
-          <p className={ok ? "flex items-start gap-2 text-sm leading-7 text-ok-ink" : "flex items-start gap-2 text-sm leading-7 text-danger-ink"}>
+          <motion.p
+            initial={{ opacity: 0, y: 6, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={spring.pop}
+            className={cn(
+              "flex items-start gap-3 rounded-md border p-3 text-sm leading-7",
+              ok ? "border-ok/40 bg-ok-soft text-ok-ink" : "border-danger/40 bg-danger-soft text-danger-ink",
+            )}
+          >
             {ok ? <CircleCheck aria-hidden className="mt-1 size-5 shrink-0" /> : <CircleX aria-hidden className="mt-1 size-5 shrink-0" />}
             <span>
               {ok ? tk("deploy.doneOk") : tk("deploy.doneFail")}
@@ -59,10 +70,21 @@ export function DeployProgress({ appName, releaseId, onFinish, onRetry }: { appN
                 </>
               ) : null}
             </span>
-          </p>
+          </motion.p>
         ) : null}
       </div>
-      <BuildLogPanel release={stub} appName={appName} />
+      <div className="overflow-hidden rounded-md border border-border bg-code-bg">
+        <div className="flex items-center gap-2 border-b border-border bg-surface-muted/60 px-3 py-2">
+          <Pulse tone={done ? (ok ? "ok" : "danger") : "accent"} active={!done} />
+          <SquareTerminal aria-hidden className="size-4 text-muted" />
+          <bdi dir="ltr" className="min-w-0 flex-1 truncate font-mono text-xs text-muted">
+            {appName}
+          </bdi>
+        </div>
+        <div className="p-3">
+          <BuildLogPanel release={stub} appName={appName} />
+        </div>
+      </div>
       <p className="text-xs text-muted">{tk("deploy.warnClose")}</p>
       <div className="flex flex-wrap gap-2">
         {ok && url ? (

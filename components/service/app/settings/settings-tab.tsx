@@ -14,7 +14,7 @@ import { TogglesSection } from "./toggles-section";
 export function SettingsTab({ name }: AppPanelProps) {
   const q = useSettings(name);
   return (
-    <div className="flex flex-col gap-4 p-4">
+    <div className="flex flex-col gap-4">
       <h2 className="text-lg font-semibold">{t("appConfig.settings.title")}</h2>
       {q.isPending ? <ListSkeleton rows={3} /> : null}
       {q.isError ? <LoadError error={q.error} onRetry={() => void q.refetch()} retrying={q.isFetching} /> : null}

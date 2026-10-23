@@ -6,6 +6,7 @@ import { deployReducer, canAdvanceDeploy, DEPLOY_STEPS, deployTypedOk, initialDe
 import { DeployRequestError, uploadDeploy } from "@/lib/create/deploy-client";
 import { errorKeyFor, toErrLike } from "@/lib/create/errors";
 import { formatBytes } from "@/lib/create/format";
+import { faNumber } from "@/lib/i18n/format";
 import { suggestPort, validateImage, validatePort } from "@/lib/create/validators";
 import { PLATFORMS } from "@/lib/contracts/common";
 import { Dropzone } from "./dropzone";
@@ -105,7 +106,7 @@ export function DeployDialog({ appName, platform, onClose }: { appName: string; 
       {s.step === "review" ? (
         <div className="flex flex-col gap-4">
           <h4 className="text-sm font-semibold">{tk("deploy.reviewTitle")}</h4>
-          <dl className="divide-y divide-border rounded-xl border border-border px-3">
+          <dl className="divide-y divide-border rounded-md border border-border bg-surface-muted/40 px-3.5">
             <div className="flex items-baseline justify-between gap-3 py-1.5">
               <dt className="text-sm text-muted">{tk("deploy.summarySource")}</dt>
               <dd className="min-w-0 text-sm font-medium">
@@ -126,7 +127,24 @@ export function DeployDialog({ appName, platform, onClose }: { appName: string; 
           <p className="text-xs leading-6 text-muted">{tk("deploy.costNote")}</p>
           <p className="text-xs leading-6 text-muted">{tk("deploy.dailyCapNote")}</p>
           <TypedField label={tk("typed.label")} name={appName} value={s.typedName} onChange={(typed) => dispatch({ type: "set_typed", typed })} disabled={busy} />
-          {busy && progress !== null ? <progress className="h-2 w-full" max={1} value={progress} aria-label={tk("deploy.uploading")} /> : null}
+          {busy && progress !== null ? (
+            <div
+              role="progressbar"
+              aria-label={tk("deploy.uploading")}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(progress * 100)}
+              className="flex items-center gap-3"
+            >
+              <span className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-accent-soft">
+                <span
+                  className="absolute inset-0 origin-right rounded-full bg-accent transition-transform duration-200 ease-out ltr:origin-left"
+                  style={{ transform: `scaleX(${progress})` }}
+                />
+              </span>
+              <span className="w-10 text-end text-xs font-semibold tabular-nums text-muted">{faNumber(Math.round(progress * 100))}٪</span>
+            </div>
+          ) : null}
           <SubmitError submit={s.submit} />
         </div>
       ) : null}

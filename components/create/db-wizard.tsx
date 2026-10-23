@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleCheck, TriangleAlert } from "lucide-react";
+import { TriangleAlert } from "lucide-react";
 import { useReducer, useRef } from "react";
 import { Badge, Button, Field, Input, Select, Switch } from "@/components/ui";
 import { runOp } from "@/lib/client/ops";
@@ -24,7 +24,7 @@ import {
 } from "@/lib/create/wizards";
 import { dbServiceId } from "@/lib/canvas/service-id";
 import { useShellStore } from "@/components/shell/shell-store";
-import { CardGrid, CostBlock, NavFooter, NetworkPicker, OptionCard, PlansGate, PriceLines, SubmitError, TypedField, WizardDialog, tk } from "./parts";
+import { CardGrid, CostBlock, NavFooter, NetworkPicker, OptionCard, PlansGate, PriceLines, SubmitError, TypedField, DoneMessage, WizardDialog, tk } from "./parts";
 
 const engineLabel = (e: string) => {
   const v = tk(`engines.${e}.label`) as string;
@@ -174,7 +174,7 @@ function SettingsStep({ s, plans, dispatch }: { s: DbWizardState; plans: PlansRe
       <div className="flex flex-col gap-2">
         <Switch label={tk("db.publicLabel")} description={tk("db.publicHint")} checked={s.publicNetwork} onCheckedChange={(value) => dispatch({ type: "set_public", value })} />
         {s.publicNetwork ? (
-          <div className="flex flex-col gap-2 rounded-xl border border-warn/40 bg-warn-soft p-3 text-warn-ink">
+          <div className="flex flex-col gap-2 rounded-md border border-warn/40 bg-warn-soft p-3 text-warn-ink">
             <p className="flex items-start gap-2 text-sm leading-7">
               <TriangleAlert aria-hidden className="mt-1 size-4 shrink-0" />
               {tk("db.publicWarn")}
@@ -203,7 +203,7 @@ function Review({ s, plans, dispatch }: { s: DbWizardState; plans: PlansResponse
   return (
     <div className="flex flex-col gap-4">
       <h4 className="text-sm font-semibold">{tk("db.reviewTitle")}</h4>
-      <dl className="divide-y divide-border rounded-xl border border-border px-3">
+      <dl className="divide-y divide-border rounded-md border border-border px-3">
         <Row k={tk("db.summaryName")}><bdi dir="ltr" className="font-mono">{s.name}</bdi></Row>
         <Row k={tk("db.summaryEngine")}><bdi dir="ltr">{engineLabel(s.engine ?? "")}</bdi></Row>
         <Row k={tk("db.summaryVersion")}><bdi dir="ltr" className="font-mono">{s.version}</bdi></Row>
@@ -242,10 +242,7 @@ function Done({ name, onClose }: { name: string; onClose: () => void }) {
         </>
       }
     >
-      <p className="flex items-start gap-2 text-sm leading-7">
-        <CircleCheck aria-hidden className="mt-1 size-5 shrink-0 text-ok" />
-        {tk("db.doneBody", { name })}
-      </p>
+      <DoneMessage>{tk("db.doneBody", { name })}</DoneMessage>
     </WizardDialog>
   );
 }

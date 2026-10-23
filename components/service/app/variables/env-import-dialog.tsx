@@ -92,7 +92,7 @@ export function EnvImportDialog({
             <p className="text-sm font-medium">
               {t("appConfig.vars.import.diffTitle", { added: diff.added, overwritten: diff.overwritten })}
             </p>
-            <ul className="max-h-48 divide-y divide-border overflow-auto rounded-lg border border-border">
+            <ul className="max-h-48 divide-y divide-border overflow-auto rounded-sm border border-border">
               {diff.items.map((i) => (
                 <li key={i.key} className="flex flex-wrap items-center justify-between gap-2 px-3 py-1.5">
                   <bdi dir="ltr" className="break-all font-mono text-sm">
@@ -125,13 +125,13 @@ export function EnvImportDialog({
         ) : null}
 
         {diff.overLimit ? (
-          <p role="alert" className="rounded-lg bg-danger-soft p-3 text-sm leading-7 text-danger-ink">
+          <p role="alert" className="rounded-sm bg-danger-soft p-3 text-sm leading-7 text-danger-ink">
             {t("appConfig.vars.import.overLimit", { max: MAX_ENV_CHANGES })}
           </p>
         ) : null}
 
         {blocking.length > 0 || warnings.length > 0 ? (
-          <div role="status" className="rounded-lg bg-warn-soft p-3 text-sm leading-7 text-warn-ink">
+          <div role="status" className="rounded-sm bg-warn-soft p-3 text-sm leading-7 text-warn-ink">
             <p className="font-medium">{t("appConfig.vars.import.issuesTitle", { count: blocking.length })}</p>
             <ul className="mt-1 list-disc ps-5">
               {[...blocking, ...warnings].slice(0, 12).map((i, idx) => (

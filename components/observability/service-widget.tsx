@@ -4,7 +4,6 @@ import { useMemo } from "react";
 import { ProbeBadge } from "@/components/canvas/probe-badge";
 import { ServiceIcon } from "@/components/canvas/service-icon";
 import { useShellStore } from "@/components/shell/shell-store";
-import { MetricAreaChart } from "@/components/service/app/metrics/metric-chart";
 import { Unavailable } from "@/components/service/app/overview/unavailable";
 import { StatusDot } from "@/components/ui/status-dot";
 import { isFailing, useHealthStore } from "@/lib/canvas/health-store";
@@ -27,7 +26,9 @@ import {
 import type { ObsServiceDto } from "@/lib/observability/types";
 import { bytesToMiB } from "@/lib/service/app-read/chart-data";
 import type { MetricRange } from "@/lib/service/app-read/types";
+import { AnimatedNumber } from "@/lib/ui/motion";
 import { cn } from "@/lib/utils";
+import { ObsAreaChart, ObsLegend } from "./obs-chart";
 import { UsageMeter } from "./usage-meter";
 
 const m = fa.appOps.metrics;
@@ -57,17 +58,8 @@ function MiniChart({ service, title, unit, lines, empty, unavailable, legend }: 
   if (empty) return <p className="text-xs text-muted">{m.noPoints}</p>;
   return (
     <div data-no-open>
-      <MetricAreaChart rows={stacked.rows} keys={stacked.keys} unit={unit} ariaLabel={describe(title, unit, lines)} height={110} markers={markers} compact />
-      {legend ? (
-        <ul dir="ltr" className="mt-1 flex flex-wrap gap-x-3 text-xs">
-          {stacked.keys.map((k) => (
-            <li key={k.key} className="inline-flex items-center gap-1.5">
-              <span aria-hidden className="size-2 rounded-sm" style={{ background: k.color }} />
-              {k.label}
-            </li>
-          ))}
-        </ul>
-      ) : null}
+      <ObsAreaChart rows={stacked.rows} keys={stacked.keys} unit={unit} ariaLabel={describe(title, unit, lines)} height={104} markers={markers} compact />
+      {legend ? <ObsLegend keys={stacked.keys} className="mt-1 flex flex-wrap gap-x-3 text-xs text-muted" /> : null}
     </div>
   );
 }
@@ -98,15 +90,15 @@ function ResourceBlock({
   const digits = resource === "cpu" ? 2 : 0;
 
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="flex flex-col gap-2">
       <div className="flex flex-wrap items-baseline justify-between gap-x-2">
-        <h4 className="text-sm font-medium">{title}</h4>
-        <p className="text-sm tabular-nums" data-testid={`obs-current-${resource}`}>
+        <h4 className="text-sm font-medium text-muted">{title}</h4>
+        <p className="text-sm" data-testid={`obs-current-${resource}`}>
           {value === undefined ? (
-            <span className="text-muted">{t("observability.widgets.currentUnknown")}</span>
+            <span className="text-xs text-muted">{t("observability.widgets.currentUnknown")}</span>
           ) : (
             <>
-              <span className="font-semibold">{fmt(value, digits)}</span> <span className="text-muted">{unit}</span>
+              <AnimatedNumber value={value} format={(n) => fmt(n, digits)} className="text-[17px] font-bold" /> <span className="text-xs text-muted">{unit}</span>
             </>
           )}
         </p>
@@ -133,14 +125,15 @@ function NetworkBlock({ service, bucket }: { service: ObsServiceDto; bucket: num
   const lines = useMemo(() => {
     if (metrics.unavailable) return [];
     return [
-      { id: "rx", label: m.networkRx, color: "var(--accent)", points: sectionTotals(metrics.networkRx, bucket) },
-      { id: "tx", label: m.networkTx, color: "var(--warn)", points: sectionTotals(metrics.networkTx, bucket) },
+      // Two series, not statuses: the first two categorical slots (never the ok/warn status colours).
+      { id: "rx", label: m.networkRx, color: "var(--series-1)", points: sectionTotals(metrics.networkRx, bucket) },
+      { id: "tx", label: m.networkTx, color: "var(--series-2)", points: sectionTotals(metrics.networkTx, bucket) },
     ];
   }, [metrics, bucket]);
   const both = !metrics.unavailable && metrics.networkRx.unavailable && metrics.networkTx.unavailable;
   return (
-    <div className="flex flex-col gap-1.5">
-      <h4 className="text-sm font-medium">{m.network}</h4>
+    <div className="flex flex-col gap-2">
+      <h4 className="text-sm font-medium text-muted">{m.network}</h4>
       <MiniChart
         service={service}
         title={m.network}
@@ -174,12 +167,15 @@ export function ServiceWidget({ service, color, range }: { service: ObsServiceDt
         if (!(e.target as HTMLElement).closest("[data-no-open],button,a,input")) open();
       }}
       className={cn(
-        "flex cursor-pointer flex-col gap-4 rounded-xl border bg-surface p-4 shadow-sm transition-shadow hover:shadow-md",
-        bad ? "border-danger ring-1 ring-danger/40" : "border-border",
+        "group/widget flex cursor-pointer flex-col gap-4 rounded-md border bg-surface p-4",
+        "transition-[transform,box-shadow,border-color] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-pop)]",
+        bad
+          ? "border-danger/60 shadow-[0_0_0_1px_color-mix(in_oklab,var(--danger)_30%,transparent),0_8px_28px_color-mix(in_oklab,var(--danger)_10%,transparent)]"
+          : "border-border hover:border-border-strong/60",
       )}
     >
       <header className="flex items-start gap-2.5">
-        <ServiceIcon kind={service.kind} platformOrEngine={service.platformOrEngine} />
+        <ServiceIcon kind={service.kind} platformOrEngine={service.platformOrEngine} className="rounded-sm" />
         <div className="min-w-0 flex-1">
           <button
             type="button"
@@ -187,7 +183,7 @@ export function ServiceWidget({ service, color, range }: { service: ObsServiceDt
             aria-label={t("observability.widgets.open", { name: service.name })}
             className="flex max-w-full items-center gap-2 rounded text-start text-[15px] font-semibold leading-7 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           >
-            <span aria-hidden className="size-2.5 shrink-0 rounded-sm" style={{ background: color }} />
+            <span aria-hidden className="h-1 w-3 shrink-0 rounded-full" style={{ background: color }} />
             <bdi dir="ltr" className="truncate">
               {service.name}
             </bdi>
@@ -203,7 +199,7 @@ export function ServiceWidget({ service, color, range }: { service: ObsServiceDt
           </p>
         </div>
       </header>
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 border-y border-border/70 py-2.5">
         <StatusDot status={service.status} />
         <ProbeBadge health={health} kind={service.kind} />
       </div>
@@ -220,7 +216,7 @@ export function ServiceWidget({ service, color, range }: { service: ObsServiceDt
         </p>
       ) : null}
       {service.metrics.unavailable ? (
-        <div className="rounded-lg border border-dashed border-border p-3" data-testid="obs-widget-unavailable">
+        <div className="rounded-sm border border-dashed border-border bg-surface-muted/40 p-3" data-testid="obs-widget-unavailable">
           <p className="text-sm font-medium">{t("observability.widgets.metricsUnavailable")}</p>
           <p className="mt-1 text-xs leading-6 text-muted">{t("observability.widgets.metricsUnavailableHint")}</p>
         </div>

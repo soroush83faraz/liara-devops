@@ -17,7 +17,7 @@ export function DiskCard({ appName, disk }: { appName: string; disk: DiskDto }) 
   const [deleting, setDeleting] = useState(false);
 
   return (
-    <li className="rounded-xl border border-border bg-surface p-4">
+    <li className="rounded-md border border-border bg-surface p-4">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="flex min-w-0 items-center gap-2">
           <HardDrive aria-hidden className="size-5 shrink-0 text-muted" />

@@ -95,18 +95,18 @@ function ToastView({ item, onDismiss }: { item: ToastItem; onDismiss: (id: numbe
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
-      className="pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-xl border border-border bg-surface p-3 text-foreground shadow-lg animate-hl-pop"
+      className="pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-md border border-border bg-surface p-3 text-foreground shadow-[var(--shadow-pop)] animate-hl-sheet-bottom"
     >
       <Icon aria-hidden className={cn("mt-1 size-5 shrink-0", className)} />
       <div className="min-w-0 flex-1">
-        <p className="text-sm font-semibold leading-7">{item.title}</p>
+        <p className="text-sm font-semibold leading-6">{item.title}</p>
         {item.description ? <p className="text-sm leading-7 text-muted">{item.description}</p> : null}
       </div>
       <button
         type="button"
         aria-label={t("common.dismiss")}
         onClick={() => onDismiss(item.id)}
-        className="-m-1 inline-flex size-11 shrink-0 items-center justify-center rounded-lg text-muted hover:bg-surface-muted hover:text-foreground md:size-8"
+        className="-m-1 inline-flex size-11 shrink-0 items-center justify-center rounded-sm text-muted transition-colors hover:bg-surface-muted hover:text-foreground md:size-8"
       >
         <X aria-hidden className="size-4" />
       </button>

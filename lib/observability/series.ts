@@ -133,20 +133,22 @@ export function usageRatio(value: number | undefined, limit: number | undefined)
   return Math.min(1, Math.max(0, value / limit));
 }
 
-/** Fixed colour per service slot (strokes/fills only, mid-tone so they read on both themes). Text never relies on it. */
+/**
+ * Fixed colour per service slot: the validated categorical palette in app/globals.css (--series-1..8), stepped per
+ * theme. Strokes/fills only; text never relies on it. Slots past the eighth are never a generated hue: they share the
+ * neutral --series-other and the aggregate charts fold them into one «سایر» series.
+ */
 export const SERVICE_COLORS = [
-  "#2563eb",
-  "#d97706",
-  "#059669",
-  "#dc2626",
-  "#7c3aed",
-  "#0891b2",
-  "#db2777",
-  "#65a30d",
-  "#ea580c",
-  "#4f46e5",
-  "#0d9488",
-  "#a16207",
+  "var(--series-1)",
+  "var(--series-2)",
+  "var(--series-3)",
+  "var(--series-4)",
+  "var(--series-5)",
+  "var(--series-6)",
+  "var(--series-7)",
+  "var(--series-8)",
 ] as const;
 
-export const colorForIndex = (i: number): string => SERVICE_COLORS[i % SERVICE_COLORS.length]!;
+export const OTHER_SERIES_COLOR = "var(--series-other)";
+
+export const colorForIndex = (i: number): string => SERVICE_COLORS[i] ?? OTHER_SERIES_COLOR;

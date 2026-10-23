@@ -88,6 +88,6 @@ describe("C2/C5: readable edge label and themed canvas", () => {
     expect(src).toContain("style={FLOW_THEME}");
     expect(src).not.toMatch(/#2b7a99|#94a3b8/);
     const dark = css.slice(css.indexOf("prefers-color-scheme: dark"));
-    expect(token(dark, "background")).toBe("#0b1220");
+    expect(token(dark, "background")).toBe("#07090d");
   });
 });

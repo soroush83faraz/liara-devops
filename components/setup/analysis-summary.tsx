@@ -52,7 +52,7 @@ export function AnalysisSummary({ analysis: a }: { analysis: ProjectAnalysis }) 
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        <details className="rounded-lg border border-border bg-surface-muted p-3" open={unknown}>
+        <details className="hl-disclosure rounded-sm border border-border bg-surface-muted/60 p-3" open={unknown}>
           <summary className="cursor-pointer text-[15px] font-medium leading-7">
             {unknown ? t("setupFlow.analysis.whyUnknown") : t("setupFlow.analysis.whyTitle", { platform })}
           </summary>
@@ -88,7 +88,7 @@ export function AnalysisSummary({ analysis: a }: { analysis: ProjectAnalysis }) 
           ) : (
             <ul className="flex flex-col gap-2">
               {a.warnings.map((w) => (
-                <li key={w} className="flex items-start gap-2 rounded-lg bg-warn-soft p-3 text-sm leading-7 text-warn-ink">
+                <li key={w} className="flex items-start gap-2 rounded-sm bg-warn-soft p-3 text-sm leading-7 text-warn-ink">
                   <TriangleAlert aria-hidden className="mt-1 size-4 shrink-0" />
                   <span>{warningText(w)}</span>
                 </li>

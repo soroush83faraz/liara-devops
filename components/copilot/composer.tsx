@@ -4,7 +4,6 @@ import { Send, Square } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { emptyAwareDir } from "@/components/ui/dir";
-import { fieldClass } from "@/components/ui/input";
 import { fa } from "@/lib/i18n/fa";
 import { shouldSubmitOnEnter } from "@/lib/copilot/keys";
 import { cn } from "@/lib/utils";
@@ -59,7 +58,13 @@ export function Composer({
       <span id={`${hintId}-scope`} hidden>
         {scopeLabel}
       </span>
-      <div className="flex items-end gap-2">
+      <div
+        className={cn(
+          "flex items-end gap-2 rounded-md border border-border-strong/50 bg-surface p-1.5 ps-3 transition-[border-color,box-shadow] duration-200",
+          "focus-within:border-accent focus-within:shadow-[0_0_0_3px_color-mix(in_oklab,var(--accent)_16%,transparent)]",
+          streaming && "bg-surface-muted/60",
+        )}
+      >
         <textarea
           id={`${hintId}-input`}
           ref={ref}
@@ -77,11 +82,11 @@ export function Composer({
               submit();
             }
           }}
-          className={cn(fieldClass(false), "max-h-40 min-h-[3.25rem] flex-1 resize-none py-2 leading-7")}
+          className="max-h-40 min-h-[3.25rem] flex-1 resize-none bg-transparent py-1.5 text-[15px] leading-7 text-foreground outline-none placeholder:text-muted disabled:cursor-not-allowed focus-visible:outline-none!"
         />
         {streaming ? (
           <Button type="button" variant="secondary" size="md" onClick={onStop} aria-label={p.stop} className="shrink-0">
-            <Square aria-hidden className="size-4" />
+            <Square aria-hidden className="size-3.5 fill-current" />
             <span className="hidden sm:inline">{p.stop}</span>
           </Button>
         ) : (
@@ -91,7 +96,7 @@ export function Composer({
           </Button>
         )}
       </div>
-      <p id={hintId} className="text-xs leading-6 text-muted">
+      <p id={hintId} className="px-1 text-xs leading-6 text-muted">
         {p.hint}
       </p>
     </form>

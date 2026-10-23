@@ -10,6 +10,7 @@ export const canvasMap = {
   viewList: "نمایش فهرستی",
   viewCanvas: "نمایش بوم",
   autoLayout: "چیدمان خودکار",
+  toolbar: "ابزارهای بوم",
   autoLayoutDone: "چیدمان به حالت خودکار برگشت.",
   refresh: "تازه‌سازی",
   refreshing: "در حال تازه‌سازی…",
@@ -38,6 +39,7 @@ export const canvasMap = {
     none: "بررسی نشده",
     checking: "در حال بررسی…",
     ok: "پاسخ {status} در {ms} میلی‌ثانیه",
+    latency: "{ms} میلی‌ثانیه",
     clientError: "پاسخ {status} (سایت بالاست)",
     down: "ناموفق ({count} بار پیاپی)",
     downOnce: "یک بار ناموفق",
@@ -45,6 +47,14 @@ export const canvasMap = {
     checkedAt: "زمان بررسی: {time}",
     unprobeable: "قابل بررسی نیست: {reason}",
     stale: "قدیمی · آخرین بررسی {time}",
+    // Compact chip words (canvas cards); the full sentence goes in the tooltip, or beside the chip on wider cards.
+    short: {
+      unprobeable: "قابل بررسی نیست",
+      stale: "قدیمی",
+      clientError: "پاسخ {status}",
+      down: "ناموفق",
+    },
+    staleDetail: "آخرین بررسی {time}",
     ageUnknown: "نامعلوم",
     errors: {
       timeout: "پاسخی در ۶ ثانیه نیامد",

@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleCheck, Network } from "lucide-react";
+import { Network } from "lucide-react";
 import { useReducer, useRef } from "react";
 import { Button } from "@/components/ui";
 import { errorKeyFor, toErrLike } from "@/lib/create/errors";
@@ -10,7 +10,7 @@ import { initialNetworkState, networkFormError, networkReducer } from "@/lib/cre
 import { runOp } from "@/lib/client/ops";
 import { matchesName } from "@/components/ui/confirm-match";
 import { Field, Input } from "@/components/ui";
-import { NavFooter, SubmitError, TypedField, WizardDialog, tk } from "./parts";
+import { NavFooter, SubmitError, TypedField, DoneMessage, WizardDialog, tk } from "./parts";
 
 export function NetworkWizard({ onClose }: { onClose: () => void }) {
   const [s, dispatch] = useReducer(networkReducer, undefined, initialNetworkState);
@@ -41,10 +41,7 @@ export function NetworkWizard({ onClose }: { onClose: () => void }) {
     return (
       <WizardDialog title={tk("network.doneTitle")} onClose={onClose} footer={<Button onClick={onClose}>{tk("network.finish")}</Button>}>
         <div className="flex flex-col gap-4">
-          <p className="flex items-start gap-2 text-sm leading-7">
-            <CircleCheck aria-hidden className="mt-1 size-5 shrink-0 text-ok" />
-            {tk("network.doneBody", { name: s.name })}
-          </p>
+          <DoneMessage>{tk("network.doneBody", { name: s.name })}</DoneMessage>
           <div className="flex flex-wrap gap-2">
             <Button variant="secondary" onClick={() => openAppDialog(s.name)}>
               {tk("network.createApp")}
@@ -76,7 +73,7 @@ export function NetworkWizard({ onClose }: { onClose: () => void }) {
       }
     >
       <div className="flex flex-col gap-4">
-        <section className="flex flex-col gap-2 rounded-xl bg-accent-soft p-3 text-accent-ink">
+        <section className="flex flex-col gap-2 rounded-md bg-accent-soft p-3 text-accent-ink">
           <h4 className="flex items-center gap-2 text-sm font-semibold">
             <Network aria-hidden className="size-4" />
             {tk("network.explainTitle")}

@@ -42,7 +42,7 @@ export function RedirectDialog({ appName, domain, onClose }: { appName: string; 
       }}
     >
       <div className="flex flex-col gap-3">
-        <p role="note" className="rounded-lg bg-warn-soft p-3 text-sm leading-7 text-warn-ink">
+        <p role="note" className="rounded-sm bg-warn-soft p-3 text-sm leading-7 text-warn-ink">
           {t("appConfig.domains.redirect.warning")}
         </p>
         <Field

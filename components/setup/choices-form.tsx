@@ -112,7 +112,7 @@ export function ChoicesForm({
           </Field>
         ) : null}
         {rec && rec.appPlan ? (
-          <details className="rounded-lg border border-border bg-surface-muted p-3 text-sm">
+          <details className="rounded-sm border border-border bg-surface-muted p-3 text-sm">
             <summary className="cursor-pointer font-medium leading-7">{t("setupFlow.sizing.title")}</summary>
             <ul className="mt-2 flex list-disc flex-col gap-1 ps-5 leading-7">
               {[...rec.needs.reasons, ...rec.appPlan.reasons].map((r, i) => (
