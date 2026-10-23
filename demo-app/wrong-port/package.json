@@ -1,0 +1,9 @@
+{
+  "name": "broken-shop-wrong-port",
+  "version": "2.1.0",
+  "private": true,
+  "description": "Demo scenario 'wrong-port' for the Hamyar Liara demo. Plain Node, no dependencies.",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

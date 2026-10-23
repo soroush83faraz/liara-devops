@@ -1,0 +1,8 @@
+{
+  "_note": "SYNTHETIC project tree for the setup detector tests. Not a real project; every value below is a made-up placeholder.",
+  "files": {
+    "App.csproj": "<Project Sdk=\"Microsoft.NET.Sdk.Web\">\n<PropertyGroup><TargetFramework>net8.0</TargetFramework></PropertyGroup>\n<ItemGroup><PackageReference Include=\"Npgsql.EntityFrameworkCore.PostgreSQL\" Version=\"8.0.0\" /></ItemGroup>\n</Project>",
+    "Program.cs": "var app = WebApplication.Create(args); app.Run();",
+    "appsettings.json": "{\"Urls\":\"http://0.0.0.0:5050\"}"
+  }
+}

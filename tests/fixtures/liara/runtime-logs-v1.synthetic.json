@@ -1,0 +1,15 @@
+{
+  "_note": "synthetic, not recorded from Liara",
+  "logs": [
+    {
+      "type": "stdout",
+      "datetime": "2026-01-03T09:10:00.000Z",
+      "message": "hello"
+    },
+    {
+      "type": "stderr",
+      "datetime": "2026-01-03T09:10:01.500Z",
+      "message": "boom"
+    }
+  ]
+}

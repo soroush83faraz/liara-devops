@@ -1,0 +1,386 @@
+{
+ "_note": "synthetic, not recorded from Liara",
+ "scenario": "db-unreachable",
+ "now": "2026-01-03T10:30:00.000Z",
+ "name": "demo-shop",
+ "app": {
+  "project": {
+   "_id": "a1",
+   "project_id": "demo-shop",
+   "type": "node",
+   "status": "RUNNING",
+   "scale": 1,
+   "planID": "iran-g2-small",
+   "bundlePlanID": "standard",
+   "defaultSubdomain": true,
+   "network": {
+    "_id": "n1",
+    "name": "main"
+   },
+   "envs": [
+    {
+     "key": "NODE_ENV",
+     "value": "production"
+    },
+    {
+     "key": "DATABASE_URL",
+     "value": "postgres://shop:SYNTH-DB-PASS-1234@shop-db:5432/shop"
+    },
+    {
+     "key": "API_KEY",
+     "value": "synthetic-key-abcdef"
+    }
+   ]
+  }
+ },
+ "applets": {
+  "applets": [
+   {
+    "id": "p1",
+    "name": "demo-shop-7d9c",
+    "timestamp": "2026-01-03T10:19:30.000Z",
+    "state": "Running",
+    "reason": "",
+    "release": {
+     "releaseID": "r3",
+     "tag": "v3"
+    }
+   }
+  ]
+ },
+ "releases": {
+  "total": 3,
+  "currentRelease": "r3",
+  "releases": [
+   {
+    "_id": "r3",
+    "tag": "v3",
+    "state": "READY",
+    "createdAt": "2026-01-03T08:00:00.000Z",
+    "finishedAt": "2026-01-03T08:01:30.000Z",
+    "port": 3000,
+    "type": "file"
+   },
+   {
+    "_id": "r2",
+    "tag": "v2",
+    "state": "READY",
+    "createdAt": "2026-01-02T09:00:00.000Z",
+    "finishedAt": "2026-01-02T09:02:00.000Z",
+    "port": 3000,
+    "type": "file"
+   },
+   {
+    "_id": "r1",
+    "tag": "v1",
+    "state": "READY",
+    "createdAt": "2026-01-01T09:00:00.000Z",
+    "finishedAt": "2026-01-01T09:02:00.000Z",
+    "port": 3000,
+    "type": "file"
+   }
+  ]
+ },
+ "releaseDetails": {
+  "r3": {
+   "release": {
+    "_id": "r3",
+    "tag": "v3",
+    "state": "READY",
+    "createdAt": "2026-01-03T08:00:00.000Z",
+    "finishedAt": "2026-01-03T08:01:30.000Z",
+    "port": 3000,
+    "type": "file"
+   }
+  }
+ },
+ "buildLogs": {},
+ "events": {
+  "data": [
+   {
+    "metaData": {},
+    "values": []
+   }
+  ]
+ },
+ "logs": {
+  "data": [
+   {
+    "metaData": {
+     "releaseId": "r3"
+    },
+    "values": [
+     [
+      "1767435360000000000",
+      "{\"_entry\": \"Server listening on port 3000\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435420000000000",
+      "{\"_entry\": \"Error: getaddrinfo ENOTFOUND shop-db\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435470000000000",
+      "{\"_entry\": \"Error: getaddrinfo ENOTFOUND shop-db\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435520000000000",
+      "{\"_entry\": \"Error: getaddrinfo ENOTFOUND shop-db\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435570000000000",
+      "{\"_entry\": \"Error: getaddrinfo ENOTFOUND shop-db\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435620000000000",
+      "{\"_entry\": \"Error: getaddrinfo ENOTFOUND shop-db\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435670000000000",
+      "{\"_entry\": \"Error: getaddrinfo ENOTFOUND shop-db\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435720000000000",
+      "{\"_entry\": \"Error: getaddrinfo ENOTFOUND shop-db\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435770000000000",
+      "{\"_entry\": \"Error: getaddrinfo ENOTFOUND shop-db\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435820000000000",
+      "{\"_entry\": \"Error: getaddrinfo ENOTFOUND shop-db\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435870000000000",
+      "{\"_entry\": \"Error: getaddrinfo ENOTFOUND shop-db\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435920000000000",
+      "{\"_entry\": \"Error: getaddrinfo ENOTFOUND shop-db\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435970000000000",
+      "{\"_entry\": \"Error: getaddrinfo ENOTFOUND shop-db\", \"type\": \"stderr\"}"
+     ]
+    ]
+   }
+  ]
+ },
+ "metricsSummary": {
+  "cpuUsage": [
+   {
+    "applet": "p1",
+    "value": [
+     1767436200,
+     "0.12"
+    ]
+   }
+  ],
+  "memoryUsage": [
+   {
+    "applet": "p1",
+    "value": [
+     1767436200,
+     "314572800"
+    ]
+   }
+  ],
+  "disksUsage": []
+ },
+ "metricsCpu": {
+  "end": 1767436200,
+  "result": [
+   {
+    "applet": "p1",
+    "values": [
+     [
+      1767435300,
+      "0.1"
+     ],
+     [
+      1767435360,
+      "0.12000000000000001"
+     ],
+     [
+      1767435420,
+      "0.14"
+     ],
+     [
+      1767435480,
+      "0.1"
+     ],
+     [
+      1767435540,
+      "0.12000000000000001"
+     ],
+     [
+      1767435600,
+      "0.14"
+     ],
+     [
+      1767435660,
+      "0.1"
+     ],
+     [
+      1767435720,
+      "0.12000000000000001"
+     ],
+     [
+      1767435780,
+      "0.14"
+     ],
+     [
+      1767435840,
+      "0.1"
+     ],
+     [
+      1767435900,
+      "0.12000000000000001"
+     ],
+     [
+      1767435960,
+      "0.14"
+     ],
+     [
+      1767436020,
+      "0.1"
+     ],
+     [
+      1767436080,
+      "0.12000000000000001"
+     ],
+     [
+      1767436140,
+      "0.14"
+     ]
+    ]
+   }
+  ]
+ },
+ "metricsMemory": {
+  "end": 1767436200,
+  "result": [
+   {
+    "applet": "p1",
+    "values": [
+     [
+      1767435300,
+      "304087040"
+     ],
+     [
+      1767435360,
+      "305135616"
+     ],
+     [
+      1767435420,
+      "306184192"
+     ],
+     [
+      1767435480,
+      "307232768"
+     ],
+     [
+      1767435540,
+      "308281344"
+     ],
+     [
+      1767435600,
+      "309329920"
+     ],
+     [
+      1767435660,
+      "310378496"
+     ],
+     [
+      1767435720,
+      "311427072"
+     ],
+     [
+      1767435780,
+      "312475648"
+     ],
+     [
+      1767435840,
+      "313524224"
+     ],
+     [
+      1767435900,
+      "314572800"
+     ],
+     [
+      1767435960,
+      "315621376"
+     ],
+     [
+      1767436020,
+      "316669952"
+     ],
+     [
+      1767436080,
+      "317718528"
+     ],
+     [
+      1767436140,
+      "318767104"
+     ]
+    ]
+   }
+  ]
+ },
+ "me": {
+  "plans": {
+   "projects": {
+    "iran-g2-small": {
+     "available": true,
+     "region": "iran",
+     "RAM": {
+      "amount": 1
+     },
+     "CPU": {
+      "amount": 1
+     },
+     "volume": 5,
+     "price": 120
+    }
+   },
+   "projectBundlePlans": {}
+  }
+ },
+ "databases": {
+  "databases": [
+   {
+    "_id": "db1",
+    "hostname": "shop-db",
+    "type": "postgres",
+    "status": "RUNNING",
+    "scale": 1,
+    "publicNetwork": false
+   }
+  ]
+ },
+ "databaseDetails": {
+  "db1": {
+   "database": {
+    "_id": "db1",
+    "hostname": "shop-db",
+    "type": "postgres",
+    "status": "RUNNING",
+    "scale": 1,
+    "publicNetwork": false,
+    "network": {
+     "_id": "n2",
+     "name": "analytics"
+    },
+    "root_password": "SYNTH-ROOT-PW-9876",
+    "port": 5432
+   }
+  }
+ },
+ "probe": {
+  "ok": true,
+  "status": 200,
+  "latencyMs": 120,
+  "checkedAt": "2026-01-03T10:30:00.000Z"
+ },
+ "fail": {}
+}

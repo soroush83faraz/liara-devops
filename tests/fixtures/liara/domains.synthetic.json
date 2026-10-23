@@ -1,0 +1,20 @@
+{
+  "_note": "synthetic, not recorded from Liara",
+  "domains": [
+    {
+      "_id": "d1",
+      "name": "shop.example.ir",
+      "type": "PROJECT",
+      "project": {
+        "_id": "a1",
+        "project_id": "demo-shop"
+      },
+      "status": "ACTIVE",
+      "certificatesStatus": "ACTIVE",
+      "redirectTo": "",
+      "redirectStatus": 0,
+      "created_at": "2026-01-03T00:00:00Z",
+      "CNameRecord": "demo-shop.liara.run"
+    }
+  ]
+}

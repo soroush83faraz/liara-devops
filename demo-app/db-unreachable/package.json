@@ -1,0 +1,9 @@
+{
+  "name": "broken-shop-db-unreachable",
+  "version": "2.6.0",
+  "private": true,
+  "description": "Demo scenario 'db-unreachable' for the Hamyar Liara demo. Plain Node, no dependencies.",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

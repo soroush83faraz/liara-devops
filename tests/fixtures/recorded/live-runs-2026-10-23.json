@@ -1,0 +1,89 @@
+{
+  "_note": "Redacted record of the five live troubleshooting runs executed on 2026-10-23 against real Liara (team workspace), by the deployed product, in RULE-ONLY mode (no LLM: llm_unavailable). Recorded from the run outputs; ids, names, release ids and timestamps are removed or generalised. Used as the evidence behind the 'verified live' claims in README.md and docs/. Not used by tests as input.",
+  "environment": {
+    "plan": "small-g2 (0.5 vCPU / 0.5 GB) + basic bundle, private network, no disk on the demo app",
+    "mode": "rule-only (llm_unavailable); AI gateway never called",
+    "appletsEndpoint": "HTTP 500 from Liara for every app tried (Liara-side); the product degraded as designed"
+  },
+  "runs": [
+    {
+      "scenario": "missing-secret",
+      "symptom": "GET / -> 500, /health -> 200",
+      "timeline": {
+        "investigationSeconds": 6.3,
+        "approvedAtSeconds": 6.8,
+        "executingFromSeconds": 7.4,
+        "verifyingFromSeconds": 10.2,
+        "terminalAtSeconds": 44.1,
+        "terminalStatus": "verified",
+        "siteAfter": 200
+      },
+      "diagnosis": {
+        "topHypothesis": "required environment variable SESSION_SECRET is not defined",
+        "evidenceLevel": "strong",
+        "proposal": "set_env SESSION_SECRET (generated server-side, base64url32)"
+      },
+      "verificationChecks": [
+        { "name": "env_keys_applied", "status": "passed" },
+        { "name": "applets_available", "status": "unknown", "note": "instance list unavailable (Liara 500); remaining signals used" },
+        { "name": "app_running", "status": "passed", "note": "via app detail: status ACTIVE, scale 1, deployed, release READY" },
+        { "name": "restart_observed", "status": "passed", "note": "via Liara events: a container start event after the change" },
+        { "name": "probe_2xx", "status": "passed", "note": "500, 200, 200, 200 over 16 s: 3 consecutive 2xx, 5 s apart" },
+        { "name": "behavior_changed", "status": "passed", "note": "500 before the change, 2xx after; never replaces a required check" },
+        { "name": "error_signature_absent", "status": "passed", "note": "judged on 7 log lines of the NEW release; 7 lines of the previous release ignored (one carried the old error)" }
+      ],
+      "history": [
+        "run 1: not_verified - app status string ACTIVE not recognised, probe/log checks dropped (fixed)",
+        "run 2: not_verified - first probe hit the old container during Liara's rolling restart (settling window added)",
+        "run 3: not_verified - one old-container error line fell in the same second as the restart event (attribution by release id added)",
+        "run 4: verified"
+      ]
+    },
+    {
+      "scenario": "wrong-port",
+      "symptom": "GET / -> 502; app logs 'Server listening on port 8080'; platform expects 3000",
+      "diagnosis": {
+        "topHypothesis": "app is not reachable on the expected port (current release)",
+        "evidenceLevel": "strong",
+        "evidence": ["port_mismatch from the current release's own log line", "probe 502", "onset 20 s after the release"],
+        "proposal": "update_port 8080"
+      },
+      "earlierDefect": "before release scoping the diagnosis was 'SESSION_SECRET not set' taken from a previous release's log lines"
+    },
+    {
+      "scenario": "crash-loop",
+      "symptom": "process crashes on request, container restarted repeatedly",
+      "diagnosis": {
+        "topHypothesis": "application error after the current release",
+        "evidenceLevel": "strong",
+        "evidence": ["TypeError with file:line from runtime logs", "container die+start x5 within 60 s from Liara events", "probe 502"],
+        "proposal": "none (no safe automatic fix)"
+      }
+    },
+    {
+      "scenario": "build-failure",
+      "symptom": "newest release FAILED while an older release still serves",
+      "diagnosis": {
+        "topHypothesis": "build of the newest release failed; the app still serves the previous release",
+        "evidenceLevel": "strong",
+        "evidence": ["release state FAILED", "npm error code ETARGET: no matching version for express@^99.0.0 (page 2 of the paginated build log, ANSI-coloured STDOUT)"],
+        "proposal": "none"
+      },
+      "earlierDefect": "build log was read only for its first 20 lines, so the error was invisible; stale crash errors from older releases ranked first"
+    },
+    {
+      "scenario": "cpu-bound",
+      "symptom": "GET /report blocks the event loop for ~3 s; probe timeouts",
+      "diagnosis": {
+        "topHypothesis": "CPU saturation (current release)",
+        "evidenceLevel": "strong",
+        "evidence": ["CPU 0.496 cores = 99% of the 0.5 vCPU plan, peak 100%, 9 of 12 samples >= 60%", "probe timeout 6 s", "GET /report 3056 ms in access log", "onset after the release"],
+        "ramBlamed": false,
+        "proposal": "none (a restart or more RAM would not help)"
+      },
+      "earlierDefect": "first live run produced a weak 'transient or unknown' hypothesis with a restart proposal (thresholds were too strict, weak evidence still carried a state-changing proposal)"
+    }
+  ],
+  "spendTomanAtThisPoint": 6875,
+  "notRunLive": ["db-unreachable", "memory-leak / OOM", "domains and SSL", "database create / backup", "resize / redeploy-previous", "AI copilot model calls"]
+}

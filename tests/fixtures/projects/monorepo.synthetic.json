@@ -1,0 +1,9 @@
+{
+  "_note": "SYNTHETIC project tree for the setup detector tests. Not a real project; every value below is a made-up placeholder.",
+  "files": {
+    "apps/web/package.json": "{\"dependencies\": {\"next\": \"15.0.0\"}}",
+    "apps/api/package.json": "{\"dependencies\": {\"express\": \"4\"}}",
+    "packages/ui/package.json": "{\"name\": \"ui\"}",
+    "README.md": "# monorepo"
+  }
+}

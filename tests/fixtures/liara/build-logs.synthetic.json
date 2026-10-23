@@ -1,0 +1,24 @@
+{
+  "_note": "synthetic, not recorded from Liara",
+  "release": {
+    "_id": "r1",
+    "state": "DEPLOYING",
+    "queue": 0
+  },
+  "buildOutput": [
+    {
+      "_id": "b1",
+      "line": "Step 1/5 : FROM node:22",
+      "stream": "STDOUT",
+      "releaseID": "r1",
+      "createdAt": "2026-01-03T09:00:01Z"
+    },
+    {
+      "_id": "b2",
+      "line": "Successfully tagged demo-shop:v1",
+      "stream": "STDOUT",
+      "releaseID": "r1",
+      "createdAt": "2026-01-03T09:00:05Z"
+    }
+  ]
+}

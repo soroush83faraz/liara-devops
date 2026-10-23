@@ -1,0 +1,7 @@
+{
+  "_note": "SYNTHETIC project tree for the setup detector tests. Not a real project; every value below is a made-up placeholder.",
+  "files": {
+    "package.json": "{\"scripts\": {\"start\": \"node a.js\"}, \"dependencies\": {\"express\": \"4\"}}",
+    ".env": "REAL_LOOKING_TOKEN=FAKE_ABCDEF_NOT_REAL\nDATABASE_URL=mysql://u:FAKE@h/db\n"
+  }
+}

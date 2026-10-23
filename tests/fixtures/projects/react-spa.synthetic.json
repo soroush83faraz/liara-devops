@@ -1,0 +1,10 @@
+{
+  "_note": "SYNTHETIC project tree for the setup detector tests. Not a real project; every value below is a made-up placeholder.",
+  "files": {
+    "package.json": "{\"name\": \"web\", \"scripts\": {\"dev\": \"vite\", \"build\": \"vite build\"}, \"dependencies\": {\"react\": \"19.0.0\", \"react-dom\": \"19.0.0\"}, \"devDependencies\": {\"vite\": \"6.0.0\"}}",
+    "yarn.lock": "# yarn lockfile",
+    "index.html": "<div id=root></div>",
+    "src/main.jsx": "import React from 'react'",
+    ".env.example": "VITE_API_URL=https://api.example.invalid\n"
+  }
+}

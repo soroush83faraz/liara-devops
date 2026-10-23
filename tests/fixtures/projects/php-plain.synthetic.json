@@ -1,0 +1,7 @@
+{
+  "_note": "SYNTHETIC project tree for the setup detector tests. Not a real project; every value below is a made-up placeholder.",
+  "files": {
+    "index.php": "<?php echo 'hi';",
+    "config.php": "<?php return [];"
+  }
+}

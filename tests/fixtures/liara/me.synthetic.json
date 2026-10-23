@@ -1,0 +1,149 @@
+{
+  "_note": "synthetic, not recorded from Liara",
+  "user": {
+    "_id": "u1",
+    "fullname": "Synthetic User",
+    "email": "user@example.invalid",
+    "isTeam": false,
+    "privateNetworkFeature": true,
+    "legacyNetworkFeature": false
+  },
+  "databaseVersions": {
+    "postgres": [
+      {
+        "label": "16",
+        "value": "16",
+        "postgisValue": "16-postgis",
+        "pgvectorValue": "16-pgvector"
+      }
+    ],
+    "redis": [
+      {
+        "label": "7",
+        "value": "7"
+      }
+    ]
+  },
+  "defaultDatabaseVersions": {
+    "postgres": "16"
+  },
+  "plans": {
+    "projects": {
+      "free": {
+        "available": true,
+        "region": "iran",
+        "RAM": {
+          "amount": 0.25
+        },
+        "CPU": {
+          "amount": 0.25
+        },
+        "volume": 1,
+        "price": 0
+      },
+      "iran-g2-small": {
+        "available": true,
+        "region": "iran",
+        "RAM": {
+          "amount": 1
+        },
+        "CPU": {
+          "amount": 1
+        },
+        "volume": 5,
+        "price": 100,
+        "storageClass": "SSD"
+      },
+      "germany-g2-small": {
+        "available": true,
+        "region": "germany",
+        "RAM": {
+          "amount": 1
+        },
+        "CPU": {
+          "amount": 1
+        },
+        "volume": 5,
+        "price": 90
+      },
+      "old-plan": {
+        "available": true,
+        "region": "iran",
+        "RAM": {
+          "amount": 1
+        },
+        "CPU": {
+          "amount": 1
+        },
+        "volume": 5,
+        "price": 50
+      },
+      "iran-g2-big": {
+        "available": false,
+        "region": "iran",
+        "RAM": {
+          "amount": 8
+        },
+        "CPU": {
+          "amount": 4
+        },
+        "volume": 50,
+        "price": 800
+      }
+    },
+    "projectBundlePlans": {
+      "iran-g2-small": {
+        "standard": {
+          "available": true,
+          "displayPrice": 50000,
+          "maxLogsRetention": 7
+        },
+        "pro": {
+          "available": false,
+          "displayPrice": 120000,
+          "maxLogsRetention": 30
+        }
+      }
+    },
+    "databases": {
+      "iran-g2-small": {
+        "available": true,
+        "region": "iran",
+        "RAM": {
+          "amount": 1
+        },
+        "CPU": {
+          "amount": 1
+        },
+        "volume": 10,
+        "price": 0.5,
+        "supports": [
+          "postgres",
+          "mysql"
+        ]
+      },
+      "redis-only": {
+        "available": true,
+        "RAM": {
+          "amount": 1
+        },
+        "CPU": {
+          "amount": 1
+        },
+        "volume": 2,
+        "price": 0.25,
+        "supports": [
+          "redis"
+        ]
+      }
+    },
+    "databaseBundlePlans": {
+      "iran-g2-small": {
+        "standard": {
+          "available": true,
+          "displayPrice": 10000
+        }
+      }
+    }
+  }
+}

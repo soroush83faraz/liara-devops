@@ -1,0 +1,9 @@
+{
+  "name": "broken-shop-healthy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Demo scenario 'healthy' for the Hamyar Liara demo. Plain Node, no dependencies.",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

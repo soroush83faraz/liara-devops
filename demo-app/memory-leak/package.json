@@ -1,0 +1,9 @@
+{
+  "name": "broken-shop-memory-leak",
+  "version": "2.4.0",
+  "private": true,
+  "description": "Demo scenario 'memory-leak' for the Hamyar Liara demo. Plain Node, no dependencies.",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "_note": "synthetic, not recorded from Liara",
+  "cpuUsage": [
+    {
+      "applet": "p1",
+      "value": [
+        1767430200,
+        "0.31"
+      ]
+    }
+  ],
+  "memoryUsage": [
+    {
+      "applet": "p1",
+      "value": [
+        1767430200,
+        "104857600"
+      ]
+    }
+  ],
+  "disksUsage": [
+    {
+      "name": "data",
+      "size": "1073741824",
+      "usage": "1024",
+      "reportedAt": "2026-01-03T10:00:00Z"
+    }
+  ]
+}

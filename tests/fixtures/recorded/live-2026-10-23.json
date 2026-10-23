@@ -1,0 +1,93 @@
+{
+  "_note": "REDACTED shapes recorded from a real Liara team-mode account on 2026-10-23 (app, disk, metrics, restart). KEY NAMES, JSON TYPES, the 30 s metrics step and the observed MAGNITUDES are as recorded; every id, name, timestamp and URL is a SYNTHETIC placeholder. Units of the magnitudes are inferred (CPU = cores, memory = bytes, network = probably bytes/s) and still unverified.",
+  "diskRoutes": {
+    "listByName": { "request": "GET /v1/projects/{name}/disks?teamID=", "status": 500, "body": { "error": "Internal Server Error" } },
+    "listById": {
+      "request": "GET /v1/projects/{_id}/disks?teamID=  ({_id} = project._id from GET /v1/projects/{name})",
+      "status": 200,
+      "body": {
+        "disks": [
+          {
+            "name": "data",
+            "size": 1,
+            "updatedAt": "2026-01-01T00:00:00.000Z",
+            "createdAt": "2026-01-01T00:00:00.000Z",
+            "filebrowserUrl": "https://filebrowser-synth.example.invalid"
+          }
+        ],
+        "mounts": []
+      },
+      "note": "mounts: [] = the disk exists but no release mounts it. The disk object has no _id."
+    },
+    "createByName": { "request": "POST /v1/projects/{name}/disks {name, size}", "result": "worked (the disk was created)" }
+  },
+  "appletsRoutes": {
+    "listByName": { "request": "GET /v1/projects/{name}/applets", "status": 500, "note": "from Liara itself" },
+    "listById": { "request": "GET /v1/projects/{_id}/applets", "status": 404, "body": { "message": "Project not found." } }
+  },
+  "projectDetail": {
+    "topLevelKeys": [
+      "_id", "project_id", "type", "status", "readOnlyRootFilesystem", "defaultSubdomain", "defaultSubdomainExpired", "keepDefaultSubdomain",
+      "zeroDowntime", "scale", "envs", "planID", "bundlePlanID", "network", "dns", "created_at", "hourlyPrice", "bundleHourlyPrice", "isDeployed", "reservedDiskSpace"
+    ],
+    "note": "no `disks` key",
+    "redactedExample": {
+      "_id": "SYNTH-PROJECT-ID-0001",
+      "project_id": "synth-app",
+      "type": "next",
+      "status": "ACTIVE",
+      "readOnlyRootFilesystem": false,
+      "defaultSubdomain": true,
+      "defaultSubdomainExpired": false,
+      "keepDefaultSubdomain": false,
+      "zeroDowntime": false,
+      "scale": 1,
+      "envs": [],
+      "planID": "small-g2",
+      "bundlePlanID": "basic",
+      "network": "SYNTH-NETWORK-ID-0001",
+      "dns": {},
+      "created_at": "2026-01-01T00:00:00.000Z",
+      "hourlyPrice": 659.72,
+      "bundleHourlyPrice": 381.94,
+      "isDeployed": true,
+      "reservedDiskSpace": 1
+    }
+  },
+  "metricsSeries": {
+    "request": "GET /v1/projects/{name}/metrics/cpu?since=<unix seconds>",
+    "stepSeconds": 30,
+    "bodyCpu": {
+      "end": 1790000000,
+      "result": [
+        { "applet": "synth-app-7d9f-abcde", "values": [[1789999940, "0.05"], [1789999970, "0.05"], [1790000000, "0.05"]] }
+      ]
+    },
+    "bodyMemory": {
+      "end": 1790000000,
+      "result": [
+        { "applet": "synth-app-7d9f-abcde", "values": [[1789999940, "82000000"], [1789999970, "82100000"], [1790000000, "82000000"]] }
+      ]
+    },
+    "bodyNetworkReceive": {
+      "end": 1790000000,
+      "result": [
+        { "applet": "synth-app-7d9f-abcde", "values": [[1789999940, "1200"], [1789999970, "1210"], [1790000000, "1195"]] }
+      ]
+    },
+    "bodyNetworkTransmit": {
+      "end": 1790000000,
+      "result": [
+        { "applet": "synth-app-7d9f-abcde", "values": [[1789999940, "300"], [1789999970, "305"], [1790000000, "298"]] }
+      ]
+    }
+  },
+  "metricsSummary": {
+    "request": "GET /v1/projects/{name}/metrics/summary",
+    "body": {
+      "cpuUsage": [{ "value": [1790000000, "0.05"], "applet": "synth-app-7d9f-abcde" }],
+      "memoryUsage": [{ "value": [1790000000, "82000000"], "applet": "synth-app-7d9f-abcde" }],
+      "disksUsage": [{ "name": "data" }]
+    }
+  }
+}

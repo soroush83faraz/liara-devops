@@ -1,0 +1,75 @@
+{
+  "_note": "REDACTED shapes recorded from a real Liara account by a read-only live spike on 2026-10-23 (GET /v1/billing?teamID=<team id> and GET /v1/me?teamID=<team id>, API key + team id). Only the fields listed in the spike write-up are kept. KEY NAMES, JSON TYPES and the NUMERIC VALUES (balances, min credit) are as recorded. All identifiers, names, dates, the role and the permissions value are SYNTHETIC placeholders (no names, emails, phones or national codes). The shape of teamMemberPermissions is NOT verified. Finding: in team mode both responses carry `user` (the person) AND `team` (the money and resources); the balance that matters is team.balance. Without teamID there is no `team` key.",
+  "billingTeamMode": {
+    "user": {
+      "balance": 0.5999999999767169,
+      "accountType": "REAL_PERSON",
+      "minCreditAmount": 20000,
+      "isManualMinCredit": false,
+      "minCreditLastNotifiedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "team": {
+      "balance": 2000000,
+      "accountType": "REAL_PERSON",
+      "minCreditAmount": 20000,
+      "isManualMinCredit": false
+    }
+  },
+  "meTeamMode": {
+    "user": {
+      "_id": "SYNTH-USER-0001",
+      "isTeam": false,
+      "isTeamCreator": true
+    },
+    "team": {
+      "_id": "SYNTH-TEAM-0001",
+      "isTeam": true,
+      "teamName": "SYNTHETIC Team",
+      "teamCreator": "SYNTH-USER-0001",
+      "balance": 2000000,
+      "accountType": "REAL_PERSON",
+      "minCreditAmount": 20000,
+      "isManualMinCredit": false,
+      "teamMemberRole": "SYNTH_ROLE",
+      "teamMemberPermissions": [
+        "SYNTH_PERMISSION"
+      ],
+      "legacyNetworkFeature": false,
+      "privateNetworkFeature": true,
+      "legacyObjectStorageFeature": false,
+      "invoiceIssuingEnabled": false,
+      "joined_at": "2026-01-01T00:00:00.000Z"
+    },
+    "databaseVersions": {
+      "postgres": [
+        {
+          "label": "16",
+          "value": "16"
+        }
+      ]
+    },
+    "defaultDatabaseVersions": {
+      "postgres": "16"
+    },
+    "featureFlags": [],
+    "plans": {
+      "projects": {
+        "iran-g2-small": {
+          "available": true,
+          "region": "iran",
+          "RAM": {
+            "amount": 1
+          },
+          "CPU": {
+            "amount": 1
+          },
+          "volume": 5,
+          "price": 100
+        }
+      },
+      "projectBundlePlans": {},
+      "databases": {},
+      "databaseBundlePlans": {}
+    }
+  }
+}

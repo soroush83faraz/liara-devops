@@ -1,0 +1,9 @@
+{
+  "_note": "synthetic, not recorded from Liara",
+  "user": {
+    "balance": 123456.5,
+    "accountType": "personal",
+    "minCreditAmount": 10000,
+    "isManualMinCredit": false
+  }
+}

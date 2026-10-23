@@ -1,0 +1,9 @@
+{
+  "name": "broken-shop-crash-loop",
+  "version": "2.2.0",
+  "private": true,
+  "description": "Demo scenario 'crash-loop' for the Hamyar Liara demo. Plain Node, no dependencies.",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

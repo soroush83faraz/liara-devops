@@ -1,0 +1,12 @@
+{
+  "name": "broken-shop-build-failure",
+  "version": "2.5.0",
+  "private": true,
+  "description": "Demo scenario 'build-failure'. The dependency below is intentional: no such version exists, so the build step fails with npm ETARGET.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^99.0.0"
+  }
+}

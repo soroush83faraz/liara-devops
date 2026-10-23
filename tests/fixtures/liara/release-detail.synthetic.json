@@ -1,0 +1,11 @@
+{
+  "_note": "synthetic, not recorded from Liara",
+  "release": {
+    "_id": "r1",
+    "state": "FAILED",
+    "status": "x",
+    "failReason": "disk_not_found data",
+    "queue": 0,
+    "tag": "v1"
+  }
+}

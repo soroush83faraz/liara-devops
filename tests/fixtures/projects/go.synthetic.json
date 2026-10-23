@@ -1,0 +1,8 @@
+{
+  "_note": "SYNTHETIC project tree for the setup detector tests. Not a real project; every value below is a made-up placeholder.",
+  "files": {
+    "go.mod": "module example.invalid/app\n\ngo 1.22\n\nrequire (\n\tgithub.com/gin-gonic/gin v1.9.0\n\tgithub.com/lib/pq v1.10.0\n)\n",
+    "go.sum": "",
+    "main.go": "package main\nfunc main() {\n\tr.Run(\":8080\")\n}\n"
+  }
+}

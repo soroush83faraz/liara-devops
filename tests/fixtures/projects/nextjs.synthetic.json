@@ -1,0 +1,11 @@
+{
+  "_note": "SYNTHETIC project tree for the setup detector tests. Not a real project; every value below is a made-up placeholder.",
+  "files": {
+    "package.json": "{\"name\": \"shop\", \"scripts\": {\"dev\": \"next dev\", \"build\": \"next build\", \"start\": \"next start -p 3100\"}, \"dependencies\": {\"next\": \"15.0.0\", \"react\": \"19.0.0\", \"react-dom\": \"19.0.0\", \"@prisma/client\": \"6.0.0\", \"pg\": \"8.0.0\"}, \"devDependencies\": {\"prisma\": \"6.0.0\"}, \"engines\": {\"node\": \">=20\"}}",
+    "package-lock.json": "{}",
+    "next.config.js": "module.exports = {}",
+    "prisma/schema.prisma": "datasource db {\n  provider = \"postgresql\"\n  url = env(\"DATABASE_URL\")\n}\n",
+    ".env.example": "DATABASE_URL=postgresql://demo:FAKE_PASSWORD_VALUE@db.invalid:5432/shop\nNEXTAUTH_SECRET=FAKE_SECRET_VALUE_123\nNEXTAUTH_URL=http://localhost:3000\nSTRIPE_SECRET_KEY=sk_test_FAKE_VALUE\n# SENTRY_DSN=\n",
+    "src/app/page.tsx": "export default function Page(){return null}"
+  }
+}

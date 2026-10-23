@@ -1,0 +1,9 @@
+{
+  "_note": "SYNTHETIC project tree for the setup detector tests. Not a real project; every value below is a made-up placeholder.",
+  "files": {
+    "composer.json": "{\"require\": {\"php\": \"^8.2\", \"laravel/framework\": \"^11.0\", \"predis/predis\": \"^2.0\"}}",
+    "composer.lock": "{}",
+    "artisan": "#!/usr/bin/env php",
+    ".env.example": "APP_NAME=Laravel\nAPP_KEY=\nAPP_ENV=local\nDB_CONNECTION=mysql\nDB_HOST=127.0.0.1\nDB_PORT=3306\nDB_DATABASE=laravel\nDB_USERNAME=root\nDB_PASSWORD=FAKE_DB_PASSWORD\nREDIS_HOST=127.0.0.1\nMAIL_PASSWORD=FAKE_MAIL_PASSWORD\n"
+  }
+}

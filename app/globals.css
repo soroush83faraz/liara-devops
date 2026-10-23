@@ -1,0 +1,197 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens. Every foreground/background pair used by components is >= 4.5:1
+ * (checked by tests/unit/ui/contrast.test.ts, which parses this file).
+ * Keep token declarations one-per-line: the test relies on that.
+ */
+:root {
+  color-scheme: light dark;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --surface: #ffffff;
+  --surface-muted: #f1f5f9;
+  --muted: #475569;
+  --border: #e2e8f0;
+  --border-strong: #64748b;
+  --accent: #0b5c7a;
+  --accent-foreground: #ffffff;
+  --accent-soft: #e0f2f8;
+  --accent-ink: #073f55;
+  --ok: #137a38;
+  --ok-soft: #dcfce7;
+  --ok-ink: #14532d;
+  --warn: #a84b08;
+  --warn-soft: #fef3c7;
+  --warn-ink: #78350f;
+  --danger: #b91c1c;
+  --danger-foreground: #ffffff;
+  --danger-soft: #fee2e2;
+  --danger-ink: #7f1d1d;
+  --code-bg: #f1f5f9;
+  --code-fg: #0f172a;
+  --overlay: rgb(15 23 42 / 0.45);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0b1220;
+    --foreground: #e2e8f0;
+    --surface: #111a2c;
+    --surface-muted: #16213a;
+    --muted: #94a3b8;
+    --border: #243049;
+    --border-strong: #5b6b88;
+    --accent: #5cc4de;
+    --accent-foreground: #04222d;
+    --accent-soft: #0e2a36;
+    --accent-ink: #9bdcee;
+    --ok: #4ade80;
+    --ok-soft: #0f2a1c;
+    --ok-ink: #86efac;
+    --warn: #fbbf24;
+    --warn-soft: #2e2108;
+    --warn-ink: #fcd34d;
+    --danger: #f87171;
+    --danger-foreground: #2a0a0a;
+    --danger-soft: #321416;
+    --danger-ink: #fca5a5;
+    --code-bg: #0f1829;
+    --code-fg: #e2e8f0;
+    --overlay: rgb(2 6 15 / 0.65);
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-ink: var(--accent-ink);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --color-ok-ink: var(--ok-ink);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-warn-ink: var(--warn-ink);
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+  --color-danger-soft: var(--danger-soft);
+  --color-danger-ink: var(--danger-ink);
+  --color-code-bg: var(--code-bg);
+  --color-code-fg: var(--code-fg);
+  --color-overlay: var(--overlay);
+  --font-sans: "Vazirmatn", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+  --animate-hl-fade: hl-fade 140ms ease-out;
+  --animate-hl-pop: hl-pop 160ms ease-out;
+  --animate-hl-sheet-bottom: hl-sheet-bottom 200ms ease-out;
+  --animate-hl-sheet-start: hl-sheet-start 200ms ease-out;
+  --animate-hl-sheet-end: hl-sheet-end 200ms ease-out;
+}
+
+@keyframes hl-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes hl-pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hl-sheet-bottom {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* "start" is the reading-start side: right in RTL, left in LTR. */
+@keyframes hl-sheet-start {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes hl-sheet-end {
+  from {
+    transform: translateX(-24px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.9;
+}
+
+/* Visible focus for everything that does not draw its own ring. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+/* A tab strip stays pinned to the top of whatever scrolls under it (service panel body, bottom sheet). */
+[data-tabs-bar] {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--surface);
+}
+
+/*
+ * The application shell is exactly the viewport tall and never scrolls as a document; only <main> and the
+ * service-panel body scroll. `clip` (unlike `hidden`) also refuses programmatic scrolling, so a
+ * scrollIntoView() inside the panel can never shift the whole shell.
+ */
+html:has([data-app-shell]),
+html:has([data-app-shell]) body {
+  height: 100dvh;
+  overflow: clip;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

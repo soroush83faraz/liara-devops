@@ -1,0 +1,45 @@
+{
+  "_note": "synthetic, not recorded from Liara",
+  "total": 2,
+  "currentRelease": "r2",
+  "readyReleasesCount": 1,
+  "platform": "node",
+  "releases": [
+    {
+      "_id": "r2",
+      "type": "node",
+      "imageName": "registry.example/demo-shop:v2",
+      "projectType": "node",
+      "state": "READY",
+      "port": 3000,
+      "gitInfo": {
+        "branch": "main",
+        "message": "fix",
+        "commit": "abc",
+        "committedAt": null,
+        "remote": null,
+        "author": {
+          "email": null,
+          "name": "dev"
+        },
+        "tags": []
+      },
+      "createdAt": "2026-01-03T09:00:00Z",
+      "finishedAt": "2026-01-03T09:02:00Z",
+      "tag": "v2",
+      "sourceAvailable": true
+    },
+    {
+      "_id": "r1",
+      "type": "node",
+      "imageName": "registry.example/demo-shop:v1",
+      "projectType": "node",
+      "state": "FAILED",
+      "port": 3000,
+      "createdAt": "2026-01-02T09:00:00Z",
+      "finishedAt": null,
+      "tag": "v1",
+      "sourceAvailable": false
+    }
+  ]
+}

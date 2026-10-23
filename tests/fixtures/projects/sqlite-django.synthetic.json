@@ -1,0 +1,8 @@
+{
+  "_note": "SYNTHETIC project tree for the setup detector tests. Not a real project; every value below is a made-up placeholder.",
+  "files": {
+    "manage.py": "# django",
+    "requirements.txt": "django==5.0\n",
+    "site/settings.py": "DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3'}}\n"
+  }
+}

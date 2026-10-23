@@ -1,0 +1,7 @@
+{
+  "_note": "SYNTHETIC project tree for the setup detector tests. Not a real project; every value below is a made-up placeholder.",
+  "files": {
+    "Dockerfile": "FROM alpine:3.20\nEXPOSE 8081/tcp\nCMD [\"/bin/app\"]\n",
+    "src/main.c": "int main(){return 0;}"
+  }
+}

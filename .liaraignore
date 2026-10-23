@@ -1,0 +1,31 @@
+# Keep the upload small and free of secrets. Liara builds from source (npm ci && next build).
+node_modules
+.next
+.git
+.vscode
+.idea
+.DS_Store
+
+# Secrets and local env files (placeholders are not needed at build time either)
+.env
+.env.*
+
+# Not part of the product (test configs import ./tests, so they must go with it or `next build` fails type checking)
+tests
+playwright.config.ts
+vitest.config.ts
+demo-app
+scripts
+docs
+Torob
+playwright-report
+test-results
+coverage
+scratch
+tmp
+*.zip
+*.log
+*.tsbuildinfo
+
+# Runtime data lives on the Liara disk, never in the image
+/data

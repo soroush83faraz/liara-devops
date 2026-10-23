@@ -1,0 +1,8 @@
+{
+  "_note": "SYNTHETIC project tree for the setup detector tests. Not a real project; every value below is a made-up placeholder.",
+  "files": {
+    "liara.json": "{\"platform\": \"node\", \"port\": 5555, \"app\": \"my-api\", \"envs\": {\"API_TOKEN\": \"FAKE_VALUE\"}}",
+    "package.json": "{\"scripts\": {\"start\": \"node index.js\"}, \"dependencies\": {\"express\": \"4.19.0\"}}",
+    "index.js": "require('express')().listen(3000)"
+  }
+}

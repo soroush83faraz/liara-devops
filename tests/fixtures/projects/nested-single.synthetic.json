@@ -1,0 +1,8 @@
+{
+  "_note": "SYNTHETIC project tree for the setup detector tests. Not a real project; every value below is a made-up placeholder.",
+  "files": {
+    "backend/package.json": "{\"scripts\": {\"start\": \"node index.js\"}, \"dependencies\": {\"express\": \"4\"}}",
+    "docs/README.md": "# docs",
+    "LICENSE": "MIT"
+  }
+}

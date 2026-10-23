@@ -1,0 +1,404 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`collectDbEvidence > reports a stopped DB, its referencing apps, and hints scale 1`] = `
+{
+  "correlation": null,
+  "hypotheses": [
+    "H1 db_unreachable medium scale +O1 -",
+  ],
+  "observations": [
+    "O1 db_state evidence.db.stopped",
+    "O2 db_state evidence.db.referenced_by",
+    "O3 metric evidence.metric.cpu_raw",
+    "O4 metric evidence.metric.memory_raw",
+    "O5 event evidence.event.scale",
+  ],
+  "ruledOut": [],
+  "sources": [],
+  "unknowns": [],
+}
+`;
+
+exports[`scenario build-failure > produces the expected top finding and a stable shape 1`] = `
+{
+  "correlation": null,
+  "hypotheses": [
+    "H1 build_failure strong - +O5,O4,O6,O1,O2,O12 -",
+  ],
+  "observations": [
+    "O1 release_state evidence.release.failed",
+    "O2 release_state evidence.release.newest_not_serving",
+    "O3 release_state evidence.release.current",
+    "O4 build_error evidence.build.fail_reason",
+    "O5 build_error evidence.build.npm_no_matching_version",
+    "O6 build_error evidence.build.docker_step_failed",
+    "O7 config evidence.config.port_matches",
+    "O8 metric evidence.metric.cpu_normal",
+    "O9 metric evidence.metric.memory_normal",
+    "O10 probe evidence.probe.ok",
+    "O11 applet_state evidence.applet.summary",
+    "O12 event evidence.temporal.onset_after_change",
+  ],
+  "ruledOut": [
+    "O9",
+    "O8",
+    "O10",
+  ],
+  "sources": [
+    "db_detail:unavailable:not_applicable",
+  ],
+  "unknowns": [
+    "missing.http_status",
+  ],
+}
+`;
+
+exports[`scenario cpu-bound-slow > produces the expected top finding and a stable shape 1`] = `
+{
+  "correlation": null,
+  "hypotheses": [
+    "H1 cpu_saturation medium resize +O3,O7,O5 -",
+  ],
+  "observations": [
+    "O1 release_state evidence.release.current",
+    "O2 config evidence.config.port_matches",
+    "O3 metric evidence.metric.cpu_sustained_high",
+    "O4 metric evidence.metric.memory_normal",
+    "O5 http_status evidence.http.slow_path_onset",
+    "O6 http_status evidence.http.no_5xx",
+    "O7 probe evidence.probe.slow",
+    "O8 applet_state evidence.applet.summary",
+  ],
+  "ruledOut": [
+    "O4",
+    "O1",
+  ],
+  "sources": [
+    "build_logs:unavailable:not_applicable",
+    "db_detail:unavailable:not_applicable",
+  ],
+  "unknowns": [],
+}
+`;
+
+exports[`scenario crash-loop > produces the expected top finding and a stable shape 1`] = `
+{
+  "correlation": "release v3 true",
+  "hypotheses": [
+    "H1 crash_after_release strong redeploy_previous +O3,O5,O4,O8,O12 -",
+  ],
+  "observations": [
+    "O1 release_state evidence.release.current",
+    "O2 config evidence.config.port_matches",
+    "O3 crash evidence.crash.exception",
+    "O4 crash evidence.crash.exit_code",
+    "O5 crash evidence.crash.crashloop",
+    "O6 metric evidence.metric.cpu_normal",
+    "O7 metric evidence.metric.memory_normal",
+    "O8 probe evidence.probe.5xx",
+    "O9 applet_state evidence.applet.not_running",
+    "O10 applet_state evidence.applet.summary",
+    "O11 event evidence.event.restart",
+    "O12 event evidence.temporal.onset_after_change",
+  ],
+  "ruledOut": [
+    "O7",
+    "O6",
+    "O1",
+  ],
+  "sources": [
+    "build_logs:unavailable:not_applicable",
+    "db_detail:unavailable:not_applicable",
+  ],
+  "unknowns": [
+    "missing.http_status",
+  ],
+}
+`;
+
+exports[`scenario db-stopped > produces the expected top finding and a stable shape 1`] = `
+{
+  "correlation": "release v3 false",
+  "hypotheses": [
+    "H1 db_unreachable medium scale +O2,O4 -",
+  ],
+  "observations": [
+    "O1 release_state evidence.release.current",
+    "O2 connection_error evidence.connection.db",
+    "O3 config evidence.config.port_matches",
+    "O4 db_state evidence.db.stopped",
+    "O5 metric evidence.metric.cpu_normal",
+    "O6 metric evidence.metric.memory_normal",
+    "O7 probe evidence.probe.ok",
+    "O8 applet_state evidence.applet.summary",
+    "O9 event evidence.temporal.onset_after_change",
+  ],
+  "ruledOut": [
+    "O6",
+    "O5",
+    "O7",
+    "O1",
+  ],
+  "sources": [
+    "build_logs:unavailable:not_applicable",
+  ],
+  "unknowns": [
+    "missing.http_status",
+  ],
+}
+`;
+
+exports[`scenario db-unreachable > produces the expected top finding and a stable shape 1`] = `
+{
+  "correlation": "release v3 false",
+  "hypotheses": [
+    "H1 db_unreachable medium - +O2,O5 -",
+  ],
+  "observations": [
+    "O1 release_state evidence.release.current",
+    "O2 connection_error evidence.connection.db",
+    "O3 config evidence.config.port_matches",
+    "O4 db_state evidence.db.running",
+    "O5 db_state evidence.db.network_differs",
+    "O6 metric evidence.metric.cpu_normal",
+    "O7 metric evidence.metric.memory_normal",
+    "O8 probe evidence.probe.ok",
+    "O9 applet_state evidence.applet.summary",
+    "O10 event evidence.temporal.onset_after_change",
+  ],
+  "ruledOut": [
+    "O7",
+    "O6",
+    "O8",
+    "O1",
+    "O4",
+  ],
+  "sources": [
+    "build_logs:unavailable:not_applicable",
+  ],
+  "unknowns": [
+    "missing.http_status",
+  ],
+}
+`;
+
+exports[`scenario healthy > produces the expected top finding and a stable shape 1`] = `
+{
+  "correlation": null,
+  "hypotheses": [],
+  "observations": [
+    "O1 release_state evidence.release.current",
+    "O2 config evidence.config.port_matches",
+    "O3 metric evidence.metric.cpu_normal",
+    "O4 metric evidence.metric.memory_normal",
+    "O5 http_status evidence.http.no_5xx",
+    "O6 probe evidence.probe.ok",
+    "O7 applet_state evidence.applet.summary",
+  ],
+  "ruledOut": [
+    "O4",
+    "O3",
+    "O6",
+    "O1",
+  ],
+  "sources": [
+    "build_logs:unavailable:not_applicable",
+    "db_detail:unavailable:not_applicable",
+  ],
+  "unknowns": [],
+}
+`;
+
+exports[`scenario injection-in-logs > produces the expected top finding and a stable shape 1`] = `
+{
+  "correlation": null,
+  "hypotheses": [],
+  "observations": [
+    "O1 release_state evidence.release.current",
+    "O2 missing_env evidence.missing_env flagged",
+    "O3 config evidence.config.key_absent flagged",
+    "O4 config evidence.config.port_matches",
+    "O5 metric evidence.metric.cpu_normal",
+    "O6 metric evidence.metric.memory_normal",
+    "O7 http_status evidence.http.no_5xx",
+    "O8 probe evidence.probe.ok",
+    "O9 applet_state evidence.applet.summary",
+    "O10 log_error evidence.injection.suspect flagged",
+    "O11 log_error evidence.injection.suspect flagged",
+    "O12 log_error evidence.injection.suspect flagged",
+  ],
+  "ruledOut": [
+    "O6",
+    "O5",
+    "O8",
+    "O1",
+  ],
+  "sources": [
+    "build_logs:unavailable:not_applicable",
+    "db_detail:unavailable:not_applicable",
+  ],
+  "unknowns": [],
+}
+`;
+
+exports[`scenario logs-unavailable > produces the expected top finding and a stable shape 1`] = `
+{
+  "correlation": null,
+  "hypotheses": [
+    "H1 wrong_port weak - +O2,O5 -",
+  ],
+  "observations": [
+    "O1 release_state evidence.release.current",
+    "O2 port_mismatch evidence.port.probe_refused_while_running",
+    "O3 metric evidence.metric.cpu_normal",
+    "O4 metric evidence.metric.memory_normal",
+    "O5 probe evidence.probe.5xx",
+    "O6 applet_state evidence.applet.summary",
+  ],
+  "ruledOut": [
+    "O4",
+    "O3",
+    "O1",
+  ],
+  "sources": [
+    "build_logs:unavailable:not_applicable",
+    "runtime_logs:failed:server_500",
+    "db_detail:unavailable:not_applicable",
+  ],
+  "unknowns": [
+    "source_failed.runtime_logs",
+  ],
+}
+`;
+
+exports[`scenario missing-env > produces the expected top finding and a stable shape 1`] = `
+{
+  "correlation": "release v3 true",
+  "hypotheses": [
+    "H1 missing_env strong set_env +O2,O3,O7,O10 -",
+  ],
+  "observations": [
+    "O1 release_state evidence.release.current",
+    "O2 missing_env evidence.missing_env",
+    "O3 config evidence.config.key_absent",
+    "O4 config evidence.config.port_matches",
+    "O5 metric evidence.metric.cpu_normal",
+    "O6 metric evidence.metric.memory_normal",
+    "O7 http_status evidence.http.5xx_ratio",
+    "O8 probe evidence.probe.ok",
+    "O9 applet_state evidence.applet.summary",
+    "O10 event evidence.temporal.onset_after_change",
+  ],
+  "ruledOut": [
+    "O6",
+    "O5",
+    "O8",
+    "O1",
+  ],
+  "sources": [
+    "build_logs:unavailable:not_applicable",
+    "db_detail:unavailable:not_applicable",
+  ],
+  "unknowns": [],
+}
+`;
+
+exports[`scenario oom > produces the expected top finding and a stable shape 1`] = `
+{
+  "correlation": null,
+  "hypotheses": [
+    "H1 oom medium resize +O3,O4,O6 -",
+  ],
+  "observations": [
+    "O1 release_state evidence.release.current",
+    "O2 config evidence.config.port_matches",
+    "O3 oom evidence.oom.container",
+    "O4 oom evidence.oom.container",
+    "O5 metric evidence.metric.cpu_normal",
+    "O6 metric evidence.metric.memory_near_limit",
+    "O7 probe evidence.probe.ok",
+    "O8 applet_state evidence.applet.summary",
+  ],
+  "ruledOut": [
+    "O5",
+    "O7",
+    "O1",
+  ],
+  "sources": [
+    "build_logs:unavailable:not_applicable",
+    "db_detail:unavailable:not_applicable",
+  ],
+  "unknowns": [
+    "missing.http_status",
+  ],
+}
+`;
+
+exports[`scenario partial-failure > produces the expected top finding and a stable shape 1`] = `
+{
+  "correlation": "release v3 false",
+  "hypotheses": [
+    "H1 missing_env medium set_env +O2,O3,O7 -",
+  ],
+  "observations": [
+    "O1 release_state evidence.release.current",
+    "O2 missing_env evidence.missing_env",
+    "O3 config evidence.config.key_absent",
+    "O4 config evidence.config.port_matches",
+    "O5 metric evidence.metric.cpu_raw",
+    "O6 metric evidence.metric.memory_raw",
+    "O7 probe evidence.probe.5xx",
+    "O8 applet_state evidence.applet.summary",
+    "O9 event evidence.temporal.onset_after_change",
+  ],
+  "ruledOut": [
+    "O1",
+  ],
+  "sources": [
+    "release_detail:failed:not_found_404",
+    "build_logs:unavailable:not_applicable",
+    "events:failed:server_503",
+    "metrics_summary:failed:server_500",
+    "plan:failed:server_500",
+    "db_detail:unavailable:not_applicable",
+  ],
+  "unknowns": [
+    "source_failed.release_detail",
+    "source_failed.events",
+    "source_failed.metrics_summary",
+    "source_failed.plan",
+    "missing.http_status",
+  ],
+}
+`;
+
+exports[`scenario wrong-port > produces the expected top finding and a stable shape 1`] = `
+{
+  "correlation": null,
+  "hypotheses": [
+    "H1 wrong_port strong update_port +O2,O3,O6,O8 -",
+  ],
+  "observations": [
+    "O1 release_state evidence.release.current",
+    "O2 port_mismatch evidence.port.listen_differs",
+    "O3 port_mismatch evidence.port.probe_refused_while_running",
+    "O4 metric evidence.metric.cpu_normal",
+    "O5 metric evidence.metric.memory_normal",
+    "O6 probe evidence.probe.5xx",
+    "O7 applet_state evidence.applet.summary",
+    "O8 event evidence.temporal.onset_after_change",
+  ],
+  "ruledOut": [
+    "O5",
+    "O4",
+    "O1",
+  ],
+  "sources": [
+    "build_logs:unavailable:not_applicable",
+    "db_detail:unavailable:not_applicable",
+  ],
+  "unknowns": [
+    "missing.http_status",
+  ],
+}
+`;

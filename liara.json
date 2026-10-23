@@ -1,0 +1,22 @@
+{
+  "app": "hamyar-liara",
+  "platform": "next",
+  "port": 3000,
+  "next": {
+    "nodeVersion": "22",
+    "modifyConfig": false
+  },
+  "disks": [
+    {
+      "name": "data",
+      "mountTo": "data"
+    }
+  ],
+  "healthCheck": {
+    "command": "CMD curl --fail --silent http://localhost:3000/api/health || exit 1",
+    "interval": 30,
+    "timeout": 15,
+    "retries": 3,
+    "startPeriod": 10
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "_note": "synthetic, not recorded from Liara",
+  "applets": [
+    {
+      "id": "p1",
+      "name": "demo-shop-abc",
+      "timestamp": "2026-01-03T10:00:00Z",
+      "state": "Running",
+      "reason": "",
+      "release": {
+        "releaseID": "r2",
+        "tag": "v2"
+      }
+    }
+  ]
+}

@@ -1,0 +1,724 @@
+{
+ "_note": "synthetic, not recorded from Liara",
+ "scenario": "missing-env",
+ "now": "2026-01-03T10:30:00.000Z",
+ "name": "demo-shop",
+ "app": {
+  "project": {
+   "_id": "a1",
+   "project_id": "demo-shop",
+   "type": "node",
+   "status": "RUNNING",
+   "scale": 1,
+   "planID": "iran-g2-small",
+   "bundlePlanID": "standard",
+   "defaultSubdomain": true,
+   "network": {
+    "_id": "n1",
+    "name": "main"
+   },
+   "envs": [
+    {
+     "key": "NODE_ENV",
+     "value": "production"
+    },
+    {
+     "key": "DATABASE_URL",
+     "value": "postgres://shop:SYNTH-DB-PASS-1234@shop-db:5432/shop"
+    },
+    {
+     "key": "API_KEY",
+     "value": "synthetic-key-abcdef"
+    }
+   ]
+  }
+ },
+ "applets": {
+  "applets": [
+   {
+    "id": "p1",
+    "name": "demo-shop-7d9c",
+    "timestamp": "2026-01-03T10:19:30.000Z",
+    "state": "Running",
+    "reason": "",
+    "release": {
+     "releaseID": "r3",
+     "tag": "v3"
+    }
+   }
+  ]
+ },
+ "releases": {
+  "total": 3,
+  "currentRelease": "r3",
+  "releases": [
+   {
+    "_id": "r3",
+    "tag": "v3",
+    "state": "READY",
+    "createdAt": "2026-01-03T10:18:00.000Z",
+    "finishedAt": "2026-01-03T10:19:30.000Z",
+    "port": 3000,
+    "type": "file"
+   },
+   {
+    "_id": "r2",
+    "tag": "v2",
+    "state": "READY",
+    "createdAt": "2026-01-02T09:00:00.000Z",
+    "finishedAt": "2026-01-02T09:02:00.000Z",
+    "port": 3000,
+    "type": "file"
+   },
+   {
+    "_id": "r1",
+    "tag": "v1",
+    "state": "READY",
+    "createdAt": "2026-01-01T09:00:00.000Z",
+    "finishedAt": "2026-01-01T09:02:00.000Z",
+    "port": 3000,
+    "type": "file"
+   }
+  ]
+ },
+ "releaseDetails": {
+  "r3": {
+   "release": {
+    "_id": "r3",
+    "tag": "v3",
+    "state": "READY",
+    "createdAt": "2026-01-03T10:18:00.000Z",
+    "finishedAt": "2026-01-03T10:19:30.000Z",
+    "port": 3000,
+    "type": "file"
+   }
+  }
+ },
+ "buildLogs": {},
+ "events": {
+  "data": [
+   {
+    "metaData": {},
+    "values": []
+   }
+  ]
+ },
+ "logs": {
+  "data": [
+   {
+    "metaData": {
+     "releaseId": "r3"
+    },
+    "values": [
+     [
+      "1767435580000000000",
+      "{\"_entry\": \"Server listening on port 3000\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435581000000000",
+      "{\"_entry\": \"boot: using DATABASE_URL postgres://shop:SYNTH-DB-PASS-1234@shop-db:5432/shop\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435582000000000",
+      "{\"_entry\": \"debug: api client configured with synthetic-key-abcdef\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435583000000000",
+      "{\"_entry\": \"auth header Authorization: Bearer synthtoken-ABCDEFGHIJKLMNOP1234\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435610000000000",
+      "{\"_entry\": \"Error: SESSION_SECRET is not defined\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435610000000000",
+      "{\"_entry\": \"    at createSession (/app/src/session.js:14:11)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435610000000000",
+      "{\"_entry\": \"    at Layer.handle (/app/node_modules/express/lib/router/layer.js:95:5)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435610000000000",
+      "{\"_entry\": \"GET /login 500 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435613000000000",
+      "{\"_entry\": \"GET / 200 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435635000000000",
+      "{\"_entry\": \"Error: SESSION_SECRET is not defined\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435635000000000",
+      "{\"_entry\": \"    at createSession (/app/src/session.js:14:11)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435635000000000",
+      "{\"_entry\": \"    at Layer.handle (/app/node_modules/express/lib/router/layer.js:95:5)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435635000000000",
+      "{\"_entry\": \"GET /login 500 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435638000000000",
+      "{\"_entry\": \"GET / 200 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435660000000000",
+      "{\"_entry\": \"Error: SESSION_SECRET is not defined\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435660000000000",
+      "{\"_entry\": \"    at createSession (/app/src/session.js:14:11)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435660000000000",
+      "{\"_entry\": \"    at Layer.handle (/app/node_modules/express/lib/router/layer.js:95:5)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435660000000000",
+      "{\"_entry\": \"GET /login 500 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435663000000000",
+      "{\"_entry\": \"GET / 200 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435685000000000",
+      "{\"_entry\": \"Error: SESSION_SECRET is not defined\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435685000000000",
+      "{\"_entry\": \"    at createSession (/app/src/session.js:14:11)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435685000000000",
+      "{\"_entry\": \"    at Layer.handle (/app/node_modules/express/lib/router/layer.js:95:5)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435685000000000",
+      "{\"_entry\": \"GET /login 500 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435688000000000",
+      "{\"_entry\": \"GET / 200 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435710000000000",
+      "{\"_entry\": \"Error: SESSION_SECRET is not defined\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435710000000000",
+      "{\"_entry\": \"    at createSession (/app/src/session.js:14:11)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435710000000000",
+      "{\"_entry\": \"    at Layer.handle (/app/node_modules/express/lib/router/layer.js:95:5)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435710000000000",
+      "{\"_entry\": \"GET /login 500 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435713000000000",
+      "{\"_entry\": \"GET / 200 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435735000000000",
+      "{\"_entry\": \"Error: SESSION_SECRET is not defined\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435735000000000",
+      "{\"_entry\": \"    at createSession (/app/src/session.js:14:11)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435735000000000",
+      "{\"_entry\": \"    at Layer.handle (/app/node_modules/express/lib/router/layer.js:95:5)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435735000000000",
+      "{\"_entry\": \"GET /login 500 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435738000000000",
+      "{\"_entry\": \"GET / 200 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435760000000000",
+      "{\"_entry\": \"Error: SESSION_SECRET is not defined\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435760000000000",
+      "{\"_entry\": \"    at createSession (/app/src/session.js:14:11)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435760000000000",
+      "{\"_entry\": \"    at Layer.handle (/app/node_modules/express/lib/router/layer.js:95:5)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435760000000000",
+      "{\"_entry\": \"GET /login 500 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435763000000000",
+      "{\"_entry\": \"GET / 200 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435785000000000",
+      "{\"_entry\": \"Error: SESSION_SECRET is not defined\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435785000000000",
+      "{\"_entry\": \"    at createSession (/app/src/session.js:14:11)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435785000000000",
+      "{\"_entry\": \"    at Layer.handle (/app/node_modules/express/lib/router/layer.js:95:5)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435785000000000",
+      "{\"_entry\": \"GET /login 500 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435788000000000",
+      "{\"_entry\": \"GET / 200 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435810000000000",
+      "{\"_entry\": \"Error: SESSION_SECRET is not defined\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435810000000000",
+      "{\"_entry\": \"    at createSession (/app/src/session.js:14:11)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435810000000000",
+      "{\"_entry\": \"    at Layer.handle (/app/node_modules/express/lib/router/layer.js:95:5)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435810000000000",
+      "{\"_entry\": \"GET /login 500 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435813000000000",
+      "{\"_entry\": \"GET / 200 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435835000000000",
+      "{\"_entry\": \"Error: SESSION_SECRET is not defined\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435835000000000",
+      "{\"_entry\": \"    at createSession (/app/src/session.js:14:11)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435835000000000",
+      "{\"_entry\": \"    at Layer.handle (/app/node_modules/express/lib/router/layer.js:95:5)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435835000000000",
+      "{\"_entry\": \"GET /login 500 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435838000000000",
+      "{\"_entry\": \"GET / 200 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435860000000000",
+      "{\"_entry\": \"Error: SESSION_SECRET is not defined\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435860000000000",
+      "{\"_entry\": \"    at createSession (/app/src/session.js:14:11)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435860000000000",
+      "{\"_entry\": \"    at Layer.handle (/app/node_modules/express/lib/router/layer.js:95:5)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435860000000000",
+      "{\"_entry\": \"GET /login 500 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435863000000000",
+      "{\"_entry\": \"GET / 200 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435885000000000",
+      "{\"_entry\": \"Error: SESSION_SECRET is not defined\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435885000000000",
+      "{\"_entry\": \"    at createSession (/app/src/session.js:14:11)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435885000000000",
+      "{\"_entry\": \"    at Layer.handle (/app/node_modules/express/lib/router/layer.js:95:5)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435885000000000",
+      "{\"_entry\": \"GET /login 500 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435888000000000",
+      "{\"_entry\": \"GET / 200 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435910000000000",
+      "{\"_entry\": \"Error: SESSION_SECRET is not defined\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435910000000000",
+      "{\"_entry\": \"    at createSession (/app/src/session.js:14:11)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435910000000000",
+      "{\"_entry\": \"    at Layer.handle (/app/node_modules/express/lib/router/layer.js:95:5)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435910000000000",
+      "{\"_entry\": \"GET /login 500 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435913000000000",
+      "{\"_entry\": \"GET / 200 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435935000000000",
+      "{\"_entry\": \"Error: SESSION_SECRET is not defined\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435935000000000",
+      "{\"_entry\": \"    at createSession (/app/src/session.js:14:11)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435935000000000",
+      "{\"_entry\": \"    at Layer.handle (/app/node_modules/express/lib/router/layer.js:95:5)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435935000000000",
+      "{\"_entry\": \"GET /login 500 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435938000000000",
+      "{\"_entry\": \"GET / 200 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435960000000000",
+      "{\"_entry\": \"Error: SESSION_SECRET is not defined\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435960000000000",
+      "{\"_entry\": \"    at createSession (/app/src/session.js:14:11)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435960000000000",
+      "{\"_entry\": \"    at Layer.handle (/app/node_modules/express/lib/router/layer.js:95:5)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435960000000000",
+      "{\"_entry\": \"GET /login 500 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435963000000000",
+      "{\"_entry\": \"GET / 200 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435985000000000",
+      "{\"_entry\": \"Error: SESSION_SECRET is not defined\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435985000000000",
+      "{\"_entry\": \"    at createSession (/app/src/session.js:14:11)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435985000000000",
+      "{\"_entry\": \"    at Layer.handle (/app/node_modules/express/lib/router/layer.js:95:5)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767435985000000000",
+      "{\"_entry\": \"GET /login 500 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767435988000000000",
+      "{\"_entry\": \"GET / 200 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767436010000000000",
+      "{\"_entry\": \"Error: SESSION_SECRET is not defined\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767436010000000000",
+      "{\"_entry\": \"    at createSession (/app/src/session.js:14:11)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767436010000000000",
+      "{\"_entry\": \"    at Layer.handle (/app/node_modules/express/lib/router/layer.js:95:5)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767436010000000000",
+      "{\"_entry\": \"GET /login 500 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767436013000000000",
+      "{\"_entry\": \"GET / 200 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767436035000000000",
+      "{\"_entry\": \"Error: SESSION_SECRET is not defined\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767436035000000000",
+      "{\"_entry\": \"    at createSession (/app/src/session.js:14:11)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767436035000000000",
+      "{\"_entry\": \"    at Layer.handle (/app/node_modules/express/lib/router/layer.js:95:5)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767436035000000000",
+      "{\"_entry\": \"GET /login 500 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767436038000000000",
+      "{\"_entry\": \"GET / 200 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767436060000000000",
+      "{\"_entry\": \"Error: SESSION_SECRET is not defined\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767436060000000000",
+      "{\"_entry\": \"    at createSession (/app/src/session.js:14:11)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767436060000000000",
+      "{\"_entry\": \"    at Layer.handle (/app/node_modules/express/lib/router/layer.js:95:5)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767436060000000000",
+      "{\"_entry\": \"GET /login 500 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767436063000000000",
+      "{\"_entry\": \"GET / 200 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767436085000000000",
+      "{\"_entry\": \"Error: SESSION_SECRET is not defined\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767436085000000000",
+      "{\"_entry\": \"    at createSession (/app/src/session.js:14:11)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767436085000000000",
+      "{\"_entry\": \"    at Layer.handle (/app/node_modules/express/lib/router/layer.js:95:5)\", \"type\": \"stderr\"}"
+     ],
+     [
+      "1767436085000000000",
+      "{\"_entry\": \"GET /login 500 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ],
+     [
+      "1767436088000000000",
+      "{\"_entry\": \"GET / 200 12.3 ms - 512\", \"type\": \"stdout\"}"
+     ]
+    ]
+   }
+  ]
+ },
+ "metricsSummary": {
+  "cpuUsage": [
+   {
+    "applet": "p1",
+    "value": [
+     1767436200,
+     "0.12"
+    ]
+   }
+  ],
+  "memoryUsage": [
+   {
+    "applet": "p1",
+    "value": [
+     1767436200,
+     "314572800"
+    ]
+   }
+  ],
+  "disksUsage": []
+ },
+ "metricsCpu": {
+  "end": 1767436200,
+  "result": [
+   {
+    "applet": "p1",
+    "values": [
+     [
+      1767435300,
+      "0.1"
+     ],
+     [
+      1767435360,
+      "0.12000000000000001"
+     ],
+     [
+      1767435420,
+      "0.14"
+     ],
+     [
+      1767435480,
+      "0.1"
+     ],
+     [
+      1767435540,
+      "0.12000000000000001"
+     ],
+     [
+      1767435600,
+      "0.14"
+     ],
+     [
+      1767435660,
+      "0.1"
+     ],
+     [
+      1767435720,
+      "0.12000000000000001"
+     ],
+     [
+      1767435780,
+      "0.14"
+     ],
+     [
+      1767435840,
+      "0.1"
+     ],
+     [
+      1767435900,
+      "0.12000000000000001"
+     ],
+     [
+      1767435960,
+      "0.14"
+     ],
+     [
+      1767436020,
+      "0.1"
+     ],
+     [
+      1767436080,
+      "0.12000000000000001"
+     ],
+     [
+      1767436140,
+      "0.14"
+     ]
+    ]
+   }
+  ]
+ },
+ "metricsMemory": {
+  "end": 1767436200,
+  "result": [
+   {
+    "applet": "p1",
+    "values": [
+     [
+      1767435300,
+      "304087040"
+     ],
+     [
+      1767435360,
+      "305135616"
+     ],
+     [
+      1767435420,
+      "306184192"
+     ],
+     [
+      1767435480,
+      "307232768"
+     ],
+     [
+      1767435540,
+      "308281344"
+     ],
+     [
+      1767435600,
+      "309329920"
+     ],
+     [
+      1767435660,
+      "310378496"
+     ],
+     [
+      1767435720,
+      "311427072"
+     ],
+     [
+      1767435780,
+      "312475648"
+     ],
+     [
+      1767435840,
+      "313524224"
+     ],
+     [
+      1767435900,
+      "314572800"
+     ],
+     [
+      1767435960,
+      "315621376"
+     ],
+     [
+      1767436020,
+      "316669952"
+     ],
+     [
+      1767436080,
+      "317718528"
+     ],
+     [
+      1767436140,
+      "318767104"
+     ]
+    ]
+   }
+  ]
+ },
+ "me": {
+  "plans": {
+   "projects": {
+    "iran-g2-small": {
+     "available": true,
+     "region": "iran",
+     "RAM": {
+      "amount": 1
+     },
+     "CPU": {
+      "amount": 1
+     },
+     "volume": 5,
+     "price": 120
+    }
+   },
+   "projectBundlePlans": {}
+  }
+ },
+ "databases": {
+  "databases": []
+ },
+ "databaseDetails": {},
+ "probe": {
+  "ok": true,
+  "status": 200,
+  "latencyMs": 120,
+  "checkedAt": "2026-01-03T10:30:00.000Z"
+ },
+ "fail": {}
+}

@@ -1,0 +1,10 @@
+{
+  "_note": "SYNTHETIC project tree for the setup detector tests. Not a real project; every value below is a made-up placeholder.",
+  "files": {
+    "manage.py": "#!/usr/bin/env python\nimport os\nos.environ.setdefault('DJANGO_SETTINGS_MODULE','mysite.settings')\n# django\n",
+    "requirements.txt": "Django==5.0\ngunicorn==22.0\npsycopg2-binary==2.9\n",
+    "mysite/settings.py": "import os\nSECRET_KEY = os.environ['DJANGO_SECRET_KEY']\nDATABASES = {'default': {'ENGINE': 'django.db.backends.postgresql', 'NAME': os.getenv('DB_NAME')}}\n",
+    "Procfile": "web: gunicorn mysite.wsgi --bind 0.0.0.0:8000\n",
+    "runtime.txt": "python-3.11.4\n"
+  }
+}

@@ -1,0 +1,2 @@
+همیار لیارا - Persian console and copilot for Liara.
+Static assets live here; Liara's Next.js platform requires a non-empty public/ directory.

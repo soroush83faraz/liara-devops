@@ -1,0 +1,9 @@
+{
+  "_note": "SYNTHETIC project tree for the setup detector tests. Not a real project; every value below is a made-up placeholder.",
+  "files": {
+    "package.json": "{\"name\": \"api\", \"main\": \"server.js\", \"scripts\": {\"start\": \"node server.js\"}, \"dependencies\": {\"express\": \"4.19.0\", \"mongoose\": \"8.0.0\", \"ioredis\": \"5.0.0\"}}",
+    "package-lock.json": "{}",
+    "server.js": "const express = require('express');\nconst app = express();\nconst PORT = process.env.PORT || 4000;\nconst uri = process.env.MONGO_URI;\nconst key = process.env.JWT_SECRET;\napp.listen(PORT);\n",
+    ".env.example": "MONGO_URI=mongodb://user:FAKE@localhost:27017/api\nJWT_SECRET=FAKE_SECRET\n"
+  }
+}

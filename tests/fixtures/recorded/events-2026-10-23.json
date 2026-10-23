@@ -1,0 +1,57 @@
+{
+  "_note": "Shape recorded from a real Liara account by a read-only live spike on 2026-10-23 (GET /v1/projects/{name}/events?teamID=<team id>). KEY NAMES, JSON TYPES and the shape (data[] newest first, `time` = unix seconds as a STRING, Docker-style action/status, release id + tag) are as recorded; container ids, release id, tag and timestamps are SYNTHETIC. Observed live: create/start/kill/die/stop/destroy; presumed, not yet observed: oom/restart. `data` holds the create/start pair as recorded; `syntheticStopSequence` is a SYNTHETIC example (made-up ids and times, newest first) of the other observed actions kill/die/stop/destroy, kept so the parser is exercised on every observed action.",
+  "data": [
+    {
+      "id": "3f9a1c5e7b2d4a6c8e0f1b3d5a7c9e2f4b6d8a0c1e3f5a7b9d2c4e6f8a0b1c3d",
+      "status": "start",
+      "action": "start",
+      "time": "1792720496",
+      "release": "synthetic-release-0001",
+      "tag": "v1"
+    },
+    {
+      "id": "3f9a1c5e7b2d4a6c8e0f1b3d5a7c9e2f4b6d8a0c1e3f5a7b9d2c4e6f8a0b1c3d",
+      "status": "create",
+      "action": "create",
+      "time": "1792720495",
+      "release": "synthetic-release-0001",
+      "tag": "v1"
+    }
+  ],
+  "syntheticStopSequence": {
+    "data": [
+      {
+        "id": "7b1d3f5a9c2e4b6d8f0a1c3e5b7d9f2a4c6e8b0d1f3a5c7e9b2d4f6a8c0e1b3d",
+        "status": "destroy",
+        "action": "destroy",
+        "time": "1792720560",
+        "release": "synthetic-release-0001",
+        "tag": "v1"
+      },
+      {
+        "id": "7b1d3f5a9c2e4b6d8f0a1c3e5b7d9f2a4c6e8b0d1f3a5c7e9b2d4f6a8c0e1b3d",
+        "status": "stop",
+        "action": "stop",
+        "time": "1792720559",
+        "release": "synthetic-release-0001",
+        "tag": "v1"
+      },
+      {
+        "id": "7b1d3f5a9c2e4b6d8f0a1c3e5b7d9f2a4c6e8b0d1f3a5c7e9b2d4f6a8c0e1b3d",
+        "status": "die",
+        "action": "die",
+        "time": "1792720558",
+        "release": "synthetic-release-0001",
+        "tag": "v1"
+      },
+      {
+        "id": "7b1d3f5a9c2e4b6d8f0a1c3e5b7d9f2a4c6e8b0d1f3a5c7e9b2d4f6a8c0e1b3d",
+        "status": "kill",
+        "action": "kill",
+        "time": "1792720557",
+        "release": "synthetic-release-0001",
+        "tag": "v1"
+      }
+    ]
+  }
+}

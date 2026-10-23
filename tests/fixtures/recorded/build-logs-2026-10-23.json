@@ -1,0 +1,191 @@
+{
+ "_note": "Recorded shape of GET /v2/releases/{id}/build-logs on 2026-10-23 (live Liara, npm ETARGET build failure). Ids and timestamps are synthetic; line texts of page 2 are verbatim. Liara returns at most 20 lines per call; page 2 was read with ?since=<createdAt of the last page-1 line>. The npm error text arrives on STDOUT with ANSI colour codes; only the final Docker step line is STDERR.",
+ "releaseId": "6a1f00000000000000000b15",
+ "pageSize": 20,
+ "pages": [
+  {
+   "release": {
+    "_id": "6a1f00000000000000000b15",
+    "state": "FAILED"
+   },
+   "buildOutput": [
+    {
+     "_id": "6a1f00000000000000000000",
+     "line": "Sending build context to Docker daemon  34.82kB\n",
+     "stream": "STDOUT",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:02.100Z"
+    },
+    {
+     "_id": "6a1f00000000000000000001",
+     "line": "Step 1/9 : FROM liararepo/node-platform:node20\n",
+     "stream": "STDOUT",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:03.101Z"
+    },
+    {
+     "_id": "6a1f00000000000000000002",
+     "line": " ---> 1f2e3d4c5b6a\n",
+     "stream": "STDOUT",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:04.102Z"
+    },
+    {
+     "_id": "6a1f00000000000000000003",
+     "line": "Step 2/9 : ARG __VERSION__=\"20\"\n",
+     "stream": "STDOUT",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:05.103Z"
+    },
+    {
+     "_id": "6a1f00000000000000000004",
+     "line": " ---> Using cache\n",
+     "stream": "STDOUT",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:06.104Z"
+    },
+    {
+     "_id": "6a1f00000000000000000005",
+     "line": " ---> 2a3b4c5d6e7f\n",
+     "stream": "STDOUT",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:07.105Z"
+    },
+    {
+     "_id": "6a1f00000000000000000006",
+     "line": "Step 3/9 : ENV NODE_ENV=production\n",
+     "stream": "STDOUT",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:08.106Z"
+    },
+    {
+     "_id": "6a1f00000000000000000007",
+     "line": " ---> Using cache\n",
+     "stream": "STDOUT",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:09.107Z"
+    },
+    {
+     "_id": "6a1f00000000000000000008",
+     "line": " ---> 3b4c5d6e7f80\n",
+     "stream": "STDOUT",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:10.108Z"
+    },
+    {
+     "_id": "6a1f00000000000000000009",
+     "line": "Step 4/9 : COPY . .\n",
+     "stream": "STDOUT",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:11.109Z"
+    },
+    {
+     "_id": "6a1f0000000000000000000a",
+     "line": " ---> 4c5d6e7f8091\n",
+     "stream": "STDOUT",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:12.110Z"
+    },
+    {
+     "_id": "6a1f0000000000000000000b",
+     "line": "Step 5/9 : ARG __NODE_MODULES_CACHE__\n",
+     "stream": "STDOUT",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:13.111Z"
+    },
+    {
+     "_id": "6a1f0000000000000000000c",
+     "line": " ---> Running in 5d6e7f8091a2\n",
+     "stream": "STDOUT",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:14.112Z"
+    },
+    {
+     "_id": "6a1f0000000000000000000d",
+     "line": "Removing intermediate container 5d6e7f8091a2\n",
+     "stream": "STDOUT",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:15.113Z"
+    },
+    {
+     "_id": "6a1f0000000000000000000e",
+     "line": " ---> 6e7f8091a2b3\n",
+     "stream": "STDOUT",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:16.114Z"
+    },
+    {
+     "_id": "6a1f0000000000000000000f",
+     "line": "Step 6/9 : RUN chmod +x /usr/local/lib/liara/*.sh && /usr/local/lib/liara/configure.sh\n",
+     "stream": "STDOUT",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:17.115Z"
+    },
+    {
+     "_id": "6a1f00000000000000000010",
+     "line": " ---> Running in 7f8091a2b3c4\n",
+     "stream": "STDOUT",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:18.116Z"
+    },
+    {
+     "_id": "6a1f00000000000000000011",
+     "line": "> Detected package.json\n",
+     "stream": "STDOUT",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:19.117Z"
+    },
+    {
+     "_id": "6a1f00000000000000000012",
+     "line": "> Using npm (package-lock.json not found)\n",
+     "stream": "STDOUT",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:20.118Z"
+    },
+    {
+     "_id": "6a1f00000000000000000013",
+     "line": "> Running npm install...\n",
+     "stream": "STDOUT",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:21.119Z"
+    }
+   ]
+  },
+  {
+   "release": {
+    "_id": "6a1f00000000000000000b15",
+    "state": "FAILED"
+   },
+   "buildOutput": [
+    {
+     "_id": "6a1f00000000000000000020",
+     "line": "\u001b[91mnpm error code ETARGET\nnpm error notarget No matching version found for express@^99.0.0.\n\u001b[0m",
+     "stream": "STDOUT",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:30.200Z"
+    },
+    {
+     "_id": "6a1f00000000000000000021",
+     "line": "\u001b[91mnpm error notarget In most cases you or one of your dependencies are requesting\nnpm error notarget a package version that doesn't exist.\n\u001b[0m",
+     "stream": "STDOUT",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:31.210Z"
+    },
+    {
+     "_id": "6a1f00000000000000000022",
+     "line": "\u001b[91mnpm error A complete log of this run can be found in: /root/.npm/_logs/2026-10-23T02_57_31_201Z-debug-0.log\n\u001b[0m",
+     "stream": "STDOUT",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:32.220Z"
+    },
+    {
+     "_id": "6a1f00000000000000000023",
+     "line": "The command '/bin/bash -o pipefail -c chmod +x /usr/local/lib/liara/*.sh && /usr/local/lib/liara/configure.sh' returned a non-zero code: 1",
+     "stream": "STDERR",
+     "releaseID": "6a1f00000000000000000b15",
+     "createdAt": "2026-10-23T03:05:33.230Z"
+    }
+   ]
+  }
+ ]
+}

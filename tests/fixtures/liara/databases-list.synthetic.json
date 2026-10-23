@@ -1,0 +1,19 @@
+{
+  "_note": "synthetic, not recorded from Liara",
+  "databases": [
+    {
+      "_id": "db1",
+      "id": "db1",
+      "DBId": "DB-1",
+      "type": "postgres",
+      "planID": "iran-g2-small",
+      "bundlePlanID": "standard",
+      "status": "RUNNING",
+      "scale": 1,
+      "hostname": "shop-db",
+      "publicNetwork": false,
+      "internalPort": 5432,
+      "created_at": "2026-01-01T00:00:00Z"
+    }
+  ]
+}

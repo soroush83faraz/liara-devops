@@ -1,0 +1,98 @@
+[
+  {
+    "id": "healthy",
+    "title": "سالم (نسخه ۱)",
+    "description": "Persian storefront «فروشگاه نمونه»; / renders the page, /health answers 200. The known-good baseline and the state reset:demo restores.",
+    "expectedSymptom": "none: site loads, probes pass, no error lines in logs",
+    "expectedCause": "none",
+    "fixAction": "none",
+    "requiresEnv": [],
+    "version": "1.0.0",
+    "acceptedReleaseStates": ["READY"],
+    "envSetup": { "unset": [], "set": {} }
+  },
+  {
+    "id": "missing-secret",
+    "title": "متغیر SESSION_SECRET تنظیم نشده (نسخه ۲)",
+    "description": "The headline demo. The app reads SESSION_SECRET at request time: when unset every page returns HTTP 500 and logs 'Error: SESSION_SECRET is not set' with a stack trace, while /health stays 200 and the process stays up.",
+    "expectedSymptom": "site shows HTTP 500 on every page; app status looks running and /health is 200; stderr has the stack trace",
+    "expectedCause": "required environment variable SESSION_SECRET is missing",
+    "fixAction": "set_env SESSION_SECRET (a new random value, written server-side), then restart and verify the pages return 200",
+    "requiresEnv": ["SESSION_SECRET"],
+    "version": "2.0.0",
+    "acceptedReleaseStates": ["READY"],
+    "envSetup": { "unset": ["SESSION_SECRET"], "set": {} }
+  },
+  {
+    "id": "wrong-port",
+    "title": "پورت اشتباه",
+    "description": "The app listens on 8080 while liara.json and the release say 3000, so the platform cannot reach it.",
+    "expectedSymptom": "site unreachable / probe refused; release may end UNHEALTHY; logs only show 'Server listening on port 8080'",
+    "expectedCause": "port mismatch: app listens on 8080, platform expects 3000",
+    "fixAction": "update_port to 8080 (or redeploy with the code listening on 3000), then verify",
+    "requiresEnv": [],
+    "version": "2.1.0",
+    "acceptedReleaseStates": ["READY", "UNHEALTHY", "FAILED", "TIMEDOUT"],
+    "envSetup": { "unset": [], "set": {} }
+  },
+  {
+    "id": "crash-loop",
+    "title": "کرش مداوم",
+    "description": "Starts, then throws an uncaught TypeError 2 seconds after boot and exits with code 1; the platform keeps restarting it.",
+    "expectedSymptom": "app flaps between running and restarting; releases may end UNHEALTHY; repeated stack traces in logs",
+    "expectedCause": "code bug: TypeError: Cannot read properties of undefined (reading 'items')",
+    "fixAction": "no safe automatic fix; redeploy the previous good release or fix the code (the copilot should explain, not restart blindly)",
+    "requiresEnv": [],
+    "version": "2.2.0",
+    "acceptedReleaseStates": ["READY", "UNHEALTHY", "FAILED", "TIMEDOUT"],
+    "envSetup": { "unset": [], "set": {} }
+  },
+  {
+    "id": "cpu-bound",
+    "title": "کند ولی نه به‌خاطر رم",
+    "description": "Healthy except /report, which burns CPU in a synchronous loop for about 3 seconds per request. No memory growth.",
+    "expectedSymptom": "slow responses on /report (about 3 s), other pages slow while it runs; CPU high, memory flat; no error lines",
+    "expectedCause": "CPU-bound request handler blocking the event loop",
+    "fixAction": "no restart or RAM resize helps; advise code change or a larger CPU plan (resize is a tier-2 proposal with cost line)",
+    "requiresEnv": [],
+    "version": "2.3.0",
+    "acceptedReleaseStates": ["READY"],
+    "envSetup": { "unset": [], "set": {} }
+  },
+  {
+    "id": "memory-leak",
+    "title": "نشت حافظه / OOM",
+    "description": "/leak retains memory forever (use ?mb=N, or ?auto=1 to keep leaking). On a small plan the container is OOM-killed and restarted.",
+    "expectedSymptom": "restarts after /leak calls; OOM-style kill events; memory climbs to the plan limit before each restart",
+    "expectedCause": "out of memory: unbounded retained allocations",
+    "fixAction": "resize to a plan with more RAM as a stopgap (tier 2, costs money) and fix the leak in code",
+    "requiresEnv": [],
+    "version": "2.4.0",
+    "acceptedReleaseStates": ["READY"],
+    "envSetup": { "unset": [], "set": {} }
+  },
+  {
+    "id": "build-failure",
+    "title": "خطای بیلد",
+    "description": "package.json lists express@^99.0.0, which does not exist, so the build step fails with npm ETARGET and no release goes live.",
+    "expectedSymptom": "release FAILED during build; build log has 'npm ERR! notarget No matching version found for express@^99.0.0'",
+    "expectedCause": "dependency version that cannot be resolved during npm install",
+    "fixAction": "none via API (fix package.json and redeploy); the copilot should name the failing package and version",
+    "requiresEnv": [],
+    "version": "2.5.0",
+    "acceptedReleaseStates": ["FAILED"],
+    "envSetup": { "unset": [], "set": {} }
+  },
+  {
+    "id": "db-unreachable",
+    "title": "پایگاه داده در دسترس نیست",
+    "description": "Every page first opens a TCP connection to DB_HOST (port DB_PORT, default 5432); on failure the page returns HTTP 500. seed:demo sets DB_HOST to an unresolvable host.",
+    "expectedSymptom": "HTTP 500 on pages, /health still 200; logs show getaddrinfo ENOTFOUND (or ECONNREFUSED host:port)",
+    "expectedCause": "DB_HOST points to a host that does not resolve or refuses connections (wrong hostname or wrong network)",
+    "fixAction": "set_env DB_HOST to the database's private hostname (wire_db), then restart and verify",
+    "requiresEnv": ["DB_HOST"],
+    "version": "2.6.0",
+    "acceptedReleaseStates": ["READY"],
+    "envSetup": { "unset": [], "set": { "DB_HOST": "shop-db.invalid" } }
+  }
+]

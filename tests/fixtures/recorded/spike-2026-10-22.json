@@ -1,0 +1,4902 @@
+{
+  "_note": "REDACTED shape report recorded from a real Liara account by scripts/spike.ts: key names, JSON types, enum-like values, counts. No free text, tokens or env values.",
+  "generatedAt": "2026-10-22T16:15:32.879Z",
+  "options": {
+    "ai": false,
+    "rateProbe": 0,
+    "appSpecified": false
+  },
+  "checks": [
+    {
+      "item": 1,
+      "name": "runtime logs v2 shape, v1 fallback",
+      "outcome": "inconclusive",
+      "detail": "no app to read from",
+      "changes": "v2 failing falls back to v1 automatically; if both fail the evidence engine marks logs unavailable (partial-failure path) and the copilot loses log evidence."
+    },
+    {
+      "item": 2,
+      "name": "release detail + build-logs accept the API key",
+      "outcome": "inconclusive",
+      "detail": "no app to read from",
+      "changes": "release detail/build-logs are CLI endpoints: without them the releases tab shows no build output and build-failure diagnosis degrades to state + failReason only."
+    },
+    {
+      "item": 3,
+      "name": "metrics: summary and `since` unit",
+      "outcome": "inconclusive",
+      "detail": "no app to read from",
+      "changes": "metrics charts need the right `since` unit: adjust lib/liara/metrics.ts and the evidence collectors; until then the metrics tab shows 'unavailable' and OOM/CPU findings lose their numbers."
+    },
+    {
+      "item": 4,
+      "name": "update-envs full-replace semantics",
+      "outcome": "skip",
+      "detail": "mutating: run tests/live with ALLOW_BILLED_LIVE_TESTS=1",
+      "changes": "(mutating, tests/live) if update-envs is not a full replace the safe-merge helper must change; the variables tab stays disabled until verified."
+    },
+    {
+      "item": 5,
+      "name": "AI gateway: base URL, streaming, tools, json_schema",
+      "outcome": "skip",
+      "detail": "not requested (use --ai with LIARA_AI_BASE_URL, LIARA_AI_API_KEY, LLM_MODEL)",
+      "changes": "AI base URL, tool calling or json_schema failing means: switch LIARA_AI_BASE_URL form, use the single structured-call fallback (no tools) or choose another model via LLM_MODEL."
+    },
+    {
+      "item": 6,
+      "name": "GET /v1/me plan shapes",
+      "outcome": "pass",
+      "detail": "app plans 8, db plans 7, engines 9, prices finite true"
+    },
+    {
+      "item": 7,
+      "name": "databases list and detail",
+      "outcome": "inconclusive",
+      "detail": "no databases on the account",
+      "changes": "database list/detail shapes drive the DB panel and env->DB edges: fix lib/liara/databases.ts before enabling DB features."
+    },
+    {
+      "item": 8,
+      "name": "networks list and `network` on apps",
+      "outcome": "pass",
+      "detail": "networks 0; apps with a network field 0/0"
+    },
+    {
+      "item": 9,
+      "name": "domains list + check record values (read-only part)",
+      "outcome": "inconclusive",
+      "detail": "no app to read from",
+      "changes": "domain doctor needs CNameRecord/verificationCode from the check call; without them DNS guidance becomes generic text."
+    },
+    {
+      "item": 10,
+      "name": "redeploy an older release by sourceID/image",
+      "outcome": "skip",
+      "detail": "mutating: tests/live. Hint from releases read: 0/0 have imageName, 0 have sourceAvailable",
+      "changes": "(mutating, tests/live) redeploy-previous stays hidden unless an older release can be redeployed by image or sourceID."
+    },
+    {
+      "item": 11,
+      "name": "status enums seen",
+      "outcome": "inconclusive",
+      "detail": "no enum-like values found (empty account?)",
+      "changes": "unknown status enums are shown as raw strings with a neutral badge; record the real values in lib/liara/schemas.ts docs and the status maps."
+    },
+    {
+      "item": 12,
+      "name": "rate-limit behaviour under a GET burst",
+      "outcome": "skip",
+      "detail": "not requested (use --rate-probe <n>)",
+      "changes": "without known rate-limit behaviour keep the concurrency cap at 3 and the 429 backoff on reads only."
+    },
+    {
+      "item": 13,
+      "name": "create-app initial scale/isDeployed",
+      "outcome": "skip",
+      "detail": "mutating (billed): tests/live. Reference from an existing app: scale=n/a isDeployed=n/a",
+      "changes": "(mutating, tests/live) create flow cannot show an accurate initial state until scale/isDeployed after create is known."
+    }
+  ],
+  "endpoints": {
+    "me": {
+      "path": "/v1/me",
+      "ok": true,
+      "shape": {
+        "user": {
+          "_id": "string",
+          "fullname": "string",
+          "nationalCode": "string:numeric",
+          "invoiceIssuingEnabled": "boolean",
+          "email": "string",
+          "phone": "string:numeric",
+          "joined_at": "string:iso8601",
+          "freeCreditTime": "number",
+          "hasPassword": "«redacted»",
+          "emailVerifiedAt": "string:iso8601",
+          "phoneVerifiedAt": "string:iso8601",
+          "isVerified": "boolean",
+          "storage": {
+            "namespace": "string",
+            "status": {
+              "_enum": [
+                "DEACTIVE"
+              ]
+            }
+          },
+          "avatar": "string",
+          "isEmailChangeDeadline": "boolean",
+          "isPhoneChangeDeadline": "boolean",
+          "isTeam": "boolean",
+          "accountType": "string",
+          "minCreditAmount": "number",
+          "isManualMinCredit": "boolean",
+          "minCreditLastNotifiedAt": "string:iso8601",
+          "legacyNetworkFeature": "boolean",
+          "hasSucceedPayment": "boolean",
+          "privateNetworkFeature": "boolean",
+          "legacyObjectStorageFeature": "boolean"
+        },
+        "databaseVersions": {
+          "mysql": {
+            "_len": 3,
+            "_items": {
+              "label": "string:numeric",
+              "value": "string"
+            }
+          },
+          "mariadb": {
+            "_len": 5,
+            "_items": {
+              "label": "string:numeric|string",
+              "value": "string"
+            }
+          },
+          "postgres": {
+            "_len": 6,
+            "_items": {
+              "label": "string:numeric",
+              "value": "string:numeric",
+              "postgisValue": "string:numeric",
+              "pgvectorValue": "string"
+            }
+          },
+          "mssql": {
+            "_len": 3,
+            "_items": {
+              "label": "string:numeric",
+              "value": "string"
+            }
+          },
+          "mongodb": {
+            "_len": 3,
+            "_items": {
+              "label": "string:numeric",
+              "value": "string"
+            }
+          },
+          "redis": {
+            "_len": 3,
+            "_items": {
+              "label": "string:numeric",
+              "value": "string"
+            }
+          },
+          "elasticsearch": {
+            "_len": 4,
+            "_items": {
+              "label": "string:numeric",
+              "value": "string"
+            }
+          },
+          "rabbitmq": {
+            "_len": 2,
+            "_items": {
+              "label": "string:numeric",
+              "value": "string"
+            }
+          },
+          "clickhouse": {
+            "_len": 2,
+            "_items": {
+              "label": "string:numeric",
+              "value": "string:numeric"
+            }
+          }
+        },
+        "defaultDatabaseVersions": {
+          "mysql": "string",
+          "mariadb": "string",
+          "postgres": "string:numeric",
+          "mssql": "string",
+          "mongodb": "string",
+          "redis": "string",
+          "elasticsearch": "string",
+          "rabbitmq": "string",
+          "clickhouse": "string:numeric"
+        },
+        "featureFlags": {
+          "_len": 31,
+          "_items": {
+            "key": "string",
+            "value": "mixed|boolean|string"
+          }
+        },
+        "plans": {
+          "mail": {
+            "free-included": {
+              "name": "string",
+              "price": "number",
+              "available": "boolean",
+              "numberOfFreeMails": "number",
+              "maxAccount": "number",
+              "maxForwarder": "number",
+              "maxSmtpCredentials": "«redacted»"
+            },
+            "premium": {
+              "name": "string",
+              "price": "number",
+              "available": "boolean",
+              "numberOfFreeMails": "number",
+              "maxAccount": "number",
+              "maxForwarder": "number",
+              "maxSmtpCredentials": "«redacted»"
+            },
+            "free-included-g2": {
+              "name": "string",
+              "price": "number",
+              "available": "boolean",
+              "numberOfFreeMails": "number",
+              "maxAccount": "number",
+              "maxForwarder": "number",
+              "maxSmtpCredentials": "«redacted»"
+            },
+            "premium-g2": {
+              "name": "string",
+              "price": "number",
+              "available": "boolean",
+              "numberOfFreeMails": "number",
+              "maxAccount": "number",
+              "maxForwarder": "number",
+              "maxSmtpCredentials": "«redacted»"
+            },
+            "m1": {
+              "name": "string",
+              "price": "number",
+              "maxOutboundPerDay": "number",
+              "maxOutboundPerMonth": "number",
+              "maxInbound": "string",
+              "maxAccount": "number",
+              "available": "boolean",
+              "maxForwarder": "number",
+              "maxInboundMailRetention": "number",
+              "maxOutboundMailRetention": "number",
+              "maxSmtpCredentials": "«redacted»"
+            },
+            "m2": {
+              "name": "string",
+              "price": "number",
+              "maxOutboundPerDay": "number",
+              "maxOutboundPerMonth": "number",
+              "maxInbound": "string",
+              "maxAccount": "number",
+              "available": "boolean",
+              "maxForwarder": "number",
+              "maxInboundMailRetention": "number",
+              "maxOutboundMailRetention": "number",
+              "maxSmtpCredentials": "«redacted»",
+              "maxCCAndBCC": "number"
+            },
+            "m3": {
+              "name": "string",
+              "price": "number",
+              "maxOutboundPerDay": "number",
+              "maxOutboundPerMonth": "number",
+              "maxInbound": "string",
+              "maxAccount": "number",
+              "available": "boolean",
+              "maxForwarder": "number",
+              "maxInboundMailRetention": "number",
+              "maxOutboundMailRetention": "number",
+              "maxSmtpCredentials": "«redacted»",
+              "maxCCAndBCC": "number"
+            },
+            "m4": {
+              "name": "string",
+              "price": "number",
+              "maxOutboundPerDay": "number",
+              "maxOutboundPerMonth": "number",
+              "maxInbound": "string",
+              "maxAccount": "number",
+              "available": "boolean",
+              "maxForwarder": "number",
+              "maxInboundMailRetention": "number",
+              "maxOutboundMailRetention": "number",
+              "maxSmtpCredentials": "«redacted»",
+              "maxCCAndBCC": "number"
+            },
+            "m5": {
+              "name": "string",
+              "price": "number",
+              "maxOutboundPerDay": "number",
+              "maxOutboundPerMonth": "number",
+              "maxInbound": "string",
+              "maxAccount": "number",
+              "available": "boolean",
+              "maxForwarder": "number",
+              "maxInboundMailRetention": "number",
+              "maxOutboundMailRetention": "number",
+              "maxSmtpCredentials": "«redacted»",
+              "maxCCAndBCC": "number"
+            },
+            "m6": {
+              "name": "string",
+              "price": "number",
+              "maxOutboundPerDay": "number",
+              "maxOutboundPerMonth": "number",
+              "maxInbound": "string",
+              "maxAccount": "number",
+              "available": "boolean",
+              "maxForwarder": "number",
+              "maxInboundMailRetention": "number",
+              "maxOutboundMailRetention": "number",
+              "maxSmtpCredentials": "«redacted»",
+              "maxCCAndBCC": "number"
+            },
+            "m7": {
+              "name": "string",
+              "price": "number",
+              "maxOutboundPerDay": "number",
+              "maxOutboundPerMonth": "number",
+              "maxInbound": "string",
+              "maxAccount": "number",
+              "available": "boolean",
+              "maxForwarder": "number",
+              "maxInboundMailRetention": "number",
+              "maxOutboundMailRetention": "number",
+              "maxSmtpCredentials": "«redacted»",
+              "maxCCAndBCC": "number"
+            },
+            "m8": {
+              "name": "string",
+              "price": "number",
+              "maxOutboundPerDay": "number",
+              "maxOutboundPerMonth": "number",
+              "maxInbound": "string",
+              "maxAccount": "number",
+              "available": "boolean",
+              "maxForwarder": "number",
+              "maxInboundMailRetention": "number",
+              "maxOutboundMailRetention": "number",
+              "maxSmtpCredentials": "«redacted»",
+              "maxCCAndBCC": "number"
+            }
+          },
+          "projects": {
+            "shared": {
+              "available": "boolean",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "sourceCodeSpace": "number"
+            },
+            "512mb": {
+              "available": "boolean",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "sourceCodeSpace": "number"
+            },
+            "1g": {
+              "available": "boolean",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "sourceCodeSpace": "number"
+            },
+            "2g": {
+              "available": "boolean",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "sourceCodeSpace": "number"
+            },
+            "4g": {
+              "available": "boolean",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "sourceCodeSpace": "number"
+            },
+            "8g": {
+              "available": "boolean",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "sourceCodeSpace": "number"
+            },
+            "nano": {
+              "available": "boolean",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "sourceCodeSpace": "number"
+            },
+            "micro": {
+              "available": "boolean",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "sourceCodeSpace": "number"
+            },
+            "standard-1x": {
+              "available": "boolean",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "sourceCodeSpace": "number"
+            },
+            "performance-1x": {
+              "available": "boolean",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "sourceCodeSpace": "number"
+            },
+            "performance-2x": {
+              "available": "boolean",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "sourceCodeSpace": "number"
+            },
+            "small": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "germany"
+                ]
+              },
+              "storageClass": "string",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "sourceCodeSpace": "number"
+            },
+            "medium": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "germany"
+                ]
+              },
+              "storageClass": "string",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "sourceCodeSpace": "number"
+            },
+            "standard": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "germany"
+                ]
+              },
+              "storageClass": "string",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "sourceCodeSpace": "number"
+            },
+            "standard-2x": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "germany"
+                ]
+              },
+              "storageClass": "string",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "sourceCodeSpace": "number"
+            },
+            "large": {
+              "available": "boolean",
+              "storageClass": "string",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "sourceCodeSpace": "number"
+            },
+            "large-2x": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "germany"
+                ]
+              },
+              "storageClass": "string",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "sourceCodeSpace": "number"
+            },
+            "large-3x": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "germany"
+                ]
+              },
+              "storageClass": "string",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "sourceCodeSpace": "number"
+            },
+            "free": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "iran"
+                ]
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "PIDs": "number",
+              "sourceCodeSpace": "number"
+            },
+            "ir-mini": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "iran"
+                ]
+              },
+              "storageClass": "string",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "PIDs": "number",
+              "sourceCodeSpace": "number"
+            },
+            "ir-small": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "iran"
+                ]
+              },
+              "storageClass": "string",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "PIDs": "number",
+              "sourceCodeSpace": "number"
+            },
+            "ir-medium": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "iran"
+                ]
+              },
+              "storageClass": "string",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "PIDs": "number",
+              "sourceCodeSpace": "number"
+            },
+            "ir-standard": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "iran"
+                ]
+              },
+              "storageClass": "string",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "PIDs": "number",
+              "sourceCodeSpace": "number"
+            },
+            "ir-standard-2x": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "iran"
+                ]
+              },
+              "storageClass": "string",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "PIDs": "number",
+              "sourceCodeSpace": "number"
+            },
+            "ir-large": {
+              "available": "boolean",
+              "storageClass": "string",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "sourceCodeSpace": "number"
+            },
+            "ir-large-2x": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "iran"
+                ]
+              },
+              "storageClass": "string",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "PIDs": "number",
+              "sourceCodeSpace": "number"
+            },
+            "ir-large-3x": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "iran"
+                ]
+              },
+              "storageClass": "string",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "PIDs": "number",
+              "sourceCodeSpace": "number"
+            },
+            "standard-base": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "iran"
+                ]
+              },
+              "storageClass": "string",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "PIDs": "number",
+              "sourceCodeSpace": "number"
+            },
+            "standard-plus": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "iran"
+                ]
+              },
+              "storageClass": "string",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "PIDs": "number",
+              "sourceCodeSpace": "number"
+            },
+            "pro": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "iran"
+                ]
+              },
+              "storageClass": "string",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "PIDs": "number",
+              "sourceCodeSpace": "number"
+            },
+            "pro-plus": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "iran"
+                ]
+              },
+              "storageClass": "string",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "PIDs": "number",
+              "sourceCodeSpace": "number"
+            },
+            "pro-max": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "iran"
+                ]
+              },
+              "storageClass": "string",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "PIDs": "number",
+              "sourceCodeSpace": "number"
+            },
+            "mini-g2": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "iran"
+                ]
+              },
+              "storageClass": "string",
+              "displayPrice": "number",
+              "price": "number",
+              "volume": "number",
+              "rootFilesystemSize": "string",
+              "shmSize": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "PIDs": "number",
+              "sourceCodeSpace": "number"
+            },
+            "small-g2": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "iran"
+                ]
+              },
+              "storageClass": "string",
+              "displayPrice": "number",
+              "price": "number",
+              "volume": "number",
+              "rootFilesystemSize": "string",
+              "shmSize": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "PIDs": "number",
+              "sourceCodeSpace": "number"
+            },
+            "medium-g2": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "iran"
+                ]
+              },
+              "storageClass": "string",
+              "displayPrice": "number",
+              "price": "number",
+              "volume": "number",
+              "rootFilesystemSize": "string",
+              "shmSize": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "PIDs": "number",
+              "sourceCodeSpace": "number"
+            },
+            "standard-base-g2": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "iran"
+                ]
+              },
+              "storageClass": "string",
+              "displayPrice": "number",
+              "price": "number",
+              "volume": "number",
+              "rootFilesystemSize": "string",
+              "shmSize": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "PIDs": "number",
+              "sourceCodeSpace": "number"
+            },
+            "standard-plus-g2": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "iran"
+                ]
+              },
+              "storageClass": "string",
+              "displayPrice": "number",
+              "price": "number",
+              "volume": "number",
+              "rootFilesystemSize": "string",
+              "shmSize": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "PIDs": "number",
+              "sourceCodeSpace": "number"
+            },
+            "pro-g2": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "iran"
+                ]
+              },
+              "storageClass": "string",
+              "displayPrice": "number",
+              "price": "number",
+              "volume": "number",
+              "rootFilesystemSize": "string",
+              "shmSize": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "PIDs": "number",
+              "sourceCodeSpace": "number"
+            },
+            "pro-plus-g2": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "iran"
+                ]
+              },
+              "storageClass": "string",
+              "displayPrice": "number",
+              "price": "number",
+              "volume": "number",
+              "rootFilesystemSize": "string",
+              "shmSize": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "PIDs": "number",
+              "sourceCodeSpace": "number"
+            },
+            "pro-max-g2": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "iran"
+                ]
+              },
+              "storageClass": "string",
+              "displayPrice": "number",
+              "price": "number",
+              "volume": "number",
+              "rootFilesystemSize": "string",
+              "shmSize": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "PIDs": "number",
+              "sourceCodeSpace": "number"
+            },
+            "express-g2": {
+              "available": "boolean",
+              "region": {
+                "_enum": [
+                  "iran"
+                ]
+              },
+              "storageClass": "string",
+              "displayPrice": "number",
+              "price": "number",
+              "volume": "number",
+              "rootFilesystemSize": "string",
+              "shmSize": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "PIDs": "number",
+              "sourceCodeSpace": "number"
+            },
+            "database-control-panel": {
+              "available": "boolean",
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "sourceCodeSpace": "number"
+            }
+          },
+          "databases": {
+            "nano": {
+              "available": "boolean",
+              "supports": {
+                "_len": 4,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "micro": {
+              "available": "boolean",
+              "supports": {
+                "_len": 4,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "standard-1x": {
+              "available": "boolean",
+              "supports": {
+                "_len": 4,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "standard-2x": {
+              "available": "boolean",
+              "supports": {
+                "_len": 5,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "performance-1x": {
+              "available": "boolean",
+              "supports": {
+                "_len": 5,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "performance-2x": {
+              "available": "boolean",
+              "supports": {
+                "_len": 5,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "performance-3x": {
+              "available": "boolean",
+              "supports": {
+                "_len": 5,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "redis-nano": {
+              "available": "boolean",
+              "supports": {
+                "_len": 1,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "redis-micro": {
+              "available": "boolean",
+              "supports": {
+                "_len": 1,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "redis-standard": {
+              "available": "boolean",
+              "supports": {
+                "_len": 1,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "redis-performance": {
+              "available": "boolean",
+              "supports": {
+                "_len": 1,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "small": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 5,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "medium": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 6,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "standard": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 7,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "large": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 7,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "large-2x": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 7,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "large-3x": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 7,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "large-4x": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 7,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "free": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 3,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "backupSpace": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "ir-nano": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 3,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "ir-mini": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 4,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "ir-small": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 6,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "ir-medium": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 7,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "ir-standard": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 8,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "ir-large": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 8,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "ir-large-2x": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 7,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "ir-large-3x": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 8,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "ir-large-4x": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 8,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "standard-base": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 9,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "standard-pro": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 9,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "pro": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 9,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "pro-plus": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 9,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "pro-max": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 9,
+                "_items": "string"
+              },
+              "price": "number",
+              "volume": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "mini-g2": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 4,
+                "_items": "string"
+              },
+              "displayPrice": "number",
+              "price": "number",
+              "volume": "number",
+              "shmSize": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "small-g2": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 6,
+                "_items": "string"
+              },
+              "displayPrice": "number",
+              "price": "number",
+              "volume": "number",
+              "shmSize": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "medium-g2": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 7,
+                "_items": "string"
+              },
+              "displayPrice": "number",
+              "price": "number",
+              "volume": "number",
+              "shmSize": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "standard-base-g2": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 9,
+                "_items": "string"
+              },
+              "displayPrice": "number",
+              "price": "number",
+              "volume": "number",
+              "shmSize": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "standard-pro-g2": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 9,
+                "_items": "string"
+              },
+              "displayPrice": "number",
+              "price": "number",
+              "volume": "number",
+              "shmSize": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "pro-g2": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 9,
+                "_items": "string"
+              },
+              "displayPrice": "number",
+              "price": "number",
+              "volume": "number",
+              "shmSize": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "pro-plus-g2": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 9,
+                "_items": "string"
+              },
+              "displayPrice": "number",
+              "price": "number",
+              "volume": "number",
+              "shmSize": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            },
+            "pro-max-g2": {
+              "available": "boolean",
+              "storageClass": "string",
+              "supports": {
+                "_len": 9,
+                "_items": "string"
+              },
+              "displayPrice": "number",
+              "price": "number",
+              "volume": "number",
+              "shmSize": "number",
+              "RAM": {
+                "amount": "number",
+                "shared": "boolean"
+              },
+              "CPU": {
+                "amount": "number",
+                "shared": "boolean"
+              }
+            }
+          },
+          "objectStorage": {
+            "free": {
+              "type": {
+                "_enum": [
+                  "OBJECT_STORAGE"
+                ]
+              },
+              "planID": {
+                "_enum": [
+                  "free"
+                ]
+              },
+              "space": "number",
+              "price": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "2.5g": {
+              "type": {
+                "_enum": [
+                  "OBJECT_STORAGE"
+                ]
+              },
+              "planID": "string",
+              "space": "number",
+              "price": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "5g": {
+              "type": {
+                "_enum": [
+                  "OBJECT_STORAGE"
+                ]
+              },
+              "planID": "string",
+              "space": "number",
+              "price": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "10g": {
+              "type": {
+                "_enum": [
+                  "OBJECT_STORAGE"
+                ]
+              },
+              "planID": "string",
+              "space": "number",
+              "price": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "20g": {
+              "type": {
+                "_enum": [
+                  "OBJECT_STORAGE"
+                ]
+              },
+              "planID": "string",
+              "space": "number",
+              "price": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "40g": {
+              "type": {
+                "_enum": [
+                  "OBJECT_STORAGE"
+                ]
+              },
+              "planID": "string",
+              "space": "number",
+              "price": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "80g": {
+              "type": {
+                "_enum": [
+                  "OBJECT_STORAGE"
+                ]
+              },
+              "planID": "string",
+              "space": "number",
+              "price": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "160g": {
+              "type": {
+                "_enum": [
+                  "OBJECT_STORAGE"
+                ]
+              },
+              "planID": "string",
+              "space": "number",
+              "price": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "320g": {
+              "type": {
+                "_enum": [
+                  "OBJECT_STORAGE"
+                ]
+              },
+              "planID": "string",
+              "space": "number",
+              "price": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "640g": {
+              "type": {
+                "_enum": [
+                  "OBJECT_STORAGE"
+                ]
+              },
+              "planID": "string",
+              "space": "number",
+              "price": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "1280g": {
+              "type": {
+                "_enum": [
+                  "OBJECT_STORAGE"
+                ]
+              },
+              "planID": "string",
+              "space": "number",
+              "price": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "5g-g2": {
+              "type": {
+                "_enum": [
+                  "OBJECT_STORAGE"
+                ]
+              },
+              "planID": "string",
+              "space": "number",
+              "displayPrice": "number",
+              "price": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "10g-g2": {
+              "type": {
+                "_enum": [
+                  "OBJECT_STORAGE"
+                ]
+              },
+              "planID": "string",
+              "space": "number",
+              "displayPrice": "number",
+              "price": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "20g-g2": {
+              "type": {
+                "_enum": [
+                  "OBJECT_STORAGE"
+                ]
+              },
+              "planID": "string",
+              "space": "number",
+              "displayPrice": "number",
+              "price": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "40g-g2": {
+              "type": {
+                "_enum": [
+                  "OBJECT_STORAGE"
+                ]
+              },
+              "planID": "string",
+              "space": "number",
+              "displayPrice": "number",
+              "price": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "80g-g2": {
+              "type": {
+                "_enum": [
+                  "OBJECT_STORAGE"
+                ]
+              },
+              "planID": "string",
+              "space": "number",
+              "displayPrice": "number",
+              "price": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "160g-g2": {
+              "type": {
+                "_enum": [
+                  "OBJECT_STORAGE"
+                ]
+              },
+              "planID": "string",
+              "space": "number",
+              "displayPrice": "number",
+              "price": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "320g-g2": {
+              "type": {
+                "_enum": [
+                  "OBJECT_STORAGE"
+                ]
+              },
+              "planID": "string",
+              "space": "number",
+              "displayPrice": "number",
+              "price": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "640g-g2": {
+              "type": {
+                "_enum": [
+                  "OBJECT_STORAGE"
+                ]
+              },
+              "planID": "string",
+              "space": "number",
+              "displayPrice": "number",
+              "price": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "1280g-g2": {
+              "type": {
+                "_enum": [
+                  "OBJECT_STORAGE"
+                ]
+              },
+              "planID": "string",
+              "space": "number",
+              "displayPrice": "number",
+              "price": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            }
+          },
+          "legacyStorageService": {
+            "5g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "10g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "20g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "40g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "60g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "80g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "100g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "120g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "140g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "160g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "180g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "200g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "400g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "800g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "1600g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "ir-20g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "ir-40g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "ir-60g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "ir-80g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "ir-100g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "ir-120g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "ir-140g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "ir-160g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "ir-180g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "ir-200g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "ir-400g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "ir-800g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            },
+            "ir-1600g": {
+              "price": "number",
+              "space": "number",
+              "available": "boolean",
+              "storageClass": "string"
+            }
+          },
+          "projectBundlePlans": {
+            "g1": {
+              "default": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 2,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "string",
+                "maxDeploymentCountInDay": "string",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              }
+            },
+            "free": {
+              "free": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number"
+              },
+              "basic": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              },
+              "standard": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              },
+              "pro": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              }
+            },
+            "mini-g2": {
+              "free": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              },
+              "basic": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number"
+              },
+              "standard": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 2,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              },
+              "pro": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 5,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "string",
+                "maxDeploymentCountInDay": "string",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              }
+            },
+            "small-g2": {
+              "free": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              },
+              "basic": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number"
+              },
+              "standard": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 2,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              },
+              "pro": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 5,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "string",
+                "maxDeploymentCountInDay": "string",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              }
+            },
+            "medium-g2": {
+              "free": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              },
+              "basic": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number"
+              },
+              "standard": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 2,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              },
+              "pro": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 5,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "string",
+                "maxDeploymentCountInDay": "string",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              }
+            },
+            "standard-base-g2": {
+              "free": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              },
+              "basic": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number"
+              },
+              "standard": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 2,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              },
+              "pro": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 5,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "string",
+                "maxDeploymentCountInDay": "string",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              }
+            },
+            "standard-plus-g2": {
+              "free": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              },
+              "basic": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number"
+              },
+              "standard": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 2,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              },
+              "pro": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 5,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "string",
+                "maxDeploymentCountInDay": "string",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              }
+            },
+            "pro-g2": {
+              "free": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              },
+              "basic": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number"
+              },
+              "standard": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 2,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              },
+              "pro": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 5,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "string",
+                "maxDeploymentCountInDay": "string",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              }
+            },
+            "pro-plus-g2": {
+              "free": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              },
+              "basic": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number"
+              },
+              "standard": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 2,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              },
+              "pro": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 5,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "string",
+                "maxDeploymentCountInDay": "string",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              }
+            },
+            "pro-max-g2": {
+              "free": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              },
+              "basic": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number"
+              },
+              "standard": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 2,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              },
+              "pro": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 5,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "string",
+                "maxDeploymentCountInDay": "string",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              }
+            },
+            "express-g2": {
+              "free": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              },
+              "basic": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number"
+              },
+              "standard": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 2,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "number",
+                "maxDeploymentCountInDay": "number",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              },
+              "pro": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 5,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "buildTimeout": "number",
+                "maxLogsRetention": "number",
+                "maxReleaseRetention": "number",
+                "maxDestinationsBackup": "number",
+                "maxDomainsCount": "string",
+                "maxDeploymentCountInDay": "string",
+                "maxReportRetention": "number",
+                "maxFTPAccountsPerDisk": "number",
+                "maxDiskPerProject": "number",
+                "manualBackupRateLimit": "number",
+                "rollback": "boolean",
+                "zeroDowntime": "boolean",
+                "setDNS": "boolean",
+                "setReadOnly": "boolean",
+                "maxSourceSize": "number",
+                "germanyBuilder": "boolean",
+                "vipBuilder": "boolean",
+                "antiBoycott": "boolean",
+                "freeSSL": "boolean",
+                "backupSpace": "number",
+                "maxImageLayerSize": "number"
+              }
+            }
+          },
+          "databaseBundlePlans": {
+            "g1": {
+              "default": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 2,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              }
+            },
+            "free": {
+              "free": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "basic": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "standard": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "pro": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              }
+            },
+            "mini-g2": {
+              "free": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "basic": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "standard": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 2,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "pro": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 5,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              }
+            },
+            "small-g2": {
+              "free": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "basic": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "standard": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 2,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "pro": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 5,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              }
+            },
+            "medium-g2": {
+              "free": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "basic": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "standard": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 2,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "pro": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 5,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              }
+            },
+            "standard-base-g2": {
+              "free": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "basic": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "standard": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 2,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "pro": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 5,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              }
+            },
+            "standard-pro-g2": {
+              "free": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "basic": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "standard": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 2,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "pro": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 5,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              }
+            },
+            "pro-g2": {
+              "free": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "basic": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "standard": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 2,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "pro": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 5,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              }
+            },
+            "pro-plus-g2": {
+              "free": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "basic": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "standard": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 2,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "pro": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 5,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              }
+            },
+            "pro-max-g2": {
+              "free": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "basic": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 0
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "standard": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 2,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              },
+              "pro": {
+                "available": "boolean",
+                "price": "number",
+                "displayHourlyPrice": "number",
+                "displayPrice": "number",
+                "availableBackupInterval": {
+                  "_len": 5,
+                  "_items": "string"
+                },
+                "backupRetention": {
+                  "manual": "number",
+                  "daily": "number",
+                  "weekly": "number",
+                  "monthly": "number",
+                  "hourly": "number"
+                },
+                "maxDestinationsBackup": "number",
+                "maxReportRetention": "number",
+                "manualBackupRateLimit": "number",
+                "editParameters": "boolean",
+                "publicNetwork": "boolean",
+                "backupSpace": "number"
+              }
+            }
+          },
+          "subscription": {
+            "free": {
+              "planID": {
+                "_enum": [
+                  "free"
+                ]
+              },
+              "type": {
+                "_enum": [
+                  "SUBSCRIPTION_PLAN"
+                ]
+              },
+              "yearlyPrice": "number",
+              "firstYearlyPrice": "number",
+              "maxBillingTickets": "string",
+              "maxResponseTime": "number",
+              "frozenServicesRetention": "number",
+              "freeProjectsCount": "number",
+              "freeDatabasesCount": "number",
+              "freeBucketsCount": "number",
+              "sla": "number",
+              "unusedFreeServicesShutdown": "boolean",
+              "additionalTechnicalTicketPrice": "number",
+              "firstMonthlyPrice": "number",
+              "monthlyPrice": "number",
+              "maxTechnicalTicketsPerMonth": "string",
+              "maxSMSChannels": "number",
+              "maxEmailChannels": "number",
+              "maxTelegramChannels": "number"
+            },
+            "standard": {
+              "planID": {
+                "_enum": [
+                  "standard"
+                ]
+              },
+              "type": {
+                "_enum": [
+                  "SUBSCRIPTION_PLAN"
+                ]
+              },
+              "yearlyPrice": "number",
+              "firstYearlyPrice": "number",
+              "additionalTechnicalTicketPrice": "number",
+              "maxBillingTickets": "string",
+              "maxResponseTime": "number",
+              "frozenServicesRetention": "number",
+              "freeProjectsCount": "number",
+              "freeDatabasesCount": "number",
+              "freeBucketsCount": "number",
+              "sla": "number",
+              "unusedFreeServicesShutdown": "boolean",
+              "firstMonthlyPrice": "number",
+              "monthlyPrice": "number",
+              "maxTechnicalTicketsPerMonth": "string",
+              "maxSMSChannels": "number",
+              "maxEmailChannels": "number",
+              "maxTelegramChannels": "number"
+            },
+            "enterprise": {
+              "planID": {
+                "_enum": [
+                  "enterprise"
+                ]
+              },
+              "type": {
+                "_enum": [
+                  "SUBSCRIPTION_PLAN"
+                ]
+              },
+              "yearlyPrice": "number",
+              "firstYearlyPrice": "number",
+              "additionalTechnicalTicketPrice": "number",
+              "maxBillingTickets": "string",
+              "maxResponseTime": "number",
+              "frozenServicesRetention": "number",
+              "freeProjectsCount": "number",
+              "freeDatabasesCount": "number",
+              "freeBucketsCount": "number",
+              "sla": "number",
+              "unusedFreeServicesShutdown": "boolean",
+              "firstMonthlyPrice": "number",
+              "monthlyPrice": "number",
+              "maxTechnicalTicketsPerMonth": "string",
+              "maxSMSChannels": "number",
+              "maxEmailChannels": "number",
+              "maxTelegramChannels": "number"
+            }
+          }
+        }
+      }
+    },
+    "billing": {
+      "path": "/v1/billing",
+      "ok": true,
+      "shape": {
+        "user": {
+          "balance": "number",
+          "accountType": "string",
+          "minCreditAmount": "number",
+          "isManualMinCredit": "boolean",
+          "minCreditLastNotifiedAt": "string:iso8601"
+        }
+      }
+    },
+    "projects": {
+      "path": "/v1/projects",
+      "ok": true,
+      "shape": {
+        "projects": {
+          "_len": 0
+        }
+      }
+    },
+    "databases": {
+      "path": "/v1/databases",
+      "ok": true,
+      "shape": {
+        "databases": {
+          "_len": 0
+        }
+      }
+    },
+    "networks": {
+      "path": "/v1/networks",
+      "ok": true,
+      "shape": {
+        "networks": {
+          "_len": 0
+        }
+      }
+    }
+  },
+  "enums": {
+    "appStatus": [],
+    "appScale": [],
+    "appPlatform": [],
+    "dbStatus": [],
+    "dbEngine": []
+  },
+  "counts": {
+    "appPlans": 8,
+    "dbPlans": 7,
+    "dbEngines": 9,
+    "apps": 0,
+    "appsWithNetwork": 0,
+    "databases": 0,
+    "networks": 0
+  }
+}

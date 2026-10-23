@@ -1,0 +1,23 @@
+{
+  "_note": "synthetic, not recorded from Liara",
+  "end": 1767430200,
+  "result": [
+    {
+      "applet": "p1",
+      "values": [
+        [
+          1767430000,
+          "0.10"
+        ],
+        [
+          1767430060,
+          0.25
+        ],
+        [
+          1767430120,
+          "NaN-bad"
+        ]
+      ]
+    }
+  ]
+}

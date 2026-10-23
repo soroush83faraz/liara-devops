@@ -1,0 +1,7 @@
+{
+  "_note": "SYNTHETIC project tree for the setup detector tests. Not a real project; every value below is a made-up placeholder.",
+  "files": {
+    "package.json": "{\"name\": \"api\", \"scripts\": {\"start\": \"nodemon server.js\"}, \"dependencies\": {\"express\": \"4.19.0\"}, \"devDependencies\": {\"nodemon\": \"3.0.0\"}}",
+    "server.js": "const app = require('express')();\napp.listen(3000, '127.0.0.1');\n"
+  }
+}

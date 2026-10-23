@@ -1,0 +1,12 @@
+{
+  "_note": "synthetic, not recorded from Liara",
+  "domain": {
+    "_id": "d1",
+    "name": "shop.example.ir",
+    "status": "PENDING",
+    "certificatesStatus": "PENDING",
+    "CNameRecord": "demo-shop.liara.run",
+    "verificationCode": "liara-verify-synthetic-123",
+    "punycodeName": "shop.example.ir"
+  }
+}

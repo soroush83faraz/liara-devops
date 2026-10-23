@@ -1,0 +1,11 @@
+{
+  "_note": "synthetic, not recorded from Liara",
+  "backups": [
+    {
+      "name": "backup-1.tar.gz",
+      "lastModified": "2026-01-03T00:00:00Z",
+      "etag": "abc",
+      "size": 2048
+    }
+  ]
+}

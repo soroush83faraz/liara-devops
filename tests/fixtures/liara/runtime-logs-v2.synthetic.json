@@ -1,0 +1,31 @@
+{
+  "_note": "synthetic, not recorded from Liara",
+  "data": [
+    {
+      "metaData": {
+        "releaseId": "r2"
+      },
+      "values": [
+        [
+          "1767430000000000000",
+          "{\"_entry\": \"Server listening on 3000\", \"type\": \"stdout\"}"
+        ],
+        [
+          "1767430002000000000",
+          "{\"_entry\": \"Error: connect ECONNREFUSED 10.0.0.5:5432\", \"type\": \"stderr\"}"
+        ]
+      ]
+    },
+    {
+      "metaData": {
+        "releaseId": "r1"
+      },
+      "values": [
+        [
+          "1767429990000000000",
+          "{\"_entry\": \"old release line\", \"type\": \"stdout\"}"
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "_note": "SYNTHETIC project tree for the setup detector tests. Not a real project; every value below is a made-up placeholder.",
+  "files": {
+    "Dockerfile": "FROM node:20\nEXPOSE 3000\nCMD [\"npm\",\"start\"]\n",
+    "package.json": "{\"scripts\": {\"start\": \"next start\"}, \"dependencies\": {\"next\": \"15.0.0\", \"react\": \"19.0.0\"}}",
+    "package-lock.json": "{}"
+  }
+}

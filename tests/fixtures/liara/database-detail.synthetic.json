@@ -1,0 +1,30 @@
+{
+  "_note": "synthetic, not recorded from Liara",
+  "database": {
+    "_id": "db1",
+    "id": "db1",
+    "DBId": "DB-1",
+    "type": "postgres",
+    "planID": "iran-g2-small",
+    "status": "RUNNING",
+    "scale": 1,
+    "hostname": "shop-db",
+    "publicNetwork": false,
+    "version": "16",
+    "volumeSize": 5,
+    "created_at": "2026-01-01T00:00:00Z",
+    "dbName": "app",
+    "node": {
+      "_id": "nd2",
+      "host": "198.51.100.7"
+    },
+    "port": 31337,
+    "root_password": "SYNTHETIC-NOT-A-REAL-PASSWORD",
+    "internalPort": 5432,
+    "hourlyPrice": 300,
+    "metaData": {
+      "privateNetwork": true
+    },
+    "username": "root"
+  }
+}
