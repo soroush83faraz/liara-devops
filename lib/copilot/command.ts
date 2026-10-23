@@ -6,6 +6,8 @@ export interface CommandItem {
   /** `open`: just show that service's copilot. `ask`: also send `question` there. */
   mode: "open" | "ask";
   question?: string;
+  /** Ask mode: the question names this service, so the palette may pre-select it. */
+  related?: boolean;
 }
 
 const byName = (a: CommandItem, b: CommandItem) => a.service.name.localeCompare(b.service.name);
@@ -13,7 +15,8 @@ const byName = (a: CommandItem, b: CommandItem) => a.service.name.localeCompare(
 /**
  * - empty query: every service (open);
  * - a single word that matches service names: those services (open);
- * - anything with whitespace, or a word matching no service: a question, offered for every service (ask).
+ * - anything with whitespace, or a word matching no service: a question, offered for every service (ask); services
+ *   the question names come first and are flagged `related` (nothing else is, so no unrelated one gets pre-selected).
  */
 export function buildCommandItems(services: readonly OverviewService[], query: string): CommandItem[] {
   const q = query.trim();
@@ -29,7 +32,18 @@ export function buildCommandItems(services: readonly OverviewService[], query: s
         .sort((a, b) => rank(a.service.name, lower) - rank(b.service.name, lower) || byName(a, b));
     }
   }
-  return base.map((service): CommandItem => ({ service, mode: "ask", question: q })).sort(byName);
+  // Whole-name match: «shop» is not named by «shop-db» (service names are [a-z0-9-]).
+  const edge = (c: string | undefined) => c === undefined || !/[a-z0-9-]/.test(c);
+  const mentioned = (name: string) => {
+    const n = name.toLowerCase();
+    for (let at = lower.indexOf(n); at >= 0; at = lower.indexOf(n, at + 1)) {
+      if (edge(lower[at - 1]) && edge(lower[at + n.length])) return true;
+    }
+    return false;
+  };
+  return base
+    .map((service): CommandItem => ({ service, mode: "ask", question: q, ...(mentioned(service.name) ? { related: true } : {}) }))
+    .sort((a, b) => Number(!!b.related) - Number(!!a.related) || byName(a, b));
 }
 
 function rank(name: string, q: string): number {

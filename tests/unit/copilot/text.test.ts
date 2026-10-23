@@ -63,6 +63,12 @@ describe("command bar matching", () => {
     expect(buildCommandItems(services, "zzz")[0].mode).toBe("ask");
     expect(buildCommandItems([], "x")).toEqual([]);
   });
+  it("a question lists the services it names first, flagged related; nothing else is flagged", () => {
+    const named = buildCommandItems(services, "why is shop-db slow");
+    expect(named.map((i) => i.service.name)).toEqual(["shop-db", "blog", "shop"]);
+    expect(named.filter((i) => i.related).map((i) => i.service.name)).toEqual(["shop-db"]);
+    expect(buildCommandItems(services, "why is it slow").some((i) => i.related)).toBe(false);
+  });
   it("detects Cmd/Ctrl+K only", () => {
     expect(isCommandShortcut({ key: "k", metaKey: true, ctrlKey: false })).toBe(true);
     expect(isCommandShortcut({ key: "K", metaKey: false, ctrlKey: true })).toBe(true);

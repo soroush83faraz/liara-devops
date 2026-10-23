@@ -1,6 +1,7 @@
 "use client";
 
-import { RotateCcw, Square } from "lucide-react";
+import { RotateCcw, Sparkles, Square } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -18,16 +19,53 @@ import { ProposalCard } from "./proposal-card";
 import { SafeMarkdown } from "./safe-markdown";
 import { ExecutionProgress } from "./execution-progress";
 import { VerificationBody } from "./verification-card";
+import { ease, spring } from "@/lib/ui/motion";
 
 const p = fa.copilotUi.panel;
 
 function UserBubble({ text }: { text: string }) {
   return (
-    <div className="flex flex-col items-end gap-1">
+    <motion.div
+      initial={{ opacity: 0, y: 8, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={spring.pop}
+      className="flex origin-top-left flex-col items-end gap-1 rtl:origin-top-right"
+    >
       <span className="sr-only">{p.you}</span>
-      <p dir="auto" className="max-w-[92%] whitespace-pre-wrap break-words rounded-2xl rounded-ee-md bg-accent-soft px-4 py-2 text-[15px] leading-8 text-accent-ink">
+      <p
+        dir="auto"
+        className="max-w-[88%] whitespace-pre-wrap break-words rounded-lg rounded-se-sm border border-accent/25 bg-accent-soft px-4 py-2 text-[15px] leading-8 text-accent-ink"
+      >
         {text}
       </p>
+    </motion.div>
+  );
+}
+
+/** Three dots that breathe while the agent works (static under reduced motion; the text says it anyway). */
+function Typing() {
+  const reduce = useReducedMotion();
+  return (
+    <span aria-hidden className="inline-flex items-center gap-1">
+      {[0, 1, 2].map((i) => (
+        <motion.span
+          key={i}
+          className="size-1.5 rounded-full bg-accent"
+          animate={reduce ? { opacity: 0.7 } : { opacity: [0.25, 1, 0.25], y: [0, -2, 0] }}
+          transition={{ duration: 1.1, repeat: Infinity, delay: i * 0.16, ease: "easeInOut" }}
+        />
+      ))}
+    </span>
+  );
+}
+
+function AssistantMark() {
+  return (
+    <div aria-hidden className="flex items-center gap-2 text-xs font-semibold text-muted">
+      <span className="flex size-6 items-center justify-center rounded-sm border border-accent/30 bg-accent-soft text-accent-ink">
+        <Sparkles className="size-3.5" />
+      </span>
+      {p.assistant}
     </div>
   );
 }
@@ -117,8 +155,10 @@ function TurnView({
     <article aria-label={p.assistant} className="flex flex-col gap-3" data-turn-status={turn.status}>
       {turn.userText ? <UserBubble text={turn.userText} /> : null}
       <div className="flex flex-col gap-3">
+        <AssistantMark />
         {turn.degraded ? <LlmDegradeBanner /> : null}
         {blocks.map((b) => (
+          <motion.div key={b.key} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.36, ease: ease.out }} className="min-w-0">
           <BlockView
             key={b.key}
             block={b}
@@ -131,6 +171,7 @@ function TurnView({
             incidentForProposal={incidentForProposal}
             onRetry={isLast ? onRetry : undefined}
           />
+          </motion.div>
         ))}
         {turn.invalidParts > 0 ? (
           <p role="status" className="text-xs text-warn-ink">
@@ -139,8 +180,17 @@ function TurnView({
         ) : null}
         {turn.status === "streaming" ? (
           <div className="flex flex-col gap-2" role="status" aria-live="polite">
-            <p className="text-sm text-muted">{p.working}</p>
-            {blocks.length === 0 ? <Skeleton className="h-16 w-full" /> : null}
+            <p className="flex items-center gap-2.5 text-sm text-muted">
+              <Typing />
+              {p.working}
+            </p>
+            {blocks.length === 0 ? (
+              <div aria-hidden className="flex flex-col gap-2 rounded-md border border-border bg-surface p-4">
+                <Skeleton className="h-3.5 w-1/3" />
+                <Skeleton className="h-3 w-full" />
+                <Skeleton className="h-3 w-4/5" />
+              </div>
+            ) : null}
             {isLast ? (
               <Button variant="secondary" size="sm" className="self-start" onClick={onStop}>
                 <Square aria-hidden className="size-4" />
@@ -150,7 +200,7 @@ function TurnView({
           </div>
         ) : null}
         {turn.status === "aborted" ? (
-          <div role="status" className="flex flex-col gap-2 rounded-lg bg-surface-muted p-3 text-sm leading-7">
+          <div role="status" className="flex flex-col gap-2 rounded-md border border-border bg-surface-muted/60 p-3.5 text-sm leading-7">
             <p className="font-medium">{p.stopped}</p>
             <p className="text-muted">{p.stoppedHint}</p>
             {isLast ? (
@@ -216,7 +266,7 @@ function BlockView({
       );
     case "orphan":
       return (
-        <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface p-4">
+        <div className="flex flex-col gap-3 rounded-md border border-border bg-surface p-4">
           {block.executions.length > 0 ? (
             <ExecutionProgress executions={block.executions} status="executing" follow="idle" onRefresh={() => undefined} />
           ) : null}

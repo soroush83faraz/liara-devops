@@ -1,9 +1,12 @@
 "use client";
 
-import { GripVertical, X } from "lucide-react";
-import { useCallback, useEffect, useRef, type KeyboardEvent, type PointerEvent, type ReactNode } from "react";
+import { X } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from "react";
+import { DIR } from "@/components/ui/dir";
 import { IconButton } from "@/components/ui/icon-button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { duration, ease, spring } from "@/lib/ui/motion";
 import { t } from "@/lib/i18n/t";
 import { cn } from "@/lib/utils";
 import {
@@ -41,30 +44,42 @@ function storeWidth(width: number) {
   }
 }
 
+/** The drawer sits on the inline-END edge: left in RTL, so it slides in from the left (negative x). */
+const OFFSCREEN = DIR === "rtl" ? "-100%" : "100%";
+
+/** Header content, or a function of the service id (so it stays filled while the drawer slides out). */
+type Slot = ReactNode | ((service: string) => ReactNode);
+
 /**
  * Where service details render. Pass it to AppShell as `servicePanel`:
  *
  *   <AppShell servicePanel={<ServicePanelSlot title="my-app">{({ service, tab }) => <MyTabs ... />}</ServicePanelSlot>}>
  *
  * Open/close it from anywhere with `useShellStore.getState().openService(id, tab)`.
- * >= 1024px: resizable side panel on the reading-start edge (right in RTL). Below: a bottom sheet.
+ * >= 1024px: an overlay drawer on the inline-end edge over a dimmed scrim (the page underneath never resizes);
+ * Esc or a click on the scrim closes it, focus moves in on open and back to where it was on close.
+ * Below 1024px: a bottom sheet.
  */
 export function ServicePanelSlot({
   children,
   title,
+  subtitle,
+  leading,
   className,
 }: {
   children: ReactNode | ((ctx: ServicePanelContext) => ReactNode);
-  title?: ReactNode;
+  title?: Slot;
+  /** One muted line under the title (kind, platform, status). */
+  subtitle?: Slot;
+  /** Visual before the title, e.g. the service's icon tile (decorative). */
+  leading?: Slot;
   className?: string;
 }) {
   const { open, service, tab } = useShellStore((s) => s.servicePanel);
   const setTab = useShellStore((s) => s.setTab);
   const closeService = useShellStore((s) => s.closeService);
-  const width = useShellStore((s) => s.panelWidth);
   const setPanelWidth = useShellStore((s) => s.setPanelWidth);
   const desktop = useIsDesktop();
-  const asideRef = useRef<HTMLElement>(null);
 
   // Restore the remembered width once (per-viewer convenience; falls back silently).
   useEffect(() => {
@@ -72,25 +87,27 @@ export function ServicePanelSlot({
     if (stored) setPanelWidth(stored);
   }, [setPanelWidth]);
 
-  // Move focus into the panel when it opens on desktop (the mobile Sheet manages its own focus).
-  useEffect(() => {
-    if (open && desktop) asideRef.current?.focus();
-  }, [open, service, desktop]);
-
-  const content =
-    open && service
-      ? typeof children === "function"
-        ? children({ service, tab, setTab, close: closeService })
-        : children
-      : null;
-
-  if (!open || !service) return null;
-  const heading = title ?? service;
+  const isOpen = open && !!service;
+  // While the drawer slides out the store is already closed: keep rendering the service it was showing.
+  const [shown, setShown] = useState<{ service?: string; tab?: string }>({ service, tab });
+  if (isOpen && (shown.service !== service || shown.tab !== tab)) setShown({ service, tab });
+  const current = isOpen ? service : shown.service;
+  const currentTab = isOpen ? tab : shown.tab;
+  const content = current
+    ? typeof children === "function"
+      ? children({ service: current, tab: currentTab, setTab, close: closeService })
+      : children
+    : null;
+  const resolve = (slot: Slot | undefined) => (typeof slot === "function" ? (current ? slot(current) : null) : slot);
+  const heading = resolve(title) ?? current;
+  const subline = resolve(subtitle);
+  const lead = resolve(leading);
 
   if (!desktop) {
+    if (!isOpen) return null;
     return (
       <Sheet open onOpenChange={(next) => !next && closeService()}>
-        <SheetContent side="bottom" title={heading} className={cn("h-[85dvh]", className)}>
+        <SheetContent side="bottom" title={heading} description={subline ?? undefined} className={cn("h-[85dvh]", className)}>
           {content}
         </SheetContent>
       </Sheet>
@@ -98,27 +115,98 @@ export function ServicePanelSlot({
   }
 
   return (
-    <aside
-      ref={asideRef}
-      tabIndex={-1}
-      aria-label={t("shell.servicePanel")}
-      onKeyDown={(e) => {
-        // Portaled children (select menus, tooltips) bubble through React; only react to keys from inside the panel.
-        if (e.key === "Escape" && !e.defaultPrevented && asideRef.current?.contains(e.target as Node)) closeService();
-      }}
-      style={{ width }}
-      className={cn(
-        "relative order-first flex min-h-0 shrink-0 flex-col border-e border-border bg-surface outline-none",
-        className,
-      )}
-    >
-      <ResizeHandle width={width} onResize={setPanelWidth} onCommit={storeWidth} asideRef={asideRef} />
-      <header className="flex items-center justify-between gap-3 border-b border-border px-4 py-2">
-        <h2 className="min-w-0 truncate text-base font-semibold">{heading}</h2>
-        <IconButton label={t("shell.closePanel")} icon={<X aria-hidden className="size-5" />} onClick={closeService} />
-      </header>
-      <div data-panel-body className="min-h-0 flex-1 overflow-y-auto overscroll-contain">{content}</div>
-    </aside>
+    <AnimatePresence>
+      {isOpen ? (
+        <Drawer key="service-drawer" heading={heading} subtitle={subline} leading={lead} onClose={closeService} className={className}>
+          {content}
+        </Drawer>
+      ) : null}
+    </AnimatePresence>
+  );
+}
+
+function Drawer({
+  heading,
+  subtitle,
+  leading,
+  onClose,
+  className,
+  children,
+}: {
+  heading: ReactNode;
+  subtitle?: ReactNode;
+  leading?: ReactNode;
+  onClose: () => void;
+  className?: string;
+  children: ReactNode;
+}) {
+  const width = useShellStore((s) => s.panelWidth);
+  const setPanelWidth = useShellStore((s) => s.setPanelWidth);
+  const service = useShellStore((s) => s.servicePanel.service);
+  const asideRef = useRef<HTMLElement>(null);
+
+  // The page under the scrim is out of reach while the drawer is open (no tabbing into a dimmed canvas);
+  // on close, focus goes back to whatever opened the drawer.
+  useEffect(() => {
+    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const main = document.getElementById("main-content");
+    if (main) main.inert = true;
+    return () => {
+      if (main) main.inert = false;
+      if (opener && opener.isConnected && !asideRef.current?.contains(opener)) opener.focus({ preventScroll: true });
+    };
+  }, []);
+
+  // Focus the drawer on open and whenever it switches to another service.
+  useEffect(() => {
+    if (service) asideRef.current?.focus({ preventScroll: true });
+  }, [service]);
+
+  return (
+    <>
+      <motion.div
+        aria-hidden
+        data-panel-scrim
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: duration.base, ease: ease.out }}
+        onClick={onClose}
+        className="absolute inset-0 z-30 bg-overlay"
+      />
+      <motion.aside
+        ref={asideRef}
+        tabIndex={-1}
+        aria-label={t("shell.servicePanel")}
+        initial={{ x: OFFSCREEN }}
+        animate={{ x: 0 }}
+        exit={{ x: OFFSCREEN, transition: { duration: duration.base, ease: ease.inOut } }}
+        transition={spring.panel}
+        onKeyDown={(e) => {
+          // Portaled children (select menus, tooltips) bubble through React; only react to keys from inside the panel.
+          if (e.key === "Escape" && !e.defaultPrevented && asideRef.current?.contains(e.target as Node)) onClose();
+        }}
+        // A programmatically focused container needs no ring (the global :focus-visible rule would draw one).
+        style={{ width: `min(${width}px, 100vw)`, outline: "none" }}
+        className={cn(
+          "absolute inset-y-0 end-0 z-40 flex min-h-0 flex-col border-s border-border bg-surface shadow-[var(--shadow-pop)] outline-none",
+          className,
+        )}
+      >
+        <ResizeHandle width={width} onResize={setPanelWidth} onCommit={storeWidth} asideRef={asideRef} />
+        <header className="flex items-center gap-3 border-b border-border px-4 py-3">
+          {leading}
+          <div className="min-w-0 flex-1">
+            <h2 className="truncate text-[17px] font-bold leading-6">{heading}</h2>
+            {subtitle ? <div className="truncate text-xs leading-5 text-muted">{subtitle}</div> : null}
+          </div>
+          <IconButton label={t("shell.closePanel")} icon={<X aria-hidden className="size-5" />} onClick={onClose} className="-me-1" />
+        </header>
+        <div data-panel-body className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+          {children}
+        </div>
+      </motion.aside>
+    </>
   );
 }
 
@@ -141,8 +229,8 @@ function ResizeHandle({
     (e: PointerEvent<HTMLDivElement>) => {
       if (!dragging.current || !asideRef.current) return;
       const rect = asideRef.current.getBoundingClientRect();
-      // The panel sits on the start edge: in RTL its right edge is fixed, in LTR its left edge.
-      const next = isRtl() ? rect.right - e.clientX : e.clientX - rect.left;
+      // The drawer sits on the end edge: in RTL its left edge is fixed, in LTR its right edge.
+      const next = isRtl() ? e.clientX - rect.left : rect.right - e.clientX;
       onResize(next);
     },
     [asideRef, onResize],
@@ -160,9 +248,9 @@ function ResizeHandle({
 
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     const step = e.shiftKey ? 48 : 16;
-    // The handle is on the inner (end) edge, so the arrow pointing away from the panel widens it.
-    const grow = isRtl() ? "ArrowLeft" : "ArrowRight";
-    const shrink = isRtl() ? "ArrowRight" : "ArrowLeft";
+    // The handle is on the drawer's inner (start) edge, so the arrow pointing away from the drawer widens it.
+    const grow = isRtl() ? "ArrowRight" : "ArrowLeft";
+    const shrink = isRtl() ? "ArrowLeft" : "ArrowRight";
     let next: number | null = null;
     if (e.key === grow) next = width + step;
     else if (e.key === shrink) next = width - step;
@@ -192,9 +280,12 @@ function ResizeHandle({
       onPointerUp={end}
       onPointerCancel={end}
       onKeyDown={onKeyDown}
-      className="group absolute inset-y-0 end-0 z-10 flex w-3 translate-x-0 cursor-col-resize touch-none items-center justify-center outline-none ltr:translate-x-1/2 rtl:-translate-x-1/2 focus-visible:bg-accent-soft hover:bg-accent-soft"
+      className="group absolute inset-y-0 start-0 z-10 flex w-2.5 cursor-col-resize touch-none items-center justify-center outline-none ltr:-translate-x-1/2 rtl:translate-x-1/2"
     >
-      <GripVertical aria-hidden className="size-4 text-muted opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100" />
+      <span
+        aria-hidden
+        className="h-10 w-1 rounded-full bg-border-strong/0 transition-colors duration-150 group-hover:bg-border-strong/70 group-focus-visible:bg-accent group-active:bg-accent"
+      />
     </div>
   );
 }

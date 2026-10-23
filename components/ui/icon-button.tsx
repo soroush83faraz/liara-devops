@@ -8,16 +8,16 @@ import { Tooltip } from "./tooltip";
 
 const iconButtonVariants = cva(
   [
-    "inline-flex shrink-0 items-center justify-center rounded-lg border transition-colors",
+    "inline-flex shrink-0 items-center justify-center rounded-sm border transition-[background-color,border-color,color,transform] duration-150 active:scale-95",
     "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
-    "disabled:pointer-events-none disabled:opacity-55",
+    "disabled:pointer-events-none disabled:opacity-50",
   ],
   {
     variants: {
       variant: {
         ghost: "border-transparent text-muted hover:bg-surface-muted hover:text-foreground",
-        secondary: "border-border-strong/50 bg-surface text-foreground hover:bg-surface-muted",
-        primary: "border-transparent bg-accent text-accent-foreground hover:bg-accent/90",
+        secondary: "border-border bg-surface text-foreground hover:border-border-strong/70 hover:bg-surface-muted",
+        primary: "border-transparent bg-accent text-accent-foreground hover:bg-accent/88",
         danger: "border-transparent text-danger hover:bg-danger-soft",
       },
       size: {

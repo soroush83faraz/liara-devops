@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleHelp, Eye, Info, Lightbulb, TriangleAlert, type LucideIcon } from "lucide-react";
+import { CircleHelp, Eye, Info, Lightbulb, ScanSearch, TriangleAlert, type LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Finding, Hypothesis, Observation } from "@/lib/contracts";
@@ -11,15 +11,30 @@ import { EvidenceItem } from "./evidence-item";
 import { EvidenceLevelChip, levelReasonLine, ruleLabel } from "./evidence-level-chip";
 import { MockDataBadge } from "./mock-data-badge";
 import { SafeMarkdown } from "./safe-markdown";
+import { cn } from "@/lib/utils";
 
 const l = fa.copilotUi.finding;
 
-function Section({ icon: Icon, title, hint, children }: { icon: LucideIcon; title: string; hint?: string; children: ReactNode }) {
+type Layer = "observed" | "inferred" | "unknown";
+
+/*
+ * The three epistemic layers read apart at a glance without shouting: observed = solid neutral chip (a fact),
+ * inferred = accent tint (our reasoning), unknown = dashed outline (a gap). Icon + text always carry the meaning.
+ */
+const LAYER_CHIP: Record<Layer, string> = {
+  observed: "border border-border-strong/40 bg-surface-muted text-foreground",
+  inferred: "border border-accent/30 bg-accent-soft text-accent-ink",
+  unknown: "border border-dashed border-border-strong/70 bg-transparent text-muted",
+};
+
+function Section({ icon: Icon, title, hint, layer, children }: { icon: LucideIcon; title: string; hint?: string; layer: Layer; children: ReactNode }) {
   return (
-    <section className="flex flex-col gap-2">
-      <h4 className="flex flex-wrap items-center gap-x-2 text-sm font-semibold">
-        <Icon aria-hidden className="size-4 text-accent" />
-        {title}
+    <section className="flex flex-col gap-2.5" data-layer={layer}>
+      <h4 className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold">
+        <span className={cn("inline-flex min-h-6 items-center gap-1.5 rounded-full px-2.5 text-xs font-semibold", LAYER_CHIP[layer])}>
+          <Icon aria-hidden className="size-3.5" />
+          {title}
+        </span>
         {hint ? <span className="text-xs font-normal text-muted">{hint}</span> : null}
       </h4>
       {children}
@@ -39,7 +54,7 @@ function CitedIds({ ids, facts, onOpen }: { ids: string[]; facts: Map<string, Ob
               <button
                 type="button"
                 onClick={() => onOpen(o)}
-                className="min-h-11 rounded-full border border-border bg-surface px-3 text-xs hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:min-h-8"
+                className="min-h-11 rounded-full border border-border bg-surface px-3 text-xs transition-colors hover:border-accent/40 hover:bg-accent-soft hover:text-accent-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:min-h-8"
                 aria-label={fill(fa.copilotUi.evidence.open, { id })}
               >
                 <bdi dir="ltr" className="font-mono">
@@ -61,7 +76,7 @@ function CitedIds({ ids, facts, onOpen }: { ids: string[]; facts: Map<string, Ob
 function WhyPanel({ h, facts, onOpen }: { h: Hypothesis; facts: Map<string, Observation>; onOpen: (o: Observation) => void }) {
   const yn = (b: boolean) => (b ? l.reasonYes : l.reasonNo);
   return (
-    <div className="flex flex-col gap-3 rounded-lg bg-surface-muted p-3 text-sm leading-7">
+    <div className="flex flex-col gap-3 rounded-sm bg-surface-muted p-3 text-sm leading-7">
       <p>{l.whyIntro}</p>
       <ul className="flex flex-col gap-1">
         <li>
@@ -108,13 +123,13 @@ function HypothesisBlock({
   degraded?: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className={cn("flex flex-col gap-2", primary && "rounded-md border border-border bg-surface-muted/40 p-3.5")}>
       <div className="flex flex-wrap items-center gap-2">
         {primary ? <span className="text-xs font-medium text-muted">{l.mainHypothesis}</span> : null}
         <EvidenceLevelChip level={h.level} reason={h.levelReason} />
       </div>
-      <p className="text-[15px] font-semibold leading-8">{stripUnsafeChars(h.titleFa)}</p>
-      {degraded && h.explanationFa === h.titleFa ? null : <SafeMarkdown text={h.explanationFa} className="text-muted" />}
+      <p className={cn("font-bold leading-8", primary ? "text-[17px]" : "text-[15px]")}>{stripUnsafeChars(h.titleFa)}</p>
+      {degraded && h.explanationFa === h.titleFa ? null : <SafeMarkdown text={h.explanationFa} className="text-foreground/80" />}
       <div>
         <p className="mb-1 text-xs text-muted">{l.citedLabel}</p>
         <CitedIds ids={[...h.supports, ...h.contradicts]} facts={facts} onOpen={onOpen} />
@@ -153,13 +168,16 @@ export function FindingCard({
   return (
     <Card>
       <CardContent className="flex flex-col gap-5">
-        <h3 className="flex flex-wrap items-center gap-2 text-base font-semibold leading-8">
+        <h3 className="flex flex-wrap items-center gap-2 text-base font-bold leading-8">
+          <span aria-hidden className="flex size-7 items-center justify-center rounded-sm bg-surface-muted text-muted">
+            <ScanSearch className="size-4" />
+          </span>
           {l.title}
           <MockDataBadge />
         </h3>
 
         {incomplete ? (
-          <p role="status" className="flex items-start gap-2 rounded-lg bg-warn-soft p-3 text-sm leading-7 text-warn-ink">
+          <p role="status" className="flex items-start gap-2 rounded-sm bg-warn-soft p-3 text-sm leading-7 text-warn-ink">
             <TriangleAlert aria-hidden className="mt-1 size-4 shrink-0" />
             <span>
               <strong>{l.partialTitle}.</strong> {l.partialBody}
@@ -168,7 +186,7 @@ export function FindingCard({
         ) : null}
 
         {finding.facts.length > 0 ? (
-          <Section icon={Eye} title={l.observed} hint={l.observedHint}>
+          <Section icon={Eye} title={l.observed} hint={l.observedHint} layer="observed">
             <ul className="flex flex-col gap-2">
               {finding.facts.map((o) => (
                 <li key={o.id}>
@@ -179,9 +197,9 @@ export function FindingCard({
           </Section>
         ) : null}
 
-        <Section icon={Lightbulb} title={l.inferred} hint={l.inferredHint}>
+        <Section icon={Lightbulb} title={l.inferred} hint={l.inferredHint} layer="inferred">
           {insufficient ? (
-            <div role="status" className="flex items-start gap-2 rounded-lg bg-surface-muted p-3 text-sm leading-7">
+            <div role="status" className="flex items-start gap-2 rounded-sm bg-surface-muted p-3 text-sm leading-7">
               <Info aria-hidden className="mt-1 size-4 shrink-0 text-accent" />
               <span>
                 <strong>{l.insufficientTitle}.</strong> {l.insufficientBody}
@@ -189,7 +207,7 @@ export function FindingCard({
             </div>
           ) : null}
           {healthy ? (
-            <div role="status" className="rounded-lg bg-ok-soft p-3 text-sm leading-7 text-ok-ink">
+            <div role="status" className="rounded-sm border border-ok/30 bg-ok-soft p-3 text-sm leading-7 text-ok-ink">
               <strong>{l.healthyTitle}.</strong> {l.healthyBody}
             </div>
           ) : null}
@@ -198,7 +216,7 @@ export function FindingCard({
             <Disclosure summary={fill(l.otherHypotheses, { count: rest.length })}>
               <ul className="flex flex-col gap-4 ps-1">
                 {rest.map((h) => (
-                  <li key={h.id} className="border-s-2 border-border ps-3">
+                  <li key={h.id} className="rounded-md border border-border p-3">
                     <HypothesisBlock h={h} facts={facts} onOpen={onOpenEvidence} degraded={degraded} />
                   </li>
                 ))}
@@ -209,7 +227,7 @@ export function FindingCard({
             <Disclosure summary={l.ruledOut}>
               <ul className="flex flex-col gap-3">
                 {finding.ruledOut.map((r, i) => (
-                  <li key={i} className="flex flex-col gap-1 rounded-lg bg-surface-muted p-3 text-sm leading-7">
+                  <li key={i} className="flex flex-col gap-1 rounded-sm bg-surface-muted p-3 text-sm leading-7">
                     <span className="font-medium">{stripUnsafeChars(r.titleFa)}</span>
                     <span className="text-muted">{stripUnsafeChars(r.reasonFa)}</span>
                     {r.observationIds.length > 0 ? <CitedIds ids={r.observationIds} facts={facts} onOpen={onOpenEvidence} /> : null}
@@ -221,10 +239,10 @@ export function FindingCard({
         </Section>
 
         {finding.unknowns.length > 0 ? (
-          <Section icon={CircleHelp} title={l.unknown} hint={l.unknownHint}>
+          <Section icon={CircleHelp} title={l.unknown} hint={l.unknownHint} layer="unknown">
             <ul className="flex flex-col gap-2">
               {finding.unknowns.map((u, i) => (
-                <li key={i} className="rounded-lg border border-dashed border-border-strong/60 p-3 text-sm leading-7">
+                <li key={i} className="rounded-sm border border-dashed border-border-strong/60 p-3 text-sm leading-7">
                   <p>{stripUnsafeChars(u.descriptionFa)}</p>
                   {u.howToGet ? <p className="text-muted">{fill(l.howToGet, { text: stripUnsafeChars(u.howToGet) })}</p> : null}
                 </li>
@@ -234,7 +252,7 @@ export function FindingCard({
         ) : null}
 
         {finding.limitsNote && finding.limitsNote.length > 0 ? (
-          <aside aria-label={l.limits} className="flex items-start gap-2 rounded-lg bg-surface-muted p-3 text-sm leading-7 text-muted">
+          <aside aria-label={l.limits} className="flex items-start gap-2 rounded-sm bg-surface-muted p-3 text-sm leading-7 text-muted">
             <Info aria-hidden className="mt-1 size-4 shrink-0" />
             <div>
               <p className="font-medium text-foreground">{l.limits}</p>

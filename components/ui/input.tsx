@@ -3,14 +3,14 @@ import { cn } from "@/lib/utils";
 import { t } from "@/lib/i18n/t";
 
 const fieldBase = [
-  "block w-full rounded-lg border bg-surface px-3 text-[15px] text-foreground",
-  "placeholder:text-muted transition-colors",
-  "focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-accent focus-visible:border-accent",
+  "block w-full rounded-sm border bg-background px-3 text-[15px] text-foreground",
+  "placeholder:text-muted transition-[border-color,box-shadow,background-color] duration-150",
+  "focus-visible:outline-none focus-visible:border-accent focus-visible:ring-[3px] focus-visible:ring-accent/25",
   "disabled:cursor-not-allowed disabled:opacity-60 read-only:bg-surface-muted",
 ];
 
 export const fieldClass = (invalid?: boolean) =>
-  cn(fieldBase, invalid ? "border-danger" : "border-border-strong");
+  cn(fieldBase, invalid ? "border-danger focus-visible:border-danger focus-visible:ring-danger/25" : "border-border-strong enabled:hover:border-muted");
 
 export interface InputProps extends ComponentProps<"input"> {
   invalid?: boolean;
@@ -43,7 +43,7 @@ export function Textarea({ className, invalid, rows = 4, ...props }: TextareaPro
 }
 
 export function Label({ className, ...props }: ComponentProps<"label">) {
-  return <label className={cn("text-sm font-medium text-foreground", className)} {...props} />;
+  return <label className={cn("text-sm font-semibold text-foreground", className)} {...props} />;
 }
 
 export interface FieldControlProps {
@@ -88,7 +88,7 @@ export function Field({
         </p>
       ) : null}
       {error ? (
-        <p id={errorId} className="text-sm leading-6 text-danger">
+        <p id={errorId} className="animate-hl-fade text-sm leading-6 text-danger">
           {error}
         </p>
       ) : null}

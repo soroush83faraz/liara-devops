@@ -1,22 +1,18 @@
 "use client";
 
-import { Circle, CircleCheck, CircleMinus, CircleX, Info, LoaderCircle, RefreshCw, type LucideIcon } from "lucide-react";
+import { Info, LoaderCircle, RefreshCw } from "lucide-react";
+import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
-import type { ExecutionData, ProposalStatus, StepStatus } from "@/lib/contracts";
+import type { ExecutionData, ProposalStatus } from "@/lib/contracts";
 import { fa } from "@/lib/i18n/fa";
+import { faNumber } from "@/lib/i18n/format";
 import { fill, stripUnsafeChars } from "@/lib/copilot/text";
+import { ease, Pulse } from "@/lib/ui/motion";
 import { cn } from "@/lib/utils";
+import { StepGlyph } from "./investigation-timeline";
 import type { FollowState } from "./use-proposal-follow";
 
 const l = fa.copilotUi.execution;
-
-const ICON: Record<StepStatus, { icon: LucideIcon; cls: string }> = {
-  pending: { icon: Circle, cls: "text-muted" },
-  running: { icon: LoaderCircle, cls: "animate-spin text-accent motion-reduce:animate-none" },
-  done: { icon: CircleCheck, cls: "text-ok" },
-  failed: { icon: CircleX, cls: "text-danger" },
-  skipped: { icon: CircleMinus, cls: "text-muted" },
-};
 
 export function stepName(step: string): string {
   const known = (l.stepNames as Record<string, string>)[step];
@@ -39,9 +35,37 @@ export function ExecutionProgress({
   onRefresh: () => void;
 }) {
   const live = status === "approved" || status === "executing" || status === "verifying";
+  const total = executions.length;
+  const settled = executions.filter((e) => e.status === "done" || e.status === "skipped" || e.status === "failed").length;
+  const anyFailed = executions.some((e) => e.status === "failed");
   return (
-    <section aria-label={l.title} className="flex flex-col gap-2 rounded-lg border border-border bg-surface-muted/50 p-3">
-      <h4 className="text-sm font-semibold">{l.title}</h4>
+    <motion.section
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: ease.out }}
+      aria-label={l.title}
+      className={cn("flex flex-col gap-2.5 rounded-md border bg-surface-muted/40 p-3.5", live ? "border-accent/35" : "border-border")}
+    >
+      <div className="flex items-center gap-2">
+        {live ? <Pulse tone="accent" /> : null}
+        <h4 className="flex-1 text-sm font-semibold">{l.title}</h4>
+        {total > 0 ? (
+          <span aria-hidden className="text-xs font-semibold tabular-nums text-muted">
+            {faNumber(settled)} / {faNumber(total)}
+          </span>
+        ) : null}
+      </div>
+      {total > 0 ? (
+        <div aria-hidden className={cn("relative h-1 overflow-hidden rounded-full", anyFailed ? "bg-danger-soft" : "bg-accent-soft")}>
+          <span
+            className={cn(
+              "absolute inset-0 origin-right rounded-full transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ltr:origin-left",
+              anyFailed ? "bg-danger" : settled === total ? "bg-ok" : "bg-accent",
+            )}
+            style={{ transform: `scaleX(${settled / total})` }}
+          />
+        </div>
+      ) : null}
       {live ? (
         <p className="flex items-start gap-2 text-xs leading-6 text-muted">
           <Info aria-hidden className="mt-1 size-3.5 shrink-0" />
@@ -57,18 +81,26 @@ export function ExecutionProgress({
         ) : null
       ) : (
         <ol aria-live="polite" aria-relevant="additions text" aria-label={l.statusLabel} className="flex flex-col">
-          {executions.map((e) => {
-            const meta = ICON[e.status];
-            const Icon = meta.icon;
+          {executions.map((e, i) => {
             return (
-              <li key={e.step} className="flex min-h-9 items-start gap-2.5 py-1 text-[15px] leading-7" data-status={e.status}>
-                <Icon aria-hidden className={cn("mt-1.5 size-4 shrink-0", meta.cls)} />
+              <motion.li
+                key={e.step}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.28, ease: ease.out }}
+                className="relative flex min-h-9 items-start gap-3 py-1 text-[15px] leading-7"
+                data-status={e.status}
+              >
+                {i < executions.length - 1 ? (
+                  <span aria-hidden className={cn("absolute start-[9px] top-7 bottom-[-6px] w-px", e.status === "done" ? "bg-ok/50" : "bg-border")} />
+                ) : null}
+                <StepGlyph status={e.status} />
                 <span className="min-w-0 flex-1">
                   {stepName(e.step)}
                   <span className="ms-2 text-xs text-muted">({l.step[e.status]})</span>
                   {e.detail ? <span className="block text-xs leading-6 text-muted">{stripUnsafeChars(e.detail)}</span> : null}
                 </span>
-              </li>
+              </motion.li>
             );
           })}
         </ol>
@@ -87,6 +119,6 @@ export function ExecutionProgress({
           </Button>
         </div>
       ) : null}
-    </section>
+    </motion.section>
   );
 }

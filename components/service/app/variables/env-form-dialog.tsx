@@ -136,12 +136,12 @@ export function EnvFormDialog({
           </div>
         ) : null}
         {overwrites ? (
-          <p role="status" className="rounded-lg bg-warn-soft p-3 text-sm leading-7 text-warn-ink">
+          <p role="status" className="rounded-sm bg-warn-soft p-3 text-sm leading-7 text-warn-ink">
             {t("appConfig.vars.overwriteNote")}
           </p>
         ) : null}
         {key && isPublicEnvKey(key) ? (
-          <p role="status" className="flex items-start gap-2 rounded-lg bg-warn-soft p-3 text-sm leading-7 text-warn-ink">
+          <p role="status" className="flex items-start gap-2 rounded-sm bg-warn-soft p-3 text-sm leading-7 text-warn-ink">
             <TriangleAlert aria-hidden className="mt-1 size-4 shrink-0" />
             {t("appConfig.vars.publicWarning")}
           </p>

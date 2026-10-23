@@ -10,7 +10,7 @@ export function DropdownMenu(props: ComponentProps<typeof MenuPrimitive.Root>) {
 }
 export const DropdownMenuTrigger = MenuPrimitive.Trigger;
 export const DropdownMenuLabel = ({ className, ...props }: ComponentProps<typeof MenuPrimitive.Label>) => (
-  <MenuPrimitive.Label className={cn("px-3 py-1.5 text-xs text-muted", className)} {...props} />
+  <MenuPrimitive.Label className={cn("px-2.5 py-1.5 text-xs text-muted", className)} {...props} />
 );
 
 export function DropdownMenuContent({
@@ -25,7 +25,7 @@ export function DropdownMenuContent({
         align={align}
         sideOffset={sideOffset}
         className={cn(
-          "z-50 min-w-48 max-w-[calc(100vw-2rem)] rounded-lg border border-border bg-surface p-1 text-foreground shadow-md animate-hl-pop",
+          "z-50 min-w-48 max-w-[calc(100vw-2rem)] origin-(--radix-dropdown-menu-content-transform-origin) rounded-md border border-border bg-surface p-1.5 text-foreground shadow-[var(--shadow-pop)] animate-hl-pop",
           className,
         )}
         {...props}
@@ -42,11 +42,11 @@ export function DropdownMenuItem({
   return (
     <MenuPrimitive.Item
       className={cn(
-        "flex min-h-11 cursor-pointer select-none items-center gap-2 rounded-md px-3 text-[15px] outline-none md:min-h-9",
+        "flex min-h-11 cursor-pointer select-none items-center gap-2 rounded-sm px-2.5 text-sm outline-none transition-colors duration-100 md:min-h-9",
         "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         danger
           ? "text-danger data-[highlighted]:bg-danger-soft data-[highlighted]:text-danger-ink"
-          : "data-[highlighted]:bg-accent-soft data-[highlighted]:text-accent-ink",
+          : "data-[highlighted]:bg-surface-muted data-[highlighted]:text-foreground",
         className,
       )}
       {...props}
@@ -55,5 +55,5 @@ export function DropdownMenuItem({
 }
 
 export const DropdownMenuSeparator = ({ className, ...props }: ComponentProps<typeof MenuPrimitive.Separator>) => (
-  <MenuPrimitive.Separator className={cn("my-1 h-px bg-border", className)} {...props} />
+  <MenuPrimitive.Separator className={cn("-mx-1.5 my-1.5 h-px bg-border", className)} {...props} />
 );

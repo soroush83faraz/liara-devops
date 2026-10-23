@@ -17,7 +17,7 @@ export function ServiceIcon({ kind, platformOrEngine, className }: { kind: Servi
     <span
       aria-hidden
       className={cn(
-        "flex size-9 shrink-0 items-center justify-center rounded-lg",
+        "flex size-9 shrink-0 items-center justify-center rounded-sm",
         kind === "db" ? "bg-warn-soft text-warn-ink" : "bg-accent-soft text-accent-ink",
         className,
       )}

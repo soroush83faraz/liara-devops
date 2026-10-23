@@ -78,61 +78,65 @@ function LiveLogs({ name, releaseId, sinceIso }: { name: string; releaseId?: str
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <ConnectionBadge state={stream.state} paused={paused} />
-        <div className="flex flex-wrap items-center gap-2">
-          <Button variant="secondary" size="sm" onClick={() => setPaused((p) => !p)}>
-            {paused ? <Play aria-hidden className="size-4" /> : <Pause aria-hidden className="size-4" />}
-            {paused ? l.resume : l.pause}
-          </Button>
-          <Button variant="ghost" size="sm" onClick={stream.clear}>
-            <Eraser aria-hidden className="size-4" />
-            {l.clear}
-          </Button>
+      {/* Controls on one quiet surface; the log itself is the loudest thing in the tab. */}
+      <div className="flex flex-col gap-3 rounded-md border border-border bg-surface-muted/40 p-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <ConnectionBadge state={stream.state} paused={paused} />
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="secondary" size="sm" onClick={() => setPaused((p) => !p)}>
+              {paused ? <Play aria-hidden className="size-4" /> : <Pause aria-hidden className="size-4" />}
+              {paused ? l.resume : l.pause}
+            </Button>
+            <Button variant="ghost" size="sm" onClick={stream.clear}>
+              <Eraser aria-hidden className="size-4" />
+              {l.clear}
+            </Button>
+          </div>
         </div>
-      </div>
 
-      {stream.fatal ? (
-        <ErrorBanner tone="warn" message={stream.fatal} onRetry={stream.retry} retryLabel={fa.appOps.conn.reconnect} />
-      ) : stream.state === "failed" ? (
-        <ErrorBanner message={fa.appOps.conn.failed} onRetry={stream.retry} retryLabel={fa.appOps.conn.reconnect} />
-      ) : null}
+        {stream.fatal ? (
+          <ErrorBanner tone="warn" message={stream.fatal} onRetry={stream.retry} retryLabel={fa.appOps.conn.reconnect} />
+        ) : stream.state === "failed" ? (
+          <ErrorBanner message={fa.appOps.conn.failed} onRetry={stream.retry} retryLabel={fa.appOps.conn.reconnect} />
+        ) : null}
 
-      <div role="group" aria-label={l.levels} className="flex flex-wrap gap-2">
-        {LOG_LEVELS.map((lv) => (
-          <ToggleChip key={lv} pressed={levels.has(lv)} onClick={() => toggleLevel(lv)}>
-            {l.level[lv]}
-            <span className="text-xs tabular-nums text-muted">{faNumber(counts[lv])}</span>
+        <div role="group" aria-label={l.levels} className="flex flex-wrap gap-2">
+          {LOG_LEVELS.map((lv) => (
+            <ToggleChip key={lv} pressed={levels.has(lv)} onClick={() => toggleLevel(lv)}>
+              {l.level[lv]}
+              <span className="text-xs tabular-nums text-muted">{faNumber(counts[lv])}</span>
+            </ToggleChip>
+          ))}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <Input
+            type="search"
+            dir={emptyAwareDir(query, "ltr")}
+            aria-label={l.searchLabel}
+            placeholder={l.searchPlaceholder}
+            value={query}
+            invalid={matcher?.ok === false}
+            onChange={(e) => setQuery(e.target.value)}
+            className="min-w-40 flex-1"
+          />
+          <ToggleChip pressed={useRegex} onClick={() => setUseRegex((r) => !r)}>
+            {l.regex}
           </ToggleChip>
-        ))}
-      </div>
+        </div>
+        {matcher?.ok === false ? <p className="text-sm text-danger">{l.regexInvalid}</p> : null}
 
-      <div className="flex flex-wrap items-center gap-2">
-        <Input
-          type="search"
-          dir={emptyAwareDir(query, "ltr")}
-          aria-label={l.searchLabel}
-          placeholder={l.searchPlaceholder}
-          value={query}
-          invalid={matcher?.ok === false}
-          onChange={(e) => setQuery(e.target.value)}
-          className="min-w-40 flex-1"
-        />
-        <ToggleChip pressed={useRegex} onClick={() => setUseRegex((r) => !r)}>
-          {l.regex}
-        </ToggleChip>
-      </div>
-      {matcher?.ok === false ? <p className="text-sm text-danger">{l.regexInvalid}</p> : null}
-
-      <div className="grid gap-x-6 sm:grid-cols-3">
-        <Switch label={l.wrap} checked={wrap} onCheckedChange={setWrap} />
-        <Switch label={l.autoScroll} checked={autoScroll} onCheckedChange={setAutoScroll} />
-        <Switch
-          label={l.timestampRelative}
-          description={l.timestampToggle}
-          checked={tsMode === "relative"}
-          onCheckedChange={(on) => setTsMode(on ? "relative" : "iso")}
-        />
+        <div className="flex flex-wrap items-center gap-x-6 border-t border-border pt-1">
+          <Switch label={l.wrap} checked={wrap} onCheckedChange={setWrap} className="flex-none gap-1 [&_label>span:first-child]:text-sm" />
+          <Switch label={l.autoScroll} checked={autoScroll} onCheckedChange={setAutoScroll} className="flex-none gap-1 [&_label>span:first-child]:text-sm" />
+          <Switch
+            label={l.timestampRelative}
+            description={l.timestampToggle}
+            checked={tsMode === "relative"}
+            onCheckedChange={(on) => setTsMode(on ? "relative" : "iso")}
+            className="flex-none gap-1 [&_label>span:first-child]:text-sm"
+          />
+        </div>
       </div>
 
       <LogViewer
@@ -153,7 +157,7 @@ function LiveLogs({ name, releaseId, sinceIso }: { name: string; releaseId?: str
       />
 
       <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-muted">
-        <span aria-live="polite">
+        <span aria-live="polite" className="tabular-nums">
           {t("appOps.logs.shown", { shown: visible.length, total: stream.lines.length })}
           {paused && stream.pending ? ` — ${t("appOps.logs.pausedPending", { count: stream.pending })}` : ""}
         </span>
@@ -187,7 +191,7 @@ export function LogsTab({ name }: AppPanelProps) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-sm text-muted">{l.release}</span>
+        <span className="text-sm font-medium text-muted">{l.release}</span>
         <Select
           aria-label={l.release}
           value={release}

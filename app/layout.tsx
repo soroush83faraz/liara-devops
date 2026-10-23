@@ -15,8 +15,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   colorScheme: "light dark",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f8fafc" },
-    { media: "(prefers-color-scheme: dark)", color: "#0b1220" },
+    { media: "(prefers-color-scheme: light)", color: "#f5f3ee" },
+    { media: "(prefers-color-scheme: dark)", color: "#07090d" },
   ],
 };
 
@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="min-h-full">
         <a
           href="#main-content"
-          className="sr-only rounded-lg bg-accent px-4 py-2 text-accent-foreground focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-[70]"
+          className="sr-only rounded-sm bg-accent px-4 py-2 text-accent-foreground focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-[70]"
         >
           {fa.common.skipToContent}
         </a>

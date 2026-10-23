@@ -45,19 +45,19 @@ export function Switch({ label, description, className, ...root }: SwitchProps) 
         className={cn(
           "group inline-flex h-11 w-14 shrink-0 cursor-pointer items-center justify-center rounded-lg",
           "focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-accent",
-          "disabled:cursor-not-allowed disabled:opacity-55",
+          "disabled:cursor-not-allowed disabled:opacity-50",
         )}
       >
         <span
           aria-hidden
           className={cn(
-            "inline-flex h-6 w-11 items-center rounded-full border border-transparent p-0.5 transition-colors",
+            "inline-flex h-6 w-11 items-center rounded-full border border-transparent p-0.5 transition-colors duration-200",
             "bg-border-strong group-data-[state=checked]:bg-accent",
           )}
         >
           <SwitchPrimitive.Thumb
             className={cn(
-              "block size-5 rounded-full bg-white shadow-sm transition-transform",
+              "block size-5 rounded-full bg-white shadow-[0_1px_2px_rgb(0_0_0/0.3)] transition-transform duration-200 ease-out-expo",
               "data-[state=checked]:translate-x-5 rtl:data-[state=checked]:-translate-x-5",
             )}
           />

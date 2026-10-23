@@ -99,7 +99,7 @@ export function HealthWatchIndicator() {
     <DropdownMenu>
       <DropdownMenuTrigger
         aria-label={count > 0 ? t("canvasMap.health.bellLabelCount", { count }) : t("canvasMap.health.bellLabel")}
-        className="relative inline-flex size-11 items-center justify-center rounded-lg text-muted hover:bg-surface-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:size-10"
+        className="relative inline-flex size-11 items-center justify-center rounded-sm text-muted hover:bg-surface-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:size-10"
       >
         <Icon aria-hidden className={cn("size-5", count > 0 && "text-danger")} />
         {count > 0 ? (

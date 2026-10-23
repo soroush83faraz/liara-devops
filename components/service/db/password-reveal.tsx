@@ -88,7 +88,7 @@ export function PasswordReveal({ host, onSecret }: { host: string; onSecret?: (s
         <bdi
           dir="ltr"
           aria-label={secret === null ? t("dbPanel.connection.passwordHidden") : undefined}
-          className="min-w-0 max-w-full break-all rounded-lg bg-code-bg px-3 py-1.5 font-mono text-[13px]"
+          className="min-w-0 max-w-full break-all rounded-sm bg-code-bg px-3 py-1.5 font-mono text-[13px]"
         >
           {secret === null ? "••••••••••••" : secret}
         </bdi>

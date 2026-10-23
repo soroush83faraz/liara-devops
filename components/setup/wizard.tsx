@@ -1,5 +1,7 @@
 "use client";
 
+import { Check } from "lucide-react";
+import { AnimatePresence, motion, type Variants } from "motion/react";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { ErrorBanner } from "@/components/ui/error-banner";
 import { faNumber } from "@/lib/i18n/format";
@@ -18,6 +20,7 @@ import {
 import { hasUnpricedBundle } from "@/lib/setup/cost-view";
 import { initialRun, reduceRun } from "@/lib/setup/run-state";
 import { errorText } from "@/lib/setup/text";
+import { ease, spring } from "@/lib/ui/motion";
 import { cn } from "@/lib/utils";
 import { AnalysisStep } from "./analysis-step";
 import { ReviewStep } from "./review-step";
@@ -170,55 +173,122 @@ export function SetupWizard() {
 
   const expired = plan ? Date.parse(plan.expiresAt) <= now : false;
   const current = PHASES.findIndex((p) => p.id === phase);
+  // Direction of the last move (1 forward, -1 back) for the step transition: "adjust state while rendering" pattern.
+  const [shownIndex, setShownIndex] = useState(current);
+  const [dir, setDir] = useState(1);
+  if (shownIndex !== current) {
+    setShownIndex(current);
+    setDir(current > shownIndex ? 1 : -1);
+  }
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-6 sm:px-6">
-      <header className="flex flex-col gap-2">
-        <h1 className="text-xl font-bold leading-10">{t("setupFlow.page.title")}</h1>
-        <p className="text-sm leading-7 text-muted">{t("setupFlow.page.intro")}</p>
+      <header className="flex flex-col gap-1.5">
+        <h1 className="text-2xl font-bold">{t("setupFlow.page.title")}</h1>
+        <p className="max-w-[65ch] text-sm leading-7 text-muted">{t("setupFlow.page.intro")}</p>
       </header>
-      <ol className="flex flex-wrap gap-x-4 gap-y-1 text-sm" aria-label={t("setupFlow.page.title")}>
-        {PHASES.map((p, i) => (
-          <li key={p.id} aria-current={i === current ? "step" : undefined} className={cn("flex items-center gap-1.5", i === current ? "font-semibold text-accent" : i < current ? "text-foreground" : "text-muted")}>
-            <span className="inline-flex size-6 items-center justify-center rounded-full border border-current text-xs">{faNumber(i + 1)}</span>
-            {t(`setupFlow.page.${p.label}`)}
-          </li>
-        ))}
+      <Stepper current={current} />
+
+      <AnimatePresence mode="wait" initial={false} custom={dir}>
+        <motion.div
+          key={phase}
+          custom={dir}
+          variants={stepVariants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          className="flex flex-col gap-6"
+        >
+          {phase === "start" ? (
+            <>
+              {startError ? <ErrorBanner message={startError} /> : null}
+              <StartStep busy={busy} onFile={onFile} onAnswers={onAnswers} />
+            </>
+          ) : null}
+
+          {phase === "analysis" && result && draft ? (
+            <AnalysisStep
+              result={result}
+              draft={draft}
+              showProblems={showProblems}
+              busy={busy}
+              error={planError}
+              onChange={(p) => setDraft({ ...draft, ...p })}
+              onBack={startOver}
+              onContinue={toReview}
+              onRetryCatalog={retryCatalog}
+            />
+          ) : null}
+
+          {phase === "review" && plan && draft ? (
+            <ReviewStep
+              plan={plan}
+              draft={draft}
+              expired={expired}
+              costIncomplete={hasUnpricedBundle(result?.catalog?.appPlans, draft.planId, draft.bundlePlanId)}
+              onBack={() => setPhase("analysis")}
+              onConfirm={startRun}
+            />
+          ) : null}
+
+          {phase === "run" && plan ? <RunPanel plan={plan.plan} run={run} onRestart={startOver} /> : null}
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/*
+ * Step transitions read in the direction of travel. In RTL the flow runs right -> left, so moving forward the new
+ * step arrives from the left (inline-end) and the old one leaves to the right; going back mirrors it.
+ */
+const stepVariants: Variants = {
+  enter: (dir: number) => ({ opacity: 0, x: dir * -28 }),
+  center: { opacity: 1, x: 0, transition: { duration: 0.32, ease: ease.out } },
+  exit: (dir: number) => ({ opacity: 0, x: dir * 20, transition: { duration: 0.14, ease: ease.inOut } }),
+};
+
+/** Four-stop progress rail: done stops carry a check, the current one a live ring; the track fills as you advance. */
+function Stepper({ current }: { current: number }) {
+  const progress = current / (PHASES.length - 1);
+  return (
+    <div className="relative">
+      <div aria-hidden className="absolute inset-x-[12.5%] top-[15px] h-0.5 rounded-full bg-border">
+        <div
+          className="absolute inset-0 origin-right rounded-full bg-accent transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ltr:origin-left"
+          style={{ transform: `scaleX(${progress})` }}
+        />
+      </div>
+      <ol className="relative grid grid-cols-4 text-center" aria-label={t("setupFlow.page.title")}>
+        {PHASES.map((p, i) => {
+          const done = i < current;
+          const active = i === current;
+          return (
+            <li key={p.id} aria-current={active ? "step" : undefined} className="flex flex-col items-center gap-2">
+              <span
+                className={cn(
+                  "relative flex size-8 items-center justify-center rounded-full border text-xs font-bold transition-[background-color,border-color,color,box-shadow] duration-300",
+                  done && "border-accent bg-accent text-accent-foreground",
+                  active && "border-accent bg-surface text-accent-ink shadow-[var(--glow-accent)]",
+                  !done && !active && "border-border bg-surface text-muted",
+                )}
+              >
+                {active ? <span aria-hidden className="absolute inset-0 rounded-full border border-accent animate-hl-ping" /> : null}
+                {done ? (
+                  <motion.span initial={{ scale: 0.4, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={spring.pop} className="flex">
+                    <Check aria-hidden className="size-4" strokeWidth={3} />
+                  </motion.span>
+                ) : (
+                  <span>{faNumber(i + 1)}</span>
+                )}
+              </span>
+              <span className={cn("px-1 text-xs leading-5 sm:text-sm", active ? "font-semibold text-foreground" : done ? "text-foreground/80" : "text-muted")}>
+                {t(`setupFlow.page.${p.label}`)}
+              </span>
+            </li>
+          );
+        })}
       </ol>
-
-      {phase === "start" ? (
-        <>
-          {startError ? <ErrorBanner message={startError} /> : null}
-          <StartStep busy={busy} onFile={onFile} onAnswers={onAnswers} />
-        </>
-      ) : null}
-
-      {phase === "analysis" && result && draft ? (
-        <AnalysisStep
-          result={result}
-          draft={draft}
-          showProblems={showProblems}
-          busy={busy}
-          error={planError}
-          onChange={(p) => setDraft({ ...draft, ...p })}
-          onBack={startOver}
-          onContinue={toReview}
-          onRetryCatalog={retryCatalog}
-        />
-      ) : null}
-
-      {phase === "review" && plan && draft ? (
-        <ReviewStep
-          plan={plan}
-          draft={draft}
-          expired={expired}
-          costIncomplete={hasUnpricedBundle(result?.catalog?.appPlans, draft.planId, draft.bundlePlanId)}
-          onBack={() => setPhase("analysis")}
-          onConfirm={startRun}
-        />
-      ) : null}
-
-      {phase === "run" && plan ? <RunPanel plan={plan.plan} run={run} onRestart={startOver} /> : null}
     </div>
   );
 }

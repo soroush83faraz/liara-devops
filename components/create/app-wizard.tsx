@@ -1,6 +1,5 @@
 "use client";
 
-import { CircleCheck } from "lucide-react";
 import { useReducer, useRef } from "react";
 import { Badge, Button, Field, Input, Switch } from "@/components/ui";
 import { runOp } from "@/lib/client/ops";
@@ -24,7 +23,7 @@ import {
   type AppWizardState,
 } from "@/lib/create/wizards";
 import { useShellStore } from "@/components/shell/shell-store";
-import { CardGrid, CostBlock, NavFooter, NetworkPicker, OptionCard, PlansGate, PriceLines, SubmitError, TypedField, WizardDialog, tk } from "./parts";
+import { CardGrid, CostBlock, NavFooter, NetworkPicker, OptionCard, PlansGate, PriceLines, SubmitError, TypedField, DoneMessage, WizardDialog, tk } from "./parts";
 
 const platformLabel = (p: string) => {
   const known = (tk(`platforms.${p}.label`) as string);
@@ -195,7 +194,7 @@ function Review({ s, plans, dispatch }: { s: AppWizardState; plans: PlansRespons
   return (
     <div className="flex flex-col gap-4">
       <h4 className="text-sm font-semibold">{tk("app.reviewTitle")}</h4>
-      <dl className="divide-y divide-border rounded-xl border border-border px-3">
+      <dl className="divide-y divide-border rounded-md border border-border px-3">
         <Row k={tk("app.summaryName")}><bdi dir="ltr" className="font-mono">{s.name}</bdi></Row>
         <Row k={tk("app.summaryPlatform")}><bdi dir="ltr">{platformLabel(s.platform ?? "")}</bdi></Row>
         <Row k={tk("app.summaryPlan")}><bdi dir="ltr" className="font-mono">{s.planId}</bdi></Row>
@@ -234,10 +233,7 @@ function Done({ name, platform, onClose }: { name: string; platform?: string; on
         </>
       }
     >
-      <p className="flex items-start gap-2 text-sm leading-7">
-        <CircleCheck aria-hidden className="mt-1 size-5 shrink-0 text-ok" />
-        {tk("app.doneBody", { name })}
-      </p>
+      <DoneMessage>{tk("app.doneBody", { name })}</DoneMessage>
     </WizardDialog>
   );
 }

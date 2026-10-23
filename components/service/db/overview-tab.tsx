@@ -55,9 +55,9 @@ export function DbOverviewTab({ name, serviceId }: DbPanelProps & { serviceId: s
   if (q.isPending) {
     return (
       <div aria-busy="true" className="flex flex-col gap-4">
-        <Skeleton className="h-8 w-40" />
-        <Skeleton className="h-56 w-full" />
-        <Skeleton className="h-48 w-full" />
+        <Skeleton className="h-11 w-full rounded-md" />
+        <Skeleton className="h-56 w-full rounded-md" />
+        <Skeleton className="h-48 w-full rounded-md" />
       </div>
     );
   }
@@ -93,8 +93,8 @@ export function DbOverviewTab({ name, serviceId }: DbPanelProps & { serviceId: s
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-3">
-        <StatusDot status={d.uiStatus} className="text-base" />
+      <div className="flex flex-wrap items-center gap-3 rounded-md border border-border bg-surface-muted/40 px-3 py-2.5">
+        <StatusDot status={d.uiStatus} />
         {d.uiStatus === "unknown" && d.status ? (
           <Badge>
             <bdi dir="ltr" className="font-mono">{d.status}</bdi>
@@ -104,7 +104,7 @@ export function DbOverviewTab({ name, serviceId }: DbPanelProps & { serviceId: s
       {d.uiStatus === "stopped" ? <p className="text-sm leading-7 text-muted">{t("dbPanel.overview.stoppedNote")}</p> : null}
 
       {d.publicNetwork ? (
-        <div role="alert" className="flex flex-col gap-3 rounded-xl border border-warn/40 bg-warn-soft p-4 text-warn-ink sm:flex-row sm:items-start">
+        <div role="alert" className="flex flex-col gap-3 rounded-md border border-warn/40 bg-warn-soft p-4 text-warn-ink sm:flex-row sm:items-start">
           <TriangleAlert aria-hidden className="mt-1 size-5 shrink-0" />
           <div className="min-w-0 flex-1">
             <p className="font-semibold leading-8">{t("dbPanel.overview.publicWarningTitle")}</p>

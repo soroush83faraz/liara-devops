@@ -3,7 +3,6 @@
 import { RotateCcw } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { EmptyState } from "@/components/ui/empty-state";
 import type { PanelProps } from "@/lib/canvas/panel-registry";
 import { fa } from "@/lib/i18n/fa";
 import { fill } from "@/lib/copilot/text";
@@ -14,7 +13,6 @@ import { Composer } from "./composer";
 import { MockControls } from "./mock-controls";
 import { SuggestedChips } from "./suggested-chips";
 import { ThreadView } from "./thread-view";
-import { Bot } from "lucide-react";
 
 const p = fa.copilotUi.panel;
 
@@ -64,13 +62,12 @@ export function CopilotPanel({ kind, name }: PanelProps) {
 
       <div className="flex-1">
         {empty ? (
-          <div className="flex flex-col gap-4">
-            <EmptyState
-              icon={<Bot />}
-              title={p.emptyTitle}
-              description={p.emptyBody}
-              className="px-2 py-6"
-            />
+          <div className="flex flex-col gap-5">
+            <div className="flex flex-col items-center gap-3 px-2 pb-1 pt-6 text-center">
+              <CopilotIllustration />
+              <h3 className="text-[17px] font-bold">{p.emptyTitle}</h3>
+              <p className="max-w-md text-sm leading-7 text-muted">{p.emptyBody}</p>
+            </div>
             <SuggestedChips onPick={onSend} disabled={streaming} />
           </div>
         ) : (
@@ -95,3 +92,23 @@ export function CopilotPanel({ kind, name }: PanelProps) {
 }
 
 const EMPTY = emptyThread();
+
+/**
+ * Empty-thread illustration: a service node with a probe signal travelling to the assistant, which answers with
+ * an evidence spark. Decorative; the travelling dash and ping stop under reduced motion (globals.css).
+ */
+function CopilotIllustration() {
+  return (
+    <svg aria-hidden viewBox="0 0 160 72" className="h-[72px] w-40 text-accent" fill="none">
+      <path d="M40 36 C 64 14, 96 14, 120 36" stroke="var(--border-strong)" strokeOpacity="0.5" strokeWidth="1.5" strokeDasharray="3 4" />
+      <path d="M40 36 C 64 14, 96 14, 120 36" stroke="currentColor" strokeWidth="2" strokeLinecap="round" pathLength={100} className="hl-signal" />
+      <rect x="10" y="20" width="32" height="32" rx="8" fill="var(--surface)" stroke="var(--border-strong)" strokeOpacity="0.6" />
+      <rect x="18" y="29" width="16" height="4" rx="2" fill="var(--muted)" fillOpacity="0.55" />
+      <rect x="18" y="37" width="10" height="4" rx="2" fill="var(--muted)" fillOpacity="0.35" />
+      <circle cx="38" cy="22" r="4" fill="var(--danger)" />
+      <circle cx="38" cy="22" r="4" fill="var(--danger)" className="hl-ping-svg" />
+      <rect x="118" y="20" width="32" height="32" rx="16" fill="var(--accent-soft)" stroke="currentColor" strokeOpacity="0.45" />
+      <path d="M134 28 l2.2 5.2 5.2 2.2 -5.2 2.2 -2.2 5.2 -2.2 -5.2 -5.2 -2.2 5.2 -2.2 z" fill="currentColor" />
+    </svg>
+  );
+}

@@ -1,9 +1,9 @@
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 
-/** Decorative placeholder. Set `aria-busy` on the loading container; skeletons are hidden from assistive tech. */
+/** Decorative shimmering placeholder (static under reduced motion). Set `aria-busy` on the loading container; skeletons are hidden from assistive tech. */
 export function Skeleton({ className, ...props }: ComponentProps<"div">) {
-  return <div aria-hidden className={cn("animate-pulse rounded-md bg-surface-muted", className)} {...props} />;
+  return <div aria-hidden className={cn("hl-skeleton rounded-sm", className)} {...props} />;
 }
 
 export function SkeletonText({ lines = 3, className }: { lines?: number; className?: string }) {

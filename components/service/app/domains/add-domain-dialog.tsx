@@ -126,7 +126,7 @@ export function AddDomainDialog({ appName, onClose }: { appName: string; onClose
                   </bdi>
                 </p>
               ) : null}
-              {guidance?.ir ? <p className="rounded-lg bg-accent-soft p-3 text-sm leading-7 text-accent-ink">{t("appConfig.domains.add.irNote")}</p> : null}
+              {guidance?.ir ? <p className="rounded-sm bg-accent-soft p-3 text-sm leading-7 text-accent-ink">{t("appConfig.domains.add.irNote")}</p> : null}
               <p className="text-xs leading-6 text-muted">{t("appConfig.domains.guide.limits")}</p>
             </div>
           ) : null}
@@ -146,7 +146,7 @@ export function AddDomainDialog({ appName, onClose }: { appName: string; onClose
 
           {step === 3 && added ? (
             <div className="flex flex-col gap-3">
-              <p className="rounded-lg bg-surface-muted p-3 text-sm leading-7">{t("appConfig.domains.add.addedNote")}</p>
+              <p className="rounded-sm bg-surface-muted p-3 text-sm leading-7">{t("appConfig.domains.add.addedNote")}</p>
               <DomainDoctor domain={added} />
             </div>
           ) : null}

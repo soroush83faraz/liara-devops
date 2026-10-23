@@ -63,7 +63,7 @@ export function PlanSection({ appName, settings }: { appName: string; settings: 
           </Field>
 
           {target && cmp ? (
-            <div className="flex flex-col gap-2 rounded-lg bg-surface-muted p-3 text-sm leading-7" aria-live="polite">
+            <div className="flex flex-col gap-2 rounded-sm bg-surface-muted p-3 text-sm leading-7" aria-live="polite">
               <p className="font-medium">
                 {target.priceKnown && target.pricePerHour !== undefined && target.pricePerMonth !== undefined
                   ? t("appConfig.settings.plan.newPrice", { hourly: faPrice(target.pricePerHour), monthly: faPrice(target.pricePerMonth) })

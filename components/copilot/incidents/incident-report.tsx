@@ -39,7 +39,7 @@ const PRINT_CSS = `@media print {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section data-print-card className="flex flex-col gap-3 rounded-xl border border-border bg-surface p-4 sm:p-5">
+    <section data-print-card className="flex flex-col gap-3 rounded-md border border-border bg-surface p-4 sm:p-5">
       <h2 className="text-lg font-semibold leading-8">{title}</h2>
       {children}
     </section>
@@ -95,7 +95,7 @@ function Report({ incident, proposal, proposalFailed }: { incident: Incident; pr
             ...(main ? [{ key: l.evidence, value: <EvidenceLevelChip level={main.level} reason={main.levelReason} /> }] : []),
           ]}
         />
-        {incident.summaryMarkdown ? <SafeMarkdown text={incident.summaryMarkdown} className="rounded-lg bg-surface-muted p-3" /> : null}
+        {incident.summaryMarkdown ? <SafeMarkdown text={incident.summaryMarkdown} className="rounded-sm bg-surface-muted p-3" /> : null}
       </Section>
 
       {incident.timeline.length > 0 ? (
@@ -251,8 +251,8 @@ export function IncidentReport({ id }: { id: string }) {
       {incidentQ.isPending ? (
         <div aria-busy className="flex flex-col gap-3">
           <p className="sr-only">{fa.common.loading}</p>
-          <Skeleton className="h-40 w-full rounded-xl" />
-          <Skeleton className="h-32 w-full rounded-xl" />
+          <Skeleton className="h-40 w-full rounded-md" />
+          <Skeleton className="h-32 w-full rounded-md" />
         </div>
       ) : incidentQ.isError ? (
         notFound ? (

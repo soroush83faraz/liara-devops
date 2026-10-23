@@ -58,9 +58,9 @@ function Header({ data }: { data: AppOverviewDto }) {
   const status = appStatus(data.app);
   const rawStatus = data.app.status;
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 rounded-md border border-border bg-surface-muted/40 px-3 py-2.5">
       <div className="flex flex-wrap items-center gap-3">
-        <StatusDot status={status} className="text-base" />
+        <StatusDot status={status} />
         {status === "unknown" && rawStatus ? (
           <Badge>
             <bdi dir="ltr" className="font-mono">{rawStatus}</bdi>
@@ -68,7 +68,7 @@ function Header({ data }: { data: AppOverviewDto }) {
         ) : null}
         {data.app.scale === 0 ? <Badge tone="warn">{o.stopped}</Badge> : null}
       </div>
-      {data.app.isDeployed === false ? <p className="text-sm text-muted">{o.notDeployed}</p> : null}
+      {data.app.isDeployed === false ? <p className="text-xs leading-5 text-muted">{o.notDeployed}</p> : null}
     </div>
   );
 }
@@ -195,7 +195,7 @@ function LatestRelease({ section }: { section: AppOverviewDto["latestRelease"] }
         {r.createdAt ? <span className="text-xs text-muted">{relativeTime(r.createdAt)}</span> : null}
       </div>
       {r.failReason ? (
-        <p className="rounded-lg border border-danger/40 bg-danger-soft p-3 text-sm leading-7 text-danger-ink">
+        <p className="rounded-sm border border-danger/40 bg-danger-soft p-3 text-sm leading-7 text-danger-ink">
           <bdi dir="ltr" className="font-mono">{r.failReason}</bdi>
         </p>
       ) : null}
@@ -206,9 +206,17 @@ function LatestRelease({ section }: { section: AppOverviewDto["latestRelease"] }
 function OverviewSkeleton() {
   return (
     <div aria-busy="true" className="flex flex-col gap-4">
-      <Skeleton className="h-8 w-40" />
-      <Skeleton className="h-56 w-full" />
-      <Skeleton className="h-32 w-full" />
+      <Skeleton className="h-11 w-full rounded-md" />
+      <div className="flex flex-col gap-3 rounded-md border border-border p-5">
+        <Skeleton className="h-4 w-28" />
+        {Array.from({ length: 6 }, (_, i) => (
+          <div key={i} className="flex items-center justify-between gap-6">
+            <Skeleton className="h-3 w-20" />
+            <Skeleton className="h-3 w-32" />
+          </div>
+        ))}
+      </div>
+      <Skeleton className="h-32 w-full rounded-md" />
     </div>
   );
 }

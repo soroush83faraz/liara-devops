@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
 import { ToastProvider } from "@/components/ui/toast";
+import { MotionProvider } from "@/lib/ui/motion";
 
 /** Client errors (4xx) will not succeed on retry; anything else gets two quick retries. */
 function shouldRetry(failureCount: number, error: unknown): boolean {
@@ -30,7 +31,9 @@ export function Providers({ children }: { children: ReactNode }) {
   const [client] = useState(makeQueryClient);
   return (
     <QueryClientProvider client={client}>
-      <ToastProvider>{children}</ToastProvider>
+      <MotionProvider>
+        <ToastProvider>{children}</ToastProvider>
+      </MotionProvider>
     </QueryClientProvider>
   );
 }

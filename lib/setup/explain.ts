@@ -2,14 +2,19 @@
 // until then the wording is fixed by setupFlow strings, so it can never promise more than the plan does.
 import { userValueKeysOf, type DeployPlan, type DeployPlanStep } from "@/lib/contracts";
 import { fa } from "@/lib/i18n/fa";
-import { faNumber } from "@/lib/i18n/format";
+import { faNumber, faPlain } from "@/lib/i18n/format";
 import { DOMAIN_STEPS } from "./recommend";
 import { domainStepText, engineName, platformName } from "./text";
 
 const S = fa.setupFlow;
 
+/** Numbers get Persian digits like the rest of the copy («تنظیم ۱ متغیر»); a port is an identifier, so never grouped. */
 const fill = (template: string, params: Record<string, string | number>): string =>
-  template.replace(/\{(\w+)\}/g, (_m, k: string) => String(params[k] ?? ""));
+  template.replace(/\{(\w+)\}/g, (_m, k: string) => {
+    const v = params[k];
+    if (typeof v === "number") return k === "port" ? faPlain(v) : faNumber(v);
+    return v ?? "";
+  });
 
 export interface PlanExplanation {
   summary: string;

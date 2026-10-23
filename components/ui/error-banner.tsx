@@ -30,15 +30,15 @@ export function ErrorBanner({
     <div
       role="alert"
       className={cn(
-        "flex flex-col gap-3 rounded-xl border p-4 sm:flex-row sm:items-start",
-        tone === "danger" ? "border-danger/40 bg-danger-soft text-danger-ink" : "border-warn/40 bg-warn-soft text-warn-ink",
+        "flex flex-col gap-3 rounded-md border p-3.5 sm:flex-row sm:items-start",
+        tone === "danger" ? "border-danger/30 bg-danger-soft text-danger-ink" : "border-warn/30 bg-warn-soft text-warn-ink",
         className,
       )}
     >
-      <Icon aria-hidden className="mt-1 size-5 shrink-0" />
+      <Icon aria-hidden className="mt-0.5 size-5 shrink-0" />
       <div className="min-w-0 flex-1">
-        {title ? <p className="font-semibold leading-8">{title}</p> : null}
-        <p className="text-sm leading-7">{message}</p>
+        {title ? <p className="font-semibold leading-7">{title}</p> : null}
+        <p className="text-sm leading-6">{message}</p>
         {detail ? (
           <bdi dir="ltr" className="mt-1 block break-words font-mono text-xs opacity-90">
             {detail}

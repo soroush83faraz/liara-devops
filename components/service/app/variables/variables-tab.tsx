@@ -33,7 +33,7 @@ export function VariablesTab({ name }: AppPanelProps) {
   const existingKeys = useMemo(() => (envs ?? []).map((e) => e.key), [envs]);
 
   return (
-    <section className="flex flex-col gap-4 p-4" aria-labelledby="vars-title">
+    <section className="flex flex-col gap-4" aria-labelledby="vars-title">
       <header className="flex flex-col gap-2">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 id="vars-title" className="text-lg font-semibold">
@@ -50,7 +50,7 @@ export function VariablesTab({ name }: AppPanelProps) {
             </Button>
           </div>
         </div>
-        <p className="flex items-start gap-2 rounded-lg bg-warn-soft p-3 text-sm leading-7 text-warn-ink">
+        <p className="flex items-start gap-2 rounded-sm bg-warn-soft p-3 text-sm leading-7 text-warn-ink">
           <RefreshCw aria-hidden className="mt-1 size-4 shrink-0" />
           {t("appConfig.vars.restartNotice")}
         </p>
@@ -88,7 +88,7 @@ export function VariablesTab({ name }: AppPanelProps) {
               />
             </div>
           ) : null}
-          <ul className="flex flex-col divide-y divide-border rounded-xl border border-border bg-surface" aria-label={t("appConfig.vars.listLabel")}>
+          <ul className="flex flex-col divide-y divide-border rounded-md border border-border bg-surface" aria-label={t("appConfig.vars.listLabel")}>
             {shown.map((e) => (
               <EnvRow
                 key={e.key}

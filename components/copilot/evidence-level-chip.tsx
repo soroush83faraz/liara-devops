@@ -6,6 +6,7 @@ import { Tooltip } from "@/components/ui/tooltip";
 import type { EvidenceLevel, LevelReason } from "@/lib/contracts";
 import { fill } from "@/lib/copilot/text";
 import { fa } from "@/lib/i18n/fa";
+import { cn } from "@/lib/utils";
 
 const l = fa.copilotUi.finding;
 
@@ -32,20 +33,40 @@ export function levelReasonLine(reason: LevelReason): string {
   });
 }
 
+const BARS: Record<EvidenceLevel, number> = { strong: 3, medium: 2, weak: 1, insufficient: 0 };
+
+/** Three-bar signal gauge: how much the evidence carries, readable at a glance (the text says it too). */
+function SignalBars({ level }: { level: EvidenceLevel }) {
+  const lit = BARS[level];
+  return (
+    <span aria-hidden className="inline-flex h-3 items-end gap-[2px]">
+      {[0, 1, 2].map((i) => (
+        <span
+          key={i}
+          className={cn("w-[3px] rounded-[1px] bg-current transition-opacity", i < lit ? "opacity-100" : "opacity-25")}
+          style={{ height: `${5 + i * 3.5}px` }}
+        />
+      ))}
+    </span>
+  );
+}
+
 /** Evidence level chip: icon + text («شواهد قوی» ...), with the rule reason in a tooltip (also printed under «چرا؟»). */
 export function EvidenceLevelChip({ level, reason }: { level: EvidenceLevel; reason?: LevelReason }) {
   const meta = META[level];
   const Icon = meta.icon;
+  // `w-fit`: inside a column (finding card, incident root cause) the chip hugs its text at the reading start
+  // instead of stretching to the column and floating in the middle.
   const chip = (
-    <Badge tone={meta.tone} className="gap-1.5">
-      <Icon aria-hidden className="size-3.5" />
+    <Badge tone={meta.tone} className="w-fit gap-1.5">
+      {level === "insufficient" ? <Icon aria-hidden className="size-3.5" /> : <SignalBars level={level} />}
       {l.levelChip[level]}
     </Badge>
   );
   if (!reason) return chip;
   return (
     <Tooltip content={levelReasonLine(reason)}>
-      <button type="button" className="rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
+      <button type="button" className="w-fit rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
         {chip}
       </button>
     </Tooltip>

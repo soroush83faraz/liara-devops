@@ -46,7 +46,7 @@ const SIGN_STYLE = {
 export function DiffView({ lines }: { lines: DiffLine[] }) {
   if (lines.length === 0) return <p className="text-sm text-muted">{l.noChanges}</p>;
   return (
-    <ul className="flex flex-col divide-y divide-border overflow-hidden rounded-lg border border-border bg-code-bg" aria-label={l.changes}>
+    <ul className="flex flex-col divide-y divide-border overflow-hidden rounded-sm border border-border bg-code-bg" aria-label={l.changes}>
       {lines.map((line, i) => {
         const sign = SIGN_STYLE[line.sign];
         return (

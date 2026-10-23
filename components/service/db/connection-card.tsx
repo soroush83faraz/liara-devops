@@ -25,7 +25,7 @@ function Endpoint({
   missingText?: string;
 }) {
   return (
-    <section aria-label={title} className="flex flex-col gap-2 rounded-lg border border-border p-3">
+    <section aria-label={title} className="flex flex-col gap-2 rounded-sm border border-border p-3">
       <div>
         <h4 className="text-[15px] font-semibold leading-7">{title}</h4>
         <p className="text-xs leading-6 text-muted">{hint}</p>

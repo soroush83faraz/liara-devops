@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Database, LayoutList, LayoutGrid, Network, Plus, RefreshCw, Server, Wand2 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ErrorBanner } from "@/components/ui/error-banner";
@@ -20,6 +20,7 @@ import { ApiError, useOverview } from "@/lib/canvas/use-overview";
 import type { Overview } from "@/lib/canvas/types";
 import { faTime, relativeTime } from "@/lib/i18n/format";
 import { t } from "@/lib/i18n/t";
+import { cn } from "@/lib/utils";
 import { CreateMenuSlot, hasCreateMenu } from "./create-slot";
 import { ServiceList } from "./service-list";
 
@@ -29,10 +30,21 @@ const VIEW_KEY = "hamyar:view";
 
 export function CanvasSkeleton() {
   return (
-    <div aria-busy aria-label={t("canvasMap.loading")} className="grid gap-4 p-6 sm:grid-cols-2 lg:grid-cols-3">
-      {Array.from({ length: 6 }, (_, i) => (
-        <Skeleton key={i} className="h-40 rounded-xl" />
-      ))}
+    <div aria-busy aria-label={t("canvasMap.loading")} className="bg-dot-grid size-full min-h-80 p-6">
+      <div className="mx-auto mt-6 grid max-w-3xl gap-x-12 gap-y-10 rounded-lg border border-dashed border-border-strong/30 p-7 sm:grid-cols-2 lg:grid-cols-3">
+        {Array.from({ length: 6 }, (_, i) => (
+          <div key={i} className="flex h-24 flex-col justify-between rounded-md border border-border bg-surface p-3">
+            <div className="flex items-center gap-3">
+              <Skeleton className="size-9 shrink-0" />
+              <div className="flex flex-1 flex-col gap-2">
+                <Skeleton className="h-3.5 w-2/3" />
+                <Skeleton className="h-2.5 w-1/2" />
+              </div>
+            </div>
+            <Skeleton className="h-2.5 w-1/3" />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -155,49 +167,77 @@ function EmptyCreateButton() {
   );
 }
 
+/** Compact one-line page header: the title, then how fresh the map is. */
+function PageHeader({ overview, children }: { overview: Overview; children?: ReactNode }) {
+  return (
+    <div className="flex min-h-12 items-center gap-3 border-b border-border bg-surface/60 px-4">
+      <div className="flex min-w-0 flex-1 items-baseline gap-3">
+        <h1 className="shrink-0 text-[17px] font-bold leading-7">{t("canvasMap.title")}</h1>
+        <p className="min-w-0 truncate text-xs text-muted" title={t("canvasMap.pollingNote")}>
+          <span className="max-md:hidden">{t("canvasMap.pollingNote")} · </span>
+          {t("canvasMap.updatedAt", { time: relativeTime(overview.generatedAt) })}
+        </p>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+/** Visible label that collapses to icon-only under 900 px (the text stays the accessible name). */
+const LABEL = "max-[900px]:sr-only";
+
+/**
+ * Canvas actions. `floating`: a pill pinned top-start inside the canvas (it never wraps; under 900 px the buttons
+ * collapse to icons). Otherwise it sits inline at the end of the page header (list view).
+ */
 function Toolbar({
-  overview,
   isList,
   canToggle,
   fetching,
+  floating,
   onToggle,
   onRefresh,
   onReset,
 }: {
-  overview: Overview;
   isList: boolean;
   canToggle: boolean;
   fetching: boolean;
+  floating: boolean;
   onToggle: () => void;
   onRefresh: () => void;
   onReset: () => void;
 }) {
   return (
-    <div className="flex flex-wrap items-center gap-2 border-b border-border bg-surface px-4 py-2">
-      <div className="min-w-0 flex-1">
-        <h1 className="text-base font-semibold leading-8">{t("canvasMap.title")}</h1>
-        <p className="text-xs leading-5 text-muted">
-          {t("canvasMap.pollingNote")} · {t("canvasMap.updatedAt", { time: relativeTime(overview.generatedAt) })}
-        </p>
-      </div>
+    <div
+      role="group"
+      aria-label={t("canvasMap.toolbar")}
+      className={cn(
+        "flex shrink-0 items-center gap-1",
+        floating &&
+          "absolute start-3 top-3 z-10 rounded-md border border-border bg-[color-mix(in_oklab,var(--surface)_92%,transparent)] p-1 shadow-[var(--shadow-pop)] hl-enter",
+        // The create menu's trigger (owned by the create unit) also collapses to its icon under 900 px.
+        "max-[900px]:[&_[aria-haspopup]]:min-w-11 max-[900px]:[&_[aria-haspopup]]:gap-0 max-[900px]:[&_[aria-haspopup]]:px-2 max-[900px]:[&_[aria-haspopup]]:text-[0px]",
+      )}
+    >
       <CreateMenuSlot />
       {canToggle ? (
         <>
+          <span aria-hidden className="mx-0.5 h-5 w-px bg-border" />
           {!isList ? (
-            <Button variant="secondary" size="sm" onClick={onReset}>
-              <Wand2 aria-hidden className="size-4" />
-              {t("canvasMap.autoLayout")}
+            <Button variant="ghost" size="sm" onClick={onReset} title={t("canvasMap.autoLayout")}>
+              <Wand2 aria-hidden className="size-4 text-muted" />
+              <span className={LABEL}>{t("canvasMap.autoLayout")}</span>
             </Button>
           ) : null}
-          <Button variant="secondary" size="sm" onClick={onToggle} aria-pressed={isList}>
-            {isList ? <LayoutGrid aria-hidden className="size-4" /> : <LayoutList aria-hidden className="size-4" />}
-            {isList ? t("canvasMap.viewCanvas") : t("canvasMap.viewList")}
+          <Button variant="ghost" size="sm" onClick={onToggle} aria-pressed={isList} title={isList ? t("canvasMap.viewCanvas") : t("canvasMap.viewList")}>
+            {isList ? <LayoutGrid aria-hidden className="size-4 text-muted" /> : <LayoutList aria-hidden className="size-4 text-muted" />}
+            <span className={LABEL}>{isList ? t("canvasMap.viewCanvas") : t("canvasMap.viewList")}</span>
           </Button>
         </>
       ) : null}
-      <Button variant="ghost" size="sm" className="min-w-11" onClick={onRefresh} loading={fetching} aria-label={t("canvasMap.refresh")}>
-        {fetching ? null : <RefreshCw aria-hidden className="size-4" />}
-        <span className="hidden sm:inline">{t("canvasMap.refresh")}</span>
+      <Button variant="ghost" size="sm" className="min-w-11 md:min-w-8" onClick={onRefresh} loading={fetching} aria-label={t("canvasMap.refresh")} title={t("canvasMap.refresh")}>
+        {fetching ? null : <RefreshCw aria-hidden className="size-4 text-muted" />}
+        <span className={cn("hidden sm:inline", LABEL)}>{t("canvasMap.refresh")}</span>
       </Button>
     </div>
   );
@@ -256,17 +296,22 @@ export function Canvas({ accountId }: { accountId: string }) {
     }
   };
 
+  const toolbar = (floating: boolean) => (
+    <Toolbar
+      isList={isList}
+      canToggle={desktop}
+      fetching={isFetching}
+      floating={floating}
+      onToggle={toggle}
+      onRefresh={() => void refetch()}
+      onReset={() => setResetSignal((n) => n + 1)}
+    />
+  );
+  const onCanvas = !isList && data.services.length > 0;
+
   return (
     <div className="flex h-full flex-col">
-      <Toolbar
-        overview={data}
-        isList={isList}
-        canToggle={desktop}
-        fetching={isFetching}
-        onToggle={toggle}
-        onRefresh={() => void refetch()}
-        onReset={() => setResetSignal((n) => n + 1)}
-      />
+      <PageHeader overview={data}>{onCanvas ? null : toolbar(false)}</PageHeader>
       {error ? <StaleDataBanner error={error} attempt={errorUpdatedAt} updatedAt={dataUpdatedAt} onRetry={() => void refetch()} retrying={isFetching} /> : null}
       <ProbeSessionNotice />
       <PartialNotices overview={data} />
@@ -291,8 +336,9 @@ export function Canvas({ accountId }: { accountId: string }) {
           <ServiceList overview={data} />
         </div>
       ) : (
-        <div className="min-h-0 flex-1">
+        <div className="relative min-h-0 flex-1">
           <FlowCanvas overview={data} accountId={accountId} resetSignal={resetSignal} />
+          {toolbar(true)}
         </div>
       )}
     </div>

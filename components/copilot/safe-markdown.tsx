@@ -56,7 +56,7 @@ export function SafeMarkdown({ text, className }: { text: string; className?: st
               <pre
                 key={i}
                 dir="ltr"
-                className="overflow-x-auto rounded-lg border border-border bg-code-bg p-3 text-start font-mono text-[13px] leading-6 text-code-fg"
+                className="overflow-x-auto rounded-sm border border-border bg-code-bg p-3 text-start font-mono text-[13px] leading-6 text-code-fg"
               >
                 {b.v}
               </pre>

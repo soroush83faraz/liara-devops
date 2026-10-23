@@ -17,7 +17,7 @@ export function StartStep({
 }) {
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-lg font-semibold leading-9">{t("setupFlow.start.title")}</h2>
+      <h2 className="text-lg font-bold">{t("setupFlow.start.title")}</h2>
       <Tabs defaultValue="upload">
         <TabsList>
           <TabsTrigger value="upload">{t("setupFlow.start.tabUpload")}</TabsTrigger>

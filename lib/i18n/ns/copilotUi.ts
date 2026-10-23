@@ -448,6 +448,7 @@ export const copilotUi = {
     failed: "فهرست سرویس‌ها بارگذاری نشد.",
     hintKeys: "↑↓ برای انتخاب، Enter برای باز کردن، Esc برای بستن",
     questionPreview: "پرسش: {text}",
+    askPick: "این پرسش دربارهٔ کدام سرویس است؟",
   },
 
   incidentsPage: {

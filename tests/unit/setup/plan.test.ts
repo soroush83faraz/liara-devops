@@ -134,6 +134,9 @@ describe("explainPlan (rule-based Persian text)", () => {
     expect(text).toContain("۳"); // Persian digits in the cost
     const parts = explainPlanParts(plan);
     expect(parts.steps).toHaveLength(plan.steps.length);
+    // Counts and ports in the step list use Persian digits like the rest of the copy («تنظیم ۲ متغیر محیطی»).
+    expect(parts.steps.find((x) => x.includes("متغیر محیطی"))).toMatch(/^تنظیم [۰-۹]+ متغیر محیطی/);
+    expect(parts.steps.join(" | ")).not.toMatch(/(پورت|تنظیم) [0-9]/);
     expect(parts.domain.length).toBeGreaterThan(3);
     expect(text).not.toMatch(/[A-Za-z_]+_[A-Za-z_]+=/);
   });
